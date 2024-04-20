@@ -6,7 +6,7 @@
                 <div class="col-lg-6">
                     <div class="rbt-contact-form contact-form-style-1 max-width-auto">
                         <h3 class="title">Đăng nhập</h3>
-                        <form class="max-width-auto">
+                        <form action="{{ route('login') }}" class="max-width-auto">
                             <div class="form-group">
                                 <input name="con_name" type="text"/>
                                 <label>Email *</label>
@@ -30,6 +30,18 @@
                                     </span>
                                 </button>
                             </div>
+                            <div class="social-login">
+                                <p>hoặc đăng nhập bằng</p>
+                                <div class="choice_list">
+                                    <a href="#" class="btn btn-facebook">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-google">
+                                        <i class="fab fa-google"></i>
+                                    </a>
+                                </div>
+                            </div>
+
                         </form>
                     </div>
                 </div>
