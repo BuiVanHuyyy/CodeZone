@@ -18,20 +18,23 @@ class InstructorFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->name;
+        $name = $this->faker->name();
         $slug = Str::slug($name);
         return [
             'name' => $name,
             'slug' => $slug,
-            'nickname' => $this->faker->userName,
+            'nickname' => $this->faker->userName(),
             'avatar' => $this->faker->imageUrl('500', '500', 'people'),
             'phone_number' => $this->faker->phoneNumber(),
             'gender' => $this->faker->boolean(),
             'dob' => $this->faker->date(),
-            'current_job' => $this->faker->jobTitle,
-            'education' => $this->faker->text,
+            'current_job' => $this->faker->jobTitle(),
+            'education' => $this->faker->text(),
             'bio' => $this->faker->text,
-            'user_id' => $this->faker->randomElement(User::pluck('id'))
+            'user_id' => $this->faker->unique()->numberBetween('501', '530'),
+            'facebook' => $this->faker->url(),
+            'github' => $this->faker->url(),
+            'linkedin' => $this->faker->url(),
         ];
     }
 }

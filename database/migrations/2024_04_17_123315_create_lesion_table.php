@@ -19,6 +19,7 @@
                 $table->text('content')->nullable();
                 $table->text('video')->nullable();
                 $table->text('resource')->nullable();
+                $table->boolean('is_preview')->default(false);
                 $table->foreignId('subject_id')->constrained('subjects');
                 $table->softDeletes();
                 $table->timestamps();

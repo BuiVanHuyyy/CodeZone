@@ -17,11 +17,14 @@
                 $table->string('slug', 100);
                 $table->string('nickname', 100)->nullable();
                 $table->string('avatar', 255)->nullable();
-                $table->string('phone_number', 255)->unique();
-                $table->boolean('gender')->default('0')->comment('1=Female, 0=Male');
+                $table->string('phone_number', 255)->nullable();
+                $table->boolean('gender')->nullable()->comment('1=Female, 0=Male');
                 $table->date('dob')->nullable();
                 $table->text('bio')->nullable();
                 $table->foreignId('user_id')->constrained('users');
+                $table->string('facebook', 255)->nullable();
+                $table->string('github', 255)->nullable();
+                $table->string('linkedin', 255)->nullable();
                 $table->softDeletes();
                 $table->timestamps();
             });

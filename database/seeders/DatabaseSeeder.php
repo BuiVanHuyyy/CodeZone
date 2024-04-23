@@ -15,6 +15,7 @@ use App\Models\Review;
 use App\Models\Student;
 use App\Models\Subject;
 use Illuminate\Database\Seeder;
+use \App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,17 +24,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-//        \App\Models\User::factory(530)->create();
+//        User::factory(30)->create();
+//        Student::factory(500)->create();
 //        Instructor::factory(30)->create();
-//        Student::factory(700)->create();
-//        CourseCategory::factory(4)->create();
-//        Course::factory(16)->create();
-//        Enrollment::factory(100)->create();
-//        Subject::factory(150)->create();
-//        Lesion::factory(500)->create();
+//        CourseCategory::factory(5)->create();
+//        Course::factory(8)->create();
+//        Enrollment::factory(50)->create();
+//        Subject::factory(100)->create();
+//        Lesion::factory(800)->create();
         Like::factory(1000)->create();
-//        Dislike::factory(1000)->create();
-//        Comment::factory(1000)->create();
-//        Review::factory(1000)->create();
+        Dislike::factory(700)->create();
+//        Comment::factory(900)->create();
+//        Review::factory(700)->create();
     }
 }

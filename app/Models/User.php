@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'status',
     ];
 
     /**
@@ -41,4 +43,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function students (): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Student::class, 'user_id');
+    }
+    public function instructors (): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Instructor::class, 'user_id');
+    }
+    public function admins(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Admin::class, 'user_id');
+    }
 }

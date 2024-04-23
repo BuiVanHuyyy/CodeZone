@@ -15,7 +15,7 @@
                 $table->id();
                 $table->foreignId('student_id')->constrained('students');
                 $table->foreignId('course_id')->constrained('courses');
-                $table->enum('status', ['pending', 'paid', 'rejected']);
+                $table->double('price', 10, 2);
                 $table->softDeletes();
                 $table->timestamps();
             });

@@ -10920,6 +10920,7 @@ ul.rbt-dropdown-menu.currency-menu li .sub-menu {
 }
 .rbt-header-sec .rbt-header-right {
   text-align: right;
+
 }
 .rbt-header-sec .rbt-header-right .rbt-header-content {
   justify-content: flex-end;
@@ -11344,6 +11345,7 @@ ul.rbt-dropdown-menu.currency-menu li .sub-menu {
   display: block;
   line-height: 1;
   margin-bottom: 2px;
+    text-align: left;
 }
 
 .rbt-user-menu-list-wrapper .user-list-wrapper {
@@ -12112,6 +12114,7 @@ ul.rbt-dropdown-menu.currency-menu li .sub-menu {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+    margin-left: auto;
 }
 @media only screen and (max-width: 767px) {
   .rbt-header .rbt-header-wrapper .header-right {
@@ -19811,14 +19814,9 @@ span.transparent-button:hover i {
   display: block;
 }
 .form-group label {
-  position: absolute;
-  left: 0;
   width: 100%;
-  top: 9px;
   color: var(--color-body);
-  transition: 0.3s;
-  z-index: -1;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   font-size: 18px;
   line-height: 28px;
 }
@@ -19827,11 +19825,8 @@ span.transparent-button:hover i {
   border: 0;
   border-bottom: 2px solid var(--color-border);
   background-color: transparent;
-  padding-bottom: 8px;
-  padding-top: 20px;
-  border-radius: 0;
-  padding-left: 0;
-  padding-right: 0;
+    border-radius: 0;
+    padding: 20px 0 8px;
 }
 .form-group input[type=submit] {
   border: 2px solid var(--color-heading);
@@ -19866,12 +19861,7 @@ span.transparent-button:hover i {
   background-color: var(--color-primary);
   transition: 0.4s;
 }
-.form-group.focused label {
-  top: -10px;
-  font-size: 12px;
-  color: var(--color-primary);
-  transition: 0.3s;
-}
+
 .form-group.focused span.focus-border {
   width: 100%;
   transition: 0.4s;
@@ -27110,7 +27100,7 @@ Course Sidebar
   align-items: end;
   justify-content: space-between;
   position: absolute;
-  bottom: 30px;
+  bottom: 80px;
   padding: 0 40px;
   width: 100%;
   z-index: 2;
@@ -29593,4 +29583,7 @@ Course Sidebar
 }
 .social-login div.choice_list a:last-child {
     background-color: #D7543A;
+}
+.error-input li {
+    color: red !important;
 }

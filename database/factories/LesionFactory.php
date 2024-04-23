@@ -24,6 +24,8 @@ class LesionFactory extends Factory
         return [
             'title' => $title,
             'slug' => $slug,
+            'content' => $this->faker->text,
+            'is_preview' => $this->faker->boolean,
             'order' => $this->faker->numberBetween(1, 10),
             'subject_id' => $this->faker->randomElement(Subject::pluck('id')),
         ];

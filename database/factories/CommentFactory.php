@@ -18,9 +18,11 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'commentable_id' => $this->faker->numberBetween(1, 100),
-            'commentable_type' => $this->faker->randomElement(['course', 'lesion', 'blog']),
-            'user_id' => $this->faker->randomElement(User::pluck('id')),
+            'commentable_id' => $this->faker->numberBetween(1, 800),
+//            'commentable_type' => $this->faker->randomElement(['course', 'lesion', 'blog']),
+            'commentable_type' => $this->faker->randomElement(['lesion']),
+            'parent_comment_id' => $this->faker->numberBetween(1, 200),
+            'user_id' => $this->faker->numberBetween(1, 530),
             'content' => $this->faker->text('255')
         ];
     }

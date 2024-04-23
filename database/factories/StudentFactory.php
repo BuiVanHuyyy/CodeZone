@@ -29,7 +29,10 @@ class StudentFactory extends Factory
             'gender' => $this->faker->boolean(),
             'dob' => $this->faker->date(),
             'bio' => $this->faker->text,
-            'user_id' => $this->faker->randomElement(User::pluck('id'))
+            'user_id' => $this->faker->unique()->numberBetween(1, 500),
+            'facebook' => $this->faker->url || null,
+            'github' => $this->faker->url || null,
+            'linkedin' => $this->faker->url || null,
         ];
     }
 }

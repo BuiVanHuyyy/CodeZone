@@ -17,9 +17,12 @@ class EnrollmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'student_id' => $this->faker->numberBetween(1, 100),
+            'student_id' => $this->faker->unique()->numberBetween(1, 400),
             'course_id' => $this->faker->numberBetween(1, 16),
-            'status' => $this->faker->randomElement(['pending', 'paid', 'rejected']),
+            'price' => $this->faker->randomFloat(2, 100000, 10000000),
+//            'status' => $this->faker->randomElement(['paid', 'pending', 'failed']),
+//            'status' => $this->faker->randomElement(['paid', 'pending', 'failed']),
+            'status' => $this->faker->randomElement(['pending', 'failed']),
         ];
     }
 }

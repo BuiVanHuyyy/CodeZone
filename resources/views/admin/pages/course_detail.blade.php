@@ -113,12 +113,12 @@
                                     <div class="col-lg-6 review-item">
                                         <div class="top d-flex">
                                             <div class="thumbnail">
-                                                <a href="{{ route('admin.student.show', ['student' => $review->user]) }}">
+                                                <a href="{{ route('admin.student.show', ['student' => $review->user->students->id]) }}">
                                                     <img class="circle" src="{{ asset('admin_assets/images/avatar/1.jpg') }}" alt="">
                                                 </a>
                                             </div>
                                             <div class="author">
-                                                <h4><a href="{{ route('admin.student.show', ['student' => $review->user]) }}">{{ $review->user->name }}</a></h4>
+                                                <h4><a href="{{ route('admin.student.show', ['student' => $review->user->students->id]) }}">{{ $review->user->students->name }}</a></h4>
                                                 <p>
                                                     @for($i = 1; $i <= $review->rating; $i++)
                                                         <i class="fa-solid fa-star" style="color: #FFD43B;"></i>

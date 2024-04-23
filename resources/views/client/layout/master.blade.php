@@ -8,20 +8,11 @@
     </title>
     <meta name="robots" content="noindex, follow"/>
     <meta name="description" content=""/>
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
-    <!-- Favicon -->
-    <link
-        rel="shortcut icon"
-        type="image/x-icon"
-        href="{{ asset('client_assets/images/favicon.png') }}"
-    />
+    <link rel="icon" type="image/png" href="{{ asset('client_assets/images/logo/logo-vector.png') }}"/>
 
-    <!-- CSS
-============================================ -->
+    <!-- CSS ============================================ -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{{ asset('client_assets/css/vendor/bootstrap.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('client_assets/css/vendor/slick.css') }}"/>
@@ -36,10 +27,7 @@
     <link rel="stylesheet" href="{{ asset('client_assets/css/plugins/animation.css') }}"/>
     <link rel="stylesheet" href="{{ asset('client_assets/css/plugins/bootstrap-select.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('client_assets/css/plugins/jquery-ui.css') }}"/>
-    <link
-        rel="stylesheet"
-        href="{{ asset('client_assets/css/plugins/magnigy-popup.min.css') }}"
-    />
+    <link rel="stylesheet" href="{{ asset('client_assets/css/plugins/magnigy-popup.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('client_assets/css/plugins/plyr.css') }}"/>
     <link rel="stylesheet" href="{{ asset('client_assets/css/style.css') }}"/>
     @yield('cus_css')
@@ -56,8 +44,6 @@
         <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
     </svg>
 </div>
-@include('client.blocks.login')
-@include('client.blocks.register')
 
 <!-- JS
 ============================================ -->
@@ -68,6 +54,7 @@
 <!-- Bootstrap JS -->
 <script src="{{ asset('client_assets/js/vendor/bootstrap.min.js') }}"></script>
 <!-- sal.js -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ asset('client_assets/js/vendor/sal.js') }}"></script>
 <script src="{{ asset('client_assets/js/vendor/swiper.js') }}"></script>
 <script src="{{ asset('client_assets/js/vendor/magnify.min.js') }}"></script>
@@ -91,5 +78,6 @@
 <script src="{{ asset('client_assets/js/vendor/plyr.js') }}"></script>
 <!-- Main JS -->
 <script src="{{ asset('client_assets/js/main.js') }}"></script>
+@yield('cus_js')
 </body>
 </html>

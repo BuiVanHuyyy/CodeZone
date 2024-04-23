@@ -58,8 +58,7 @@ class CourseController extends Controller
             $rating = $totalStars / count($reviews);
         } else {
             $rating = 0;
-        }
-        $msg = '';
+        };
         $likeAmount = Like::where('likeable_type', 'course')->where('likeable_id', $id)->count();
         $dislikeAmount = Dislike::where('dislikeable_type', 'course')->where('dislikeable_id', $id)->count();
         return view('admin.pages.course_detail', compact('course','dislikeAmount', 'likeAmount', 'reviews', 'rating'));

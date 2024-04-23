@@ -13,8 +13,4 @@ class Review extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function likeReviewAmount()
-    {
-        return Like::where('likeable_type', 'review')->where('likeable_id',  $this->id)->count();
-    }
 }

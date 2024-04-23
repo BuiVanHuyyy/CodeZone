@@ -8,7 +8,7 @@
         StudentController
     };
 
-    Route::prefix('/admin')->group(function(){
+    Route::prefix('/admin')->middleware('check.user.is.admin')->group(function(){
         Route::get('/', [HandleViewController::class, 'dashboard'])->name('admin.dashboard');
         Route::resources([
             '/instructor' => InstructorController::class,
