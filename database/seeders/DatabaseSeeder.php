@@ -11,6 +11,7 @@ use App\Models\Enrollment;
 use App\Models\Instructor;
 use App\Models\Lesion;
 use App\Models\Like;
+use App\Models\Order;
 use App\Models\Review;
 use App\Models\Student;
 use App\Models\Subject;
@@ -29,12 +30,14 @@ class DatabaseSeeder extends Seeder
 //        Instructor::factory(30)->create();
 //        CourseCategory::factory(5)->create();
 //        Course::factory(8)->create();
-//        Enrollment::factory(50)->create();
 //        Subject::factory(100)->create();
 //        Lesion::factory(800)->create();
-        Like::factory(1000)->create();
-        Dislike::factory(700)->create();
+//        Like::factory(1000)->create();
+//        Dislike::factory(700)->create();
 //        Comment::factory(900)->create();
 //        Review::factory(700)->create();
+        Order::factory(50)->create();
+        Enrollment::factory(100)->create();
+
     }
 }

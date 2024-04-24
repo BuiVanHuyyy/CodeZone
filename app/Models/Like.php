@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Like extends Model
 {
-    use HasFactory, softDeletes;
+    use HasFactory;
 }

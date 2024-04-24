@@ -78,6 +78,51 @@
 <script src="{{ asset('client_assets/js/vendor/plyr.js') }}"></script>
 <!-- Main JS -->
 <script src="{{ asset('client_assets/js/main.js') }}"></script>
+@if(Auth::check())
+    <script>
+        window.onload = function() {
+            let message = "{{ session('message') }}";
+            if (message) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        }
+        $('.add-to-cart-btn').on( "click", function() {
+            let url = $(this).data('url');
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {url: url,  _token: '{{ csrf_token() }}'},
+                success: function(response) {
+                    Swal.fire({
+                        icon: response.type,
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                    location.reload();
+                }
+            });
+        });
+        $('.remove-item-cart').on( "click", function() {
+            let url = $(this).data('url');
+            let id = $(this).data('id');
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {url: url,  _token: '{{ csrf_token() }}'},
+                success: function(response) {
+                    $('#li-' + id).remove()
+                }
+            });
+        });
+    </script>
+@endif
 @yield('cus_js')
 </body>
 </html>

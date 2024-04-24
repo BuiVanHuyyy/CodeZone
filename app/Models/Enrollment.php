@@ -17,4 +17,12 @@ class Enrollment extends Model
     {
         return $this->belongsTo(Course::class, 'course_id');
     }
+    public function orderItem(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Order::class, 'order_id');
+    }
+    public function course(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Course::class, 'course_id');
+    }
 }

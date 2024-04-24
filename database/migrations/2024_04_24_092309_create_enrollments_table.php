@@ -13,9 +13,11 @@
         {
             Schema::create('enrollments', function (Blueprint $table) {
                 $table->id();
+                $table->foreignId('order_id')->constrained('orders');
                 $table->foreignId('student_id')->constrained('students');
                 $table->foreignId('course_id')->constrained('courses');
                 $table->double('price', 10, 2);
+                $table->enum('status', ['paid', 'pending', 'failed'])->default('pending');
                 $table->softDeletes();
                 $table->timestamps();
             });

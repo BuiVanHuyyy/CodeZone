@@ -10978,7 +10978,7 @@ ul.rbt-dropdown-menu.currency-menu li .sub-menu {
   }
 }
 .quick-access > li {
-  margin: 0 3px;
+  margin: 0 10px;
   display: flex;
   align-items: center;
 }
@@ -18946,12 +18946,24 @@ span.transparent-button:hover i {
   line-height: 41px;
   background: transparent;
   border: 2px solid var(--color-border);
+    cursor: pointer;
 }
 .social-default.transparent-with-border li a:hover {
   border-color: transparent !important;
 }
+.social-default.transparent-with-border li a.dislike_btn:hover, .social-default.transparent-with-border li a.dislike_btn:after {
+    background-color: var(--color-danger) !important;
+}
 .social-default.transparent-with-border li a::after {
   border: 1px solid var(--color-primary);
+}
+.social-default.transparent-with-border li a.like_btn.active {
+    background-color: var(--color-primary);
+    color: white;
+}
+.social-default.transparent-with-border li a.dislike_btn.active {
+    background-color: var(--color-danger);
+    color: white;
 }
 .social-default.with-gradient li a::after {
   background-image: linear-gradient(to right, var(--color-primary), var(--color-secondary), var(--color-secondary), var(--color-primary));

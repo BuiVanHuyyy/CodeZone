@@ -11,26 +11,17 @@
                 </div>
                 <div class="row g-5">
                     <!-- Start Single Card  -->
-                    <div
-                        class="col-lg-4 col-md-4 col-sm-6 col-12"
-                    >
-                        <div
-                            class="rbt-counterup variation-01 rbt-hover-03 rbt-border-dashed bg-primary-opacity"
-                        >
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+                        <div class="rbt-counterup variation-01 rbt-hover-03 rbt-border-dashed bg-primary-opacity">
                             <div class="inner">
-                                <div
-                                    class="rbt-round-icon bg-primary-opacity"
-                                >
-                                    <i
-                                        class="feather-book-open"
-                                    ></i>
+                                <div class="rbt-round-icon bg-primary-opacity">
+                                    <i class="feather-book-open"></i>
                                 </div>
                                 <div class="content">
                                     <h3 class="counter without-icon color-primary">
-                                        <span class="odometer" data-count="30">00</span>
+                                        <span class="odometer" data-count="{{ Auth::user()->students->courses->count() }}">00</span>
                                     </h3>
-                                    <span class="rbt-title-style-2 d-block">EnrolledCourses</span
-                                    >
+                                    <span class="rbt-title-style-2 d-block">Khóa học đã đăng ký</span>
                                 </div>
                             </div>
                         </div>

@@ -20,7 +20,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="">
+                            <a href="{{ route('student.enrolled_courses') }}">
                                 <i class="feather-book-open"></i>
                                 <span>Khóa học đăng ký</span>
                             </a>

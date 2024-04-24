@@ -13,4 +13,8 @@ class Review extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function reviewable(): \Illuminate\Database\Eloquent\Relations\MorphTo
+    {
+        return $this->morphTo();
+    }
 }

@@ -58,7 +58,7 @@
                         <div class="rbt-profile-content b2">Số điện thoại</div>
                     </div>
                     <div class="col-lg-8 col-md-8">
-                        <div class="rbt-profile-content b2">{{ Auth::user()->students->phone_number }}</div>
+                        <div class="rbt-profile-content b2">{{ Auth::user()->students->phone_number ?? 'Chưa có số điện thoại' }}</div>
                     </div>
                 </div>
                 <!-- End Profile Row  -->

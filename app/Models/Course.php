@@ -29,4 +29,8 @@ class Course extends Model
     {
         return $this->hasMany(Enrollment::class, 'course_id');
     }
+    public function reviews(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
 }

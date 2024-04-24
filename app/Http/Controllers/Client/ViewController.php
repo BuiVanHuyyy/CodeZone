@@ -8,6 +8,7 @@ use App\Models\Dislike;
 use App\Models\Like;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ViewController extends Controller
 {
@@ -127,5 +128,24 @@ class ViewController extends Controller
     public function showInstructorEdit(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         return view('client.pages.students.pages.edit');
+    }
+    public function showEnrolledCourses(): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+    {
+        $enrolledCourses = Auth::user()->students->courses;
+        foreach ($enrolledCourses as $course) {
+            $reviews = Review::where('reviewable_id', $course->course_id)->where('reviewable_type', 'course')->get();
+            $totalStars = 0;
+            foreach($reviews as $review) {
+                $totalStars += $review->rating;
+            }
+            if (count($reviews) > 0) {
+                $rating = $totalStars / count($reviews);
+            } else {
+                $rating = 0;
+            }
+            $course->setAttribute('review_amount', $reviews->count());
+            $course->setAttribute('rating', number_format($rating, 1));
+        }
+        return view('client.pages.students.pages.enrolled_courses', compact('enrolledCourses'));
     }
 }
