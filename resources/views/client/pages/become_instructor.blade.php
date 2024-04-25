@@ -34,90 +34,67 @@
             <div class="row pt--60 g-5">
                 <div class="col-lg-4">
                     <div class="thumbnail">
-                        <img
-                            class="radius-10 w-100"
-                            src="{{ asset('client_assets/images/tab/tabs-10.jpg') }}"
-                            alt="Corporate Template"
-                        />
+                        <img class="radius-10 w-100" src="{{ asset('client_assets/images/tab/tabs-10.jpg') }}" alt="Corporate Template"/>
                     </div>
                 </div>
 
                 <div class="col-lg-8">
-                    <div
-                        class="rbt-contact-form contact-form-style-1 max-width-auto"
-                    >
+                    <div class="rbt-contact-form contact-form-style-1 max-width-auto">
                         <div class="section-title text-start">
                                 <span class="subtitle bg-primary-opacity">Form đăng ký</span>
                         </div>
                         <h3 class="title">Đăng ký trở thành giảng viên</h3>
                         <hr class="mb--30" />
 
-                        <form action="#" class="row row--15">
+                        <form method="post" action="{{ route('client.instructor.register') }}" class="row row--15" enctype="multipart/form-data">
+                            @csrf
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <input id="name" name="con_name" type="text" />
                                     <label for="name">Họ và tên</label>
-                                    <span class="focus-border"></span>
+                                    <input id="name" name="name"  type="text" value="{{ old('name') }}" />
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <input name="con_lastname"
-                                        type="text"
-                                    />
-                                    <label>Last Name</label>
-                                    <span class="focus-border"></span>
+                                    <label for="phone">Số điện thoại</label>
+                                    <input id="phone" name="phone" type="text" value="{{ old('phone') }}" />
+                                    @error('phone')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <input id="nick_name" name="nick_name" type="text"/>
-                                    <label for="nick_name">Nickname</label>
-                                    <span class="focus-border"></span>
+                                    <label for="email">Email</label>
+                                    <input id="email" name="email" type="text" value="{{ old('email') }}" />
+                                    @error('email')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <input id="phone_number" name="phone_number" type="text" />
-                                    <label for="phone_number">Phone Number</label>
-                                    <span class="focus-border"></span>
+                                    <label for="cv">Tải CV (PDF)</label>
+                                    <input id="cv" name="cv" type="file" />
+                                    @error('cv')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
                             <div class="col-lg-12">
                                 <div class="form-group">
-                                    <input id="phone_number" name="email" type="text" />
-                                    <label for="phone_number">Email</label>
-                                    <span class="focus-border"></span>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <input id="password" name="password"
-                                        type="password"
-                                    />
-                                    <label for="password">Password</label>
-                                    <span class="focus-border"></span>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <input id="password_confirm" name="password_confirm" type="password"/>
-                                    <label for="password_confirm">Password Confirmation</label>
-                                    <span class="focus-border"></span>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <textarea id="bio" name="bio"></textarea>
-                                    <label for="bio">Bio</label>
-                                    <span class="focus-border"></span>
+                                    <label for="bio">Giới thiệu về bản thân</label>
+                                    <textarea id="bio" name="bio">{{ old('bio') }}</textarea>
+                                    @error('bio')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -217,4 +194,26 @@
         </div>
     </div>
     <!-- Start Footer aera -->
+@endsection
+@section('cus_js')
+    <script>
+        $(document).ready(function() {
+            let msg = "{{ session('msg') }}";
+            let i = "{{ session('i') }}";
+            if (msg !== "") {
+                Swal.fire({
+                    title: msg,
+                    icon: i,
+                    showDenyButton: true,
+                    confirmButtonText: `<i class="fa fa-thumbs-up"></i> OK!`
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        Swal.fire("Cảm ơn bạn đã đăng ký!", "", "success");
+                    }
+                });
+
+            };
+        });
+    </script>
 @endsection

@@ -147,6 +147,17 @@
                                                     <span>{{ $instructor->education }}</span>
                                                 </div>
                                             </div>
+                                            <div class="row mb-4">
+                                                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                                                    <h5 class="f-w-500">CV <span class="pull-right">:</span>
+                                                    </h5>
+                                                </div>
+                                                <div class="col-lg-9 col-md-8 col-sm-6 col-6">
+                                                    @if($instructor->cv_upload != null)
+                                                        <a href="{{ $instructor->cv_upload }}" target="_blank">Xem CV</a>
+                                                    @endif
+                                                </div>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-12">
                                                     <h5 class="f-w-500">Các khóa học:

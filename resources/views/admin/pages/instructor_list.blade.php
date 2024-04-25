@@ -13,7 +13,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="example3" class="display" style="min-width: 1200px">
+                                    <table id="dataTable" class="display" style="min-width: 1200px">
                                         <thead>
                                         <tr>
                                             <th>Id</th>
@@ -28,7 +28,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($instructors as $instructor)
+                                        @foreach($instructors->sortByDesc('id') as $instructor)
                                             <tr>
                                                 <td>#{{ $instructor->user->id }}</td>
                                                 <td><a href="{{ route('admin.instructor.show', ['instructor' => $instructor]) }}">{{ $instructor->name }}</a></td>
@@ -38,13 +38,11 @@
                                                 <td>{{ $instructor->phone_number }}</td>
                                                 <td><a href="javascript:void(0);"><strong>{{ $instructor->user->email }}</strong></a></td>
                                                 <td>
-                                                    <form>
-                                                        <select class="form-select" aria-label="Status select">
-                                                            <option {{ $instructor->user->status === 'pending' ? 'selected' : '' }} value="pending">Chờ phê duyệt</option>
-                                                            <option {{ $instructor->user->status === 'active' ? 'selected' : '' }} value="active">Hoạt động</option>
-                                                            <option {{ $instructor->user->status === 'suspended' ? 'selected' : '' }} value="suspended">Khóa</option>
-                                                        </select>
-                                                    </form>
+                                                    <select data-url="{{ route('admin.update-status', [$instructor->id]) }}" class="statusSelect form-select" name="status" aria-label="Status select">
+                                                        <option {{ $instructor->user->status === 'pending' ? 'selected' : '' }} value="pending">Chờ phê duyệt</option>
+                                                        <option {{ $instructor->user->status === 'active' ? 'selected' : '' }} value="active">Hoạt động</option>
+                                                        <option {{ $instructor->user->status === 'suspended' ? 'selected' : '' }} value="suspended">Khóa</option>
+                                                    </select>
                                                 </td>
                                                 <td>
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>
@@ -58,228 +56,46 @@
                             </div>
                         </div>
                     </div>
-                    <div id="grid-view" class="tab-pane fade col-lg-12">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="text-center">
-                                            <div class="profile-photo">
-                                                <img src="images/profile/small/pic2.jpg" width="100" class="img-fluid rounded-circle" alt="">
-                                            </div>
-                                            <h3 class="mt-4 mb-1">Alexander</h3>
-                                            <p class="text-muted">M.COM., P.H.D.</p>
-                                            <ul class="list-group mb-3 list-group-flush">
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Gender :</span><strong>Male</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Phone No. :</span><strong>+01 123 456 7890</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Email:</span><strong>info@example.com</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Address:</span><strong>#8901 Marmora Road</strong></li>
-                                            </ul>
-                                            <a class="btn btn-outline-primary btn-rounded mt-3 px-4" href="professor-profile.html">Read More</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="text-center">
-                                            <div class="profile-photo">
-                                                <img src="images/profile/small/pic3.jpg" width="100" class="img-fluid rounded-circle" alt="">
-                                            </div>
-                                            <h3 class="mt-4 mb-1">Elizabeth</h3>
-                                            <p class="text-muted">B.COM., M.COM.</p>
-                                            <ul class="list-group mb-3 list-group-flush">
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Gender :</span><strong>Female</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Phone No. :</span><strong>+01 123 456 7890</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Email:</span><strong>info@example.com</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Address:</span><strong>#8901 Marmora Road</strong></li>
-                                            </ul>
-                                            <a class="btn btn-outline-primary btn-rounded mt-3 px-4" href="professor-profile.html">Read More</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="text-center">
-                                            <div class="profile-photo">
-                                                <img src="images/profile/small/pic4.jpg" width="100" class="img-fluid rounded-circle" alt="">
-                                            </div>
-                                            <h3 class="mt-4 mb-1">Amelia</h3>
-                                            <p class="text-muted">M.COM., P.H.D.</p>
-                                            <ul class="list-group mb-3 list-group-flush">
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Gender :</span><strong>Female</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Phone No. :</span><strong>+01 123 456 7890</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Email:</span><strong>info@example.com</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Address:</span><strong>#8901 Marmora Road</strong></li>
-                                            </ul>
-                                            <a class="btn btn-outline-primary btn-rounded mt-3 px-4" href="professor-profile.html">Read More</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="text-center">
-                                            <div class="profile-photo">
-                                                <img src="images/profile/small/pic5.jpg" width="100" class="img-fluid rounded-circle" alt="">
-                                            </div>
-                                            <h3 class="mt-4 mb-1">Charlotte</h3>
-                                            <p class="text-muted">B.COM., M.COM.</p>
-                                            <ul class="list-group mb-3 list-group-flush">
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Gender :</span><strong>Female</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Phone No. :</span><strong>+01 123 456 7890</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Email:</span><strong>info@example.com</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Address:</span><strong>#8901 Marmora Road</strong></li>
-                                            </ul>
-                                            <a class="btn btn-outline-primary btn-rounded mt-3 px-4" href="professor-profile.html">Read More</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="text-center">
-                                            <div class="profile-photo">
-                                                <img src="images/profile/small/pic6.jpg" width="100" class="img-fluid rounded-circle" alt="">
-                                            </div>
-                                            <h3 class="mt-4 mb-1">Isabella</h3>
-                                            <p class="text-muted">B.A, B.C.A</p>
-                                            <ul class="list-group mb-3 list-group-flush">
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Gender :</span><strong>Female</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Phone No. :</span><strong>+01 123 456 7890</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Email:</span><strong>info@example.com</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Address:</span><strong>#8901 Marmora Road</strong></li>
-                                            </ul>
-                                            <a class="btn btn-outline-primary btn-rounded mt-3 px-4" href="professor-profile.html">Read More</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="text-center">
-                                            <div class="profile-photo">
-                                                <img src="images/profile/small/pic7.jpg" width="100" class="img-fluid rounded-circle" alt="">
-                                            </div>
-                                            <h3 class="mt-4 mb-1">Sebastian</h3>
-                                            <p class="text-muted">M.COM., P.H.D.</p>
-                                            <ul class="list-group mb-3 list-group-flush">
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Gender :</span><strong>Male</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Phone No. :</span><strong>+01 123 456 7890</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Email:</span><strong>info@example.com</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Address:</span><strong>#8901 Marmora Road</strong></li>
-                                            </ul>
-                                            <a class="btn btn-outline-primary btn-rounded mt-3 px-4" href="professor-profile.html">Read More</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="text-center">
-                                            <div class="profile-photo">
-                                                <img src="images/profile/small/pic8.jpg" width="100" class="img-fluid rounded-circle" alt="">
-                                            </div>
-                                            <h3 class="mt-4 mb-1">Olivia</h3>
-                                            <p class="text-muted">B.COM., M.COM.</p>
-                                            <ul class="list-group mb-3 list-group-flush">
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Gender :</span><strong>Female</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Phone No. :</span><strong>+01 123 456 7890</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Email:</span><strong>info@example.com</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Address:</span><strong>#8901 Marmora Road</strong></li>
-                                            </ul>
-                                            <a class="btn btn-outline-primary btn-rounded mt-3 px-4" href="professor-profile.html">Read More</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="text-center">
-                                            <div class="profile-photo">
-                                                <img src="images/profile/small/pic9.jpg" width="100" class="img-fluid rounded-circle" alt="">
-                                            </div>
-                                            <h3 class="mt-4 mb-1">Emma</h3>
-                                            <p class="text-muted">B.A, B.C.A</p>
-                                            <ul class="list-group mb-3 list-group-flush">
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Gender :</span><strong>Female</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Phone No. :</span><strong>+01 123 456 7890</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Email:</span><strong>info@example.com</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Address:</span><strong>#8901 Marmora Road</strong></li>
-                                            </ul>
-                                            <a class="btn btn-outline-primary btn-rounded mt-3 px-4" href="professor-profile.html">Read More</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="text-center">
-                                            <div class="profile-photo">
-                                                <img src="images/profile/small/pic10.jpg" width="100" class="img-fluid rounded-circle" alt="">
-                                            </div>
-                                            <h3 class="mt-4 mb-1">Jackson</h3>
-                                            <p class="text-muted">M.COM., P.H.D.</p>
-                                            <ul class="list-group mb-3 list-group-flush">
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Gender :</span><strong>Male</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Phone No. :</span><strong>+01 123 456 7890</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Email:</span><strong>info@example.com</strong></li>
-                                                <li class="list-group-item px-0 d-flex justify-content-between">
-                                                    <span class="mb-0">Address:</span><strong>#8901 Marmora Road</strong></li>
-                                            </ul>
-                                            <a class="btn btn-outline-primary btn-rounded mt-3 px-4" href="professor-profile.html">Read More</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script>
+        $('.statusSelect').change(function() {
+            let url = $(this).data('url');
+            let status = $(this).val();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    status: status
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: response.msg,
+                            showConfirmButton: false,
+                            timer: 1000
+                        });
+                    } else {
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: response.msg,
+                            showConfirmButton: false,
+                            timer: 1000
+                        });
+                    }
+                }
+            });
+        });
+        let table = new DataTable('#dataTable', {
+            responsive: true
+        });
+    </script>
 @endsection

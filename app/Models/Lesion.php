@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Lesion extends Model
 {
     use HasFactory;
+    public function subject(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Subject::class, 'subject_id');
+    }
 }

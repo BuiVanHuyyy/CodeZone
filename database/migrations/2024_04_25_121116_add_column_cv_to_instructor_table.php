@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('comments', function (Blueprint $table) {
-            $table->unsignedBigInteger('parent_comment_id')->nullable();
+        Schema::table('instructors', function (Blueprint $table) {
+            $table->string('cv')->nullable()->default(null);
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('comments', function (Blueprint $table) {
-            $table->dropColumn('parent_comment_id');
+        Schema::table('instructor', function (Blueprint $table) {
+            $table->dropColumn('cv');
         });
     }
 };

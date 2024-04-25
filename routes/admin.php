@@ -15,5 +15,6 @@
             '/student' => StudentController::class,
             '/course-category' => CourseCategoryController::class,
             '/course' => CourseController::class,
-        ], ['as' => 'admin']);
+            ], ['as' => 'admin']);
     });
+    Route::post('/update-status/{id}/{status?}', [InstructorController::class, 'updateStatus'])->name('admin.update-status');

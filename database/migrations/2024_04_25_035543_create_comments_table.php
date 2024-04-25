@@ -14,7 +14,8 @@
             Schema::create('comments', function (Blueprint $table) {
                 $table->id();
                 $table->unsignedBigInteger('commentable_id');
-                $table->enum('commentable_type',  ['course', 'lesion', 'blog']);
+                $table->enum('commentable_type',  ['course', 'lesion', 'blog', 'comment']);
+                $table->unsignedBigInteger('parent_comment_id')->nullable()->default(null);
                 $table->foreignId('user_id')->constrained('users');
                 $table->text('content');
                 $table->softDeletes();

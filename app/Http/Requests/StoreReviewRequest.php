@@ -11,7 +11,7 @@ class StoreReviewRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,18 @@ class StoreReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'rating' => 'required|numeric|min:1|max:5',
+            'review_content' => 'required|string',
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'rating.required' => 'Vui lòng chọn số sao',
+            'rating.numeric' => 'Số sao phải là số',
+            'rating.min' => 'Số sao phải lớn hơn hoặc bằng 1',
+            'rating.max' => 'Số sao phải nhỏ hơn hoặc bằng 5',
+            'review_content.required' => 'Vui lòng nhập nội dung đánh giá',
         ];
     }
 }

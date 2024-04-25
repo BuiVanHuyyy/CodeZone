@@ -27,7 +27,7 @@
                                     <div class="rbt-card variation-01 rbt-hover">
                                         <div class="rbt-card-img">
                                             <a href="{{ route('client.course_detail', ['slug' => $course->slug]) }}">
-                                                <img src="{{ $course->thumbnail }}" alt="Card image"/>
+                                                <img src="{{ asset($course->thumbnail) }}" alt="Card image"/>
                                                 <div class="rbt-badge-3 bg-white">
                                                     <span>-40%</span>
                                                     <span>Off</span>

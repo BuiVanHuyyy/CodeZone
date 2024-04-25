@@ -5,8 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInstructorRequest;
 use App\Http\Requests\UpdateInstructorRequest;
+use App\Mail\NoticeInstructorHasApproved;
 use App\Models\Instructor;
 use App\Models\Review;
+use http\Client\Curl\User;
+use http\Env\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class InstructorController extends Controller
 {
@@ -15,7 +20,7 @@ class InstructorController extends Controller
      */
     public function index(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $instructors = Instructor::all();
+        $instructors = Instructor::with('user')->get();
         return view('admin.pages.instructor_list', ['instructors' => $instructors]);
     }
 
@@ -82,5 +87,27 @@ class InstructorController extends Controller
     public function destroy(Instructor $instructor)
     {
         //
+    }
+    public function updateStatus(int|string $id, \Illuminate\Http\Request $request ): \Illuminate\Http\JsonResponse
+    {
+        DB::beginTransaction();
+        try{
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $instructor = Instructor::find($id);
+            $user = $instructor->user;
+            $user->status = $request->status;
+            $tmp_password = substr(str_shuffle($characters), 0, 8);
+            $user->password = bcrypt($tmp_password);
+            $user->save();
+            $instructor->setAttribute('tmp_password', $tmp_password);
+            DB::commit();
+            Mail::to('buivanhuy101101@gmail.com')->send(new NoticeInstructorHasApproved($instructor));
+            return response()->json(['status' => 'success', 'msg' => 'Cập nhật trạng thái thành công']);
+        }
+        catch (\Exception $e){
+            DB::rollBack();
+            dd($e->getMessage());
+            return response()->json(['status' => 'error', 'msg' => 'Cập nhật trạng thái thất bại']);
+        }
     }
 }

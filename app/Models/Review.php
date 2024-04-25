@@ -11,7 +11,7 @@ class Review extends Model
     use HasFactory, softDeletes;
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function reviewable(): \Illuminate\Database\Eloquent\Relations\MorphTo
     {

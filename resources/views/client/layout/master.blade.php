@@ -82,7 +82,7 @@
     <script>
         window.onload = function() {
             let message = "{{ session('message') }}";
-            if (message) {
+            if (message !== "") {
                 Swal.fire({
                     position: "top-end",
                     icon: "success",

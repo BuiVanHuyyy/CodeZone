@@ -14,7 +14,7 @@ class StudentController extends Controller
      */
     public function index(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $students = Student::all();
+        $students = Student::with('user')->get();
         return view('admin.pages.student_list', compact('students'));
     }
 

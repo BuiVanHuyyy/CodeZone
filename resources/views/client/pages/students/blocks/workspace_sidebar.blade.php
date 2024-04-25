@@ -33,8 +33,8 @@
                                         <li>
                                             <a href="{{ route('course.index', [$course->slug, $subject->slug, $lesson->slug]) }}">
                                                 <div class="course-content-left">
-                                                    <i class="feather-play-circle"></i> <span
-                                                        class="text">{{ $lesson->title }}</span>
+                                                    {!! $lesson->video != null ? '<i class="feather-play-circle"></i>' : '<i class="feather-file-text"></i>' !!}
+                                                    <span class="text">{{ $lesson->title }}</span>
                                                 </div>
                                                 <div class="course-content-right">
                                                     <span class="min-lable">{{ $lesson->duration }}</span>

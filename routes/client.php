@@ -6,6 +6,9 @@
     use \App\Http\Controllers\Client\FacebookController;
     use \App\Http\Controllers\Client\CartController;
     use \App\Http\Controllers\Client\CourseController;
+    use \App\Http\Controllers\Client\CommentController;
+    use \App\Http\Controllers\Admin\ReviewController;
+    use \App\Http\Controllers\Client\InstructorController;
 
     Route::prefix('/')->group(function () {
         Route::get('/', [ViewController::class, 'index'])->name('client.home');
@@ -46,3 +49,11 @@
     Route::get('/google/callback', [GoogleLoginController::class, 'callback'])->name('client.google.callback');
     Route::get('/facebook/redirect', [FacebookController::class, 'redirect'])->name('client.facebook.redirect');
     Route::get('/facebook/callback', [FacebookController::class, 'callback'])->name('client.facebook.callback');
+
+    Route::post('/comment/{commentable_id?}/{type?}', [CommentController::class, 'store'])->name('client.comment');
+    Route::post('review/{reviewable_type}/{reviewable_id?}', [ReviewController::class, 'store'])->name('client.review.store');
+    Route::delete('review/{id}', [ReviewController::class, 'destroy'])->name('client.review.destroy');
+
+    Route::prefix('instructor')->group(function () {
+        Route::post('/register', [InstructorController::class, 'store'])->name('client.instructor.register');
+    });

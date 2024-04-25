@@ -5,7 +5,6 @@
         <!-- Start Enrole Course  -->
         <div class="rbt-dashboard-content bg-color-white rbt-shadow-box">
             <div class="content">
-
                 <div class="section-title">
                     <h4 class="rbt-title-style-3">Enrolled Courses</h4>
                 </div>

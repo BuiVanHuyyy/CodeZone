@@ -34,10 +34,10 @@ class DatabaseSeeder extends Seeder
 //        Lesion::factory(800)->create();
 //        Like::factory(1000)->create();
 //        Dislike::factory(700)->create();
-//        Comment::factory(900)->create();
+        Comment::factory(1000)->create();
 //        Review::factory(700)->create();
-        Order::factory(50)->create();
-        Enrollment::factory(100)->create();
+//        Order::factory(50)->create();
+//        Enrollment::factory(100)->create();
 
     }
 }

@@ -12,10 +12,6 @@
     @include('client.blocks.category')
     <!-- End Service Area -->
 
-    <!-- Start Course Area -->
-    @include('client.blocks.course')
-    <!-- End Course Area -->
-
     <!-- Start teacher list Area  -->
     @include('client.blocks.teacher')
     <!-- End teacher list Area  -->

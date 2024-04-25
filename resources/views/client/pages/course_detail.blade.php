@@ -5,6 +5,13 @@
         .rbt-header .rbt-header-wrapper.rbt-sticky {
             position: absolute;
         }
+        .star_count i.fa-star {
+            color: #ccc;
+            font-size: 30px;
+        }
+        .star_count i.fa-star.checked {
+            color: orange;
+        }
     </style>
 @endsection
 @section('content')
@@ -302,9 +309,7 @@
                         <div class="rbt-instructor rbt-shadow-box instructor-wrapper mt--30" id="itructor">
                             <div class="about-author border-0 pb--0 pt--0">
                                 <div class="section-title mb--30">
-                                    <h4 class="rbt-title-style-3">
-                                        Giảng viên
-                                    </h4>
+                                    <h4 class="rbt-title-style-3">Giảng viên</h4>
                                 </div>
                                 <div class="media align-items-center">
                                     <div class="thumbnail">
@@ -659,8 +664,11 @@
                                 <h4 class="rbt-title-style-3">Đánh giá</h4>
                             </div>
                             <div class="has-show-more-inner-content rbt-featured-review-list-wrapper">
-                                @foreach($course->reviews as $review)
-                                    <div class="rbt-course-review about-author">
+                                @php
+                                $isReviewed = false;
+                                @endphp
+                                @foreach($course->reviews->sortByDesc('created_at') as $review)
+                                    <div class="rbt-course-review about-author position-relative">
                                         <div class="media">
                                             <div class="thumbnail">
                                                 <a href="#">
@@ -730,12 +738,60 @@
                                                         </li>
                                                     </ul>
                                                 </div>
+                                                @if(Auth::check() && Auth::id() == $review->user->id)
+                                                    @php
+                                                        $isReviewed = true;
+                                                    @endphp
+                                                    <div class="position-absolute" style="top: 10px; right: 10px">
+                                                        <form id="deleteForm" action="{{ route('client.review.destroy', [$review->id]) }}" method="POST">
+                                                             @csrf
+                                                            @method('DELETE')
+                                                            <a id="deleteButton" href="" ><i class="fa-solid fa-trash"></i></a>
+                                                        </form>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
-                            <div class="rbt-show-more-btn">Xem thêm</div>
+                            <div class="rbt-show-more-btn mb-5">Xem thêm</div>
+                            @if(Auth::check())
+                                @if($isBought)
+                                    <div id="review-respond" class="review-respond">
+                                        <h4 class="title">Thêm đánh giá của bạn về khóa học</h4>
+                                        <form id="reviewForm" method="post" action="{{ route('client.review.store', ['course', $course->id]) }}">
+                                            @csrf
+                                            <div class="star_count">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    <i class="fa fa-star" data-rating="{{ $i }}"></i>
+                                                @endfor
+                                                <input type="hidden" value="" name="rating" id="rating">
+                                                @error('rating')
+                                                <p style="font-size: 12px" class="text-danger">{{ $message }}</p>
+                                                @enderror
+                                            </div>
+                                            <div class="row row--10">
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label for="message">Viết đánh giá của bạn</label>
+                                                        <textarea {{ $isReviewed ? 'disabled' : '' }} id="message" name="review_content"></textarea>
+                                                        @error('review_content')
+                                                        <p style="font-size: 12px" class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <button {{ $isReviewed ? 'disabled' : '' }} type="submit" class="rbt-btn btn-gradient icon-hover radius-round btn-md">
+                                                        <span class="btn-text">{{ $isReviewed ? 'Bạn đã đánh giá rồi' : 'Đăng đánh giá' }}</span>
+                                                        <span class="btn-icon"><i class="feather-arrow-right"></i></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                @endif
+                            @endif
                         </div>
                     </div>
                     <div class="related-course mt--60">
@@ -767,10 +823,8 @@
                                          data-sal="slide-up" data-sal-duration="800">
                                         <div class="rbt-card variation-01 rbt-hover">
                                             <div class="rbt-card-img">
-                                                <a href="">
-                                                    <img
-                                                        src="{{ $item->thumbnail }}"
-                                                        alt="Card image"/>
+                                                <a href="{{ route('client.course_detail', [$item->slug]) }}">{{ $item->title }}">
+                                                    <img src="{{ $item->thumbnail }}" alt="Card image"/>
                                                     <div class="rbt-badge-3 bg-white">
                                                         <span>-40%</span>
                                                         <span>Off</span>
@@ -797,7 +851,7 @@
                                                 </div>
 
                                                 <h4 class="rbt-card-title">
-                                                    <a href="">{{ $item->title }}</a>
+                                                    <a href="{{ route('client.course_detail', [$item->slug]) }}">{{ $item->title }}</a>
                                                 </h4>
 
                                                 <ul class="rbt-meta">
@@ -880,17 +934,6 @@
                                             </span>
                                     </div>
                                 </div>
-                                @php
-                                    $isBought = false;
-                                    if (Auth::check()) {
-                                        foreach (Auth::user()->students->courses as $item) {
-                                            if ($item->course_id == $course->id) {
-                                                $isBought = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                @endphp
                                 @if($isBought)
                                     <div class="add-to-card-button mt--15">
                                         <button class="rbt-btn btn-border icon-hover w-100 d-block text-center">
@@ -939,6 +982,7 @@
                                             <span class="rbt-feature-value rbt-badge-5">10</span>
                                         </li>
                                     </ul>
+
                                     <div class="rbt-show-more-btn">Xem thêm</div>
                                 </div>
                             </div>
@@ -1019,6 +1063,44 @@
                                 location.reload();
                             }
                         },
+                    });
+                });
+                $('.fa-star').on('click', function() {
+                    var rating = $(this).data('rating');
+                    $('#rating').val(rating);
+
+                    // Highlight the stars
+                    $('.fa-star').each(function() {
+                        if ($(this).data('rating') <= rating) {
+                            $(this).addClass('checked');
+                        } else {
+                            $(this).removeClass('checked');
+                        }
+                    });
+                    $('input[name="rating"]').val(rating);
+                });
+                let msg = "{{ session('msg') }}";
+                let i = "{{ session('i') }}";
+                if (msg) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: i,
+                        title: msg,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                }
+                $('#deleteButton').on('click', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Bạn có chắc chắn muốn xóa không?',
+                        showDenyButton: true,
+                        confirmButtonText: 'Xóa',
+                        denyButtonText: 'Hủy',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#deleteForm').submit();
+                        }
                     });
                 });
             });
