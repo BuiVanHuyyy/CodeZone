@@ -32,7 +32,7 @@
                             <div class="text-center p-3 overlay-box"
                                  style="background-image: url({{ asset('admin_assets/images/big/img1.jpg') }});">
                                 <div class="profile-photo">
-                                    <img src="{{ $instructor->avatar }}" width="100"
+                                    <img src="{{ $instructor->avatar ?? asset('client_assets/images/avatar/default_avatar.png') }}" width="100"
                                          class="img-fluid rounded-circle" alt="">
                                 </div>
                                 <h3 class="mt-3 mb-1 text-white">{{ $instructor->name }}</h3>
@@ -235,11 +235,11 @@
                                                                     <div class="bottom">
                                                                         <button class="like-btn">
                                                                             <i class="fa-regular fa-thumbs-up"></i>
-                                                                            123
+                                                                            {{ $review->like_count }}
                                                                         </button>
                                                                         <button class="dislike-btn">
                                                                             <i class="fa-regular fa-thumbs-down"></i>
-                                                                            12
+                                                                            {{ $review->dislike_count }}
                                                                         </button>
                                                                     </div>
                                                                 </div>

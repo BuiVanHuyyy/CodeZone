@@ -15,6 +15,12 @@ class HandleViewController extends Controller
         $totalStudent = Student::get()->count();
         $totalInstructor = Instructor::get()->count();
         $totalCourse = Course::get()->count();
-        return view('admin.pages.index',  ['totalStudent' => $totalStudent, 'totalInstructor' => $totalInstructor, 'totalCourse' => $totalCourse]);
+        $totalMoney = 0;
+        foreach (Course::get() as $course) {
+            foreach ($course->enrollments as $enrollment) {
+                $totalMoney += $enrollment->price;
+            }
+        }
+        return view('admin.pages.index',  compact('totalStudent', 'totalInstructor', 'totalCourse', 'totalMoney'));
     }
 }

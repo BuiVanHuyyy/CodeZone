@@ -25,19 +25,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-//        User::factory(30)->create();
-//        Student::factory(500)->create();
-//        Instructor::factory(30)->create();
+    //    User::factory(500)->create();
+    //    Student::factory(500)->create();
+    //    Instructor::factory(30)->create();
 //        CourseCategory::factory(5)->create();
-//        Course::factory(8)->create();
-//        Subject::factory(100)->create();
-//        Lesion::factory(800)->create();
-//        Like::factory(1000)->create();
-//        Dislike::factory(700)->create();
-        Comment::factory(1000)->create();
-//        Review::factory(700)->create();
-//        Order::factory(50)->create();
-//        Enrollment::factory(100)->create();
+    //    Course::factory(5)->create();
+    //    Subject::factory(50)->create();
+    //    Lesion::factory(200)->create();
+//       Like::factory(1000)->create();
+//       Dislike::factory(700)->create();
+//        Comment::factory(500)->create();
+    //    Review::factory(100)->create();
+    //    Order::factory(500)->create();
+    //    Enrollment::factory(1000)->create();
 
     }
 }

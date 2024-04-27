@@ -24,7 +24,7 @@ class SubjectFactory extends Factory
             'title' => $title,
             'slug' => $slug,
             'order' => $this->faker->numberBetween(1, 10),
-            'course_id' => $this->faker->randomElement(Course::pluck('id')),
+            'course_id' => $this->faker->numberBetween(18, 30),
         ];
     }
 }

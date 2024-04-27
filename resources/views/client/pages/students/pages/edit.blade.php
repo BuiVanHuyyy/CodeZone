@@ -275,11 +275,14 @@
                 },
                 success: function(data) {
                     if (data.path) {
-                        console.log(data.path);
                         $(".rbt-avatars img").attr("src", data.path);
                         $('#submit-avatar').css('display', 'block');
-                        $('#submit-avatar').on("click",function() {
+                        $('#changeAvatarBtn').on("click",function() {
                             $('#uploadForm').submit();
+                        });
+                        $('#cancelAvatarBtn').on("click",function() {
+                            $(".rbt-avatars img").attr("src", "{{ Auth::user()->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}");
+                            $('#submit-avatar').css('display', 'none');
                         });
                     } else {
                         console.error('No image uploaded.');

@@ -157,19 +157,26 @@
 
         public function showInstructorIndex(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
         {
-            return view('client.pages.students.pages.index');
+            return view('client.pages.instructors.pages.index');
         }
 
         public function showInstructorProfile(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
         {
-            return view('client.pages.students.pages.profile');
+            return view('client.pages.instructors.pages.profile');
         }
 
         public function showInstructorEdit(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
         {
-            return view('client.pages.students.pages.edit');
+            return view('client.pages.instructors.pages.edit');
         }
-
+        public function showInstructorCourses(): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+        {
+            return view('client.pages.instructors.pages.my_course');
+        }
+        public function showInstructorReviews(): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+        {
+            return view('client.pages.instructors.pages.my_review');
+        }
         public function showEnrolledCourses(): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
         {
             $enrolledCourses = Auth::user()->students->courses;
@@ -188,5 +195,9 @@
                 $course->setAttribute('rating', number_format($rating, 1));
             }
             return view('client.pages.students.pages.enrolled_courses', compact('enrolledCourses'));
+        }
+        public function showCreateCourse(): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+        {
+            return view('client.pages.instructors.pages.create_course');
         }
     }

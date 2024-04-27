@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\SendMailNoticeToInstructorEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInstructorRequest;
 use App\Http\Requests\UpdateInstructorRequest;
-use App\Mail\NoticeInstructorHasApproved;
+use App\Mail\NoticeInstructorAboutStatusAccount;
+use App\Models\Dislike;
 use App\Models\Instructor;
+use App\Models\Like;
 use App\Models\Review;
-use http\Client\Curl\User;
-use http\Env\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 
 class InstructorController extends Controller
 {
@@ -46,6 +46,12 @@ class InstructorController extends Controller
     public function show(Instructor $instructor): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
     {
         $reviews = Review::where('reviewable_id', $instructor->id)->where('reviewable_type', 'instructor')->get();
+        foreach ($reviews as $review) {
+            $like_count = Like::where('likeable_type', 'review')->where('likeable_id', $review->id)->count();
+            $dislike_count = Dislike::where('dislikeable_type', 'review')->where('dislikeable_id', $review->id)->count();
+            $review->setAttribute('like_count', $like_count);
+            $review->setAttribute('dislike_count', $dislike_count);
+        }
         $totalStars = 0;
         foreach($reviews as $review) {
             $totalStars += $review->rating;
@@ -101,12 +107,11 @@ class InstructorController extends Controller
             $user->save();
             $instructor->setAttribute('tmp_password', $tmp_password);
             DB::commit();
-            Mail::to('buivanhuy101101@gmail.com')->send(new NoticeInstructorHasApproved($instructor));
+            event( new SendMailNoticeToInstructorEvent($instructor));
             return response()->json(['status' => 'success', 'msg' => 'Cập nhật trạng thái thành công']);
         }
         catch (\Exception $e){
             DB::rollBack();
-            dd($e->getMessage());
             return response()->json(['status' => 'error', 'msg' => 'Cập nhật trạng thái thất bại']);
         }
     }

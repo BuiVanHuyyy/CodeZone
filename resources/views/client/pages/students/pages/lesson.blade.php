@@ -121,7 +121,7 @@
                                                         <div class="comment-body">
                                                             <div class="single-comment">
                                                                 <div class="comment-img">
-                                                                    <img src="{{ optional($comment->author->students)->avatar }}" alt="Author Images">
+                                                                    <img src="{{ $comment->author->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images">
                                                                 </div>
                                                                 <div class="comment-inner">
                                                                     <h6 class="commenter">
@@ -188,12 +188,12 @@
                                                                         <div class="comment-body">
                                                                             <div class="single-comment">
                                                                                 <div class="comment-img">
-                                                                                    <img src="{{ optional($reply->author->instructors)->avatar ?? optional($reply->author->students)->avatar }}" alt="Author Images">
+                                                                                    <img src="{{ $reply->author->instructors->avatar ?? $reply->author->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images">
                                                                                 </div>
                                                                                 <div class="comment-inner">
                                                                                     <h6 class="commenter">
                                                                                         <a class="author_name"
-                                                                                           href="#">{{ optional($reply->author->instructors)->name }}</a>
+                                                                                           href="#">{{ $reply->author->instructors->name ?? $reply->author->students->name }}</a>
                                                                                     </h6>
                                                                                     <div class="comment-meta">
                                                                                         <div

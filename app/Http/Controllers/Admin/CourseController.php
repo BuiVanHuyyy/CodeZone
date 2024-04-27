@@ -2,22 +2,29 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\SendMailNoticeCourseEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Dislike;
 use App\Models\Like;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function index(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $courses = Course::all();
-        return view('admin.pages.courses_list', compact('courses'));
+        $status = $request->status ?? null;
+        if (!is_null($status)) {
+            $courses = Course::where('status', $status)->get();
+        } else {
+            $courses = Course::all();
+        }
+        return view('admin.pages.courses_list', compact('courses', 'status'));
     }
 
     /**
@@ -85,5 +92,21 @@ class CourseController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+    public function updateStatus(int|string $id, Request $request): \Illuminate\Http\JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            $course = Course::find($id);
+            $course->status = $request->status;
+            $course->save();
+            DB::commit();
+            event(new SendMailNoticeCourseEvent($course));
+            return response()->json(['status' => 'success', 'msg' => 'Cập nhật trạng thái thành công']);
+        }
+        catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error', 'msg' => 'Cập nhật trạng thái thất bại']);
+        }
     }
 }

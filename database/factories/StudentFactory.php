@@ -24,15 +24,15 @@ class StudentFactory extends Factory
             'name' => $name,
             'slug' => $slug,
             'nickname' => $this->faker->userName,
-            'avatar' => $this->faker->imageUrl('500', '500', 'people'),
+            'avatar' => $this->faker->imageUrl('300', '300', 'people'),
             'phone_number' => $this->faker->phoneNumber(),
             'gender' => $this->faker->boolean(),
             'dob' => $this->faker->date(),
             'bio' => $this->faker->text,
-            'user_id' => $this->faker->unique()->numberBetween(1, 500),
-            'facebook' => $this->faker->url || null,
-            'github' => $this->faker->url || null,
-            'linkedin' => $this->faker->url || null,
+            'user_id' => $this->faker->unique()->numberBetween(30, 530),
+            'facebook' => $this->faker->url,
+            'github' => $this->faker->url,
+            'linkedin' => $this->faker->url,
         ];
     }
 }

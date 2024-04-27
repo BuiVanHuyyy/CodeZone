@@ -1,8 +1,6 @@
 <div class="nav-header">
     <a href="" class="brand-logo">
-        <img class="logo-abbr" src="{{ asset('admin_assets/images/logo-white.png') }}" alt="">
-        <img class="logo-compact" src="{{ asset('admin_assets/images/logo-text-white.png') }}" alt="">
-        <img class="brand-title" src="{{ asset('admin_assets/images/logo-text-white.png') }}" alt="">
+        <img style="width: 100%" src="{{ asset('client_assets/images/logo/logo.png') }}" alt="CodeZone">
     </a>
 
     <div class="nav-control">

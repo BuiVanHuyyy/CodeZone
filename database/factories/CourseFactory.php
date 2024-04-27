@@ -25,10 +25,10 @@ class CourseFactory extends Factory
             'title' => $title,
             'slug' => $slug,
             'price' => $this->faker->randomFloat(2, 100000, 10000000),
-            'thumbnail' => $this->faker->imageUrl('500', 500),
+            'thumbnail' => $this->faker->imageUrl('710', '488'),
 //            'status' => $this->faker->randomElement(['pending', 'approved', 'rejected']),
             'status' => $this->faker->randomElement(['rejected']),
-            'instructor_id' => $this->faker->randomElement(Instructor::pluck('id')),
+            'instructor_id' => $this->faker->numberBetween(1, 10),
             'course_category_id' => $this->faker->randomElement(CourseCategory::pluck('id')),
             'description' => $this->faker->text,
         ];

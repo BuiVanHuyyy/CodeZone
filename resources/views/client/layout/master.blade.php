@@ -55,6 +55,7 @@
 <script src="{{ asset('client_assets/js/vendor/bootstrap.min.js') }}"></script>
 <!-- sal.js -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
 <script src="{{ asset('client_assets/js/vendor/sal.js') }}"></script>
 <script src="{{ asset('client_assets/js/vendor/swiper.js') }}"></script>
 <script src="{{ asset('client_assets/js/vendor/magnify.min.js') }}"></script>

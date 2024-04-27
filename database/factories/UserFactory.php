@@ -23,9 +23,10 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
-            'status' => fake()->randomElement(['active', 'suspended', 'pending']),
+            // 'status' => fake()->randomElement(['active', 'suspended', 'pending']),
+            'status' => fake()->randomElement(['active']),
 //            'role' => fake()->randomElement(['instructor', 'student'])
-            'role' => fake()->randomElement(['instructor'])
+            'role' => fake()->randomElement(['student'])
 
         ];
     }

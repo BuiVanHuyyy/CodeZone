@@ -31,7 +31,7 @@
                             <div class="text-center p-3 overlay-box"
                                  style="background-image: url({{ asset('admin_assets/images/big/img1.jpg') }});">
                                 <div class="profile-photo">
-                                    <img src="{{ asset('admin_assets/images/profile/profile.png')  }}" width="100"
+                                    <img src="{{ $student->avatar ?? asset('client_assets/images/avatar/default_avatar.png') }}" width="100"
                                          class="img-fluid rounded-circle" alt="">
                                 </div>
                                 <h3 class="mt-3 mb-1 text-white">{{ $student->name }}</h3>

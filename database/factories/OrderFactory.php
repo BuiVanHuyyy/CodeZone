@@ -17,7 +17,7 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'student_id' => $this->faker->numberBetween(1, 500),
+            'student_id' => $this->faker->numberBetween(30, 530),
             'total_price' => $this->faker->numberBetween(100000,  10000000),
             'status' => $this->faker->randomElement(['paid']),
         ];

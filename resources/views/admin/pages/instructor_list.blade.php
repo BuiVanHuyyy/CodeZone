@@ -9,7 +9,6 @@
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Danh sách giảng viên  </h4>
-                                <a href="" class="btn btn-primary">+ Tạo mới</a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">

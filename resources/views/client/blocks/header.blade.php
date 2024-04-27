@@ -42,8 +42,7 @@
                     <div class="rbt-header-content">
                         <div class="logo">
                             <a href="{{ route('client.home') }}">
-                                <img src="{{ asset('client_assets/images/logo/logo.png') }}"
-                                     alt="CodeZone Logo Images"/>
+                                <img src="{{ asset('client_assets/images/logo/logo.png') }}" alt="CodeZone Logo Images"/>
                             </a>
                         </div>
                     </div>
@@ -69,19 +68,21 @@
                         <div class="header-info">
                             <ul class="quick-access">
                                 @if(Auth::check())
-                                    @php
-                                        $totalItem = session('cart') ? count(session('cart')) : 0;
-                                        $totalMoney = 0;
-                                        foreach (session('cart', []) as $item) {
-                                            $totalMoney += $item['price'];
-                                        }
-                                    @endphp
-                                    <li class="access-icon rbt-mini-cart">
-                                        <a class="rbt-cart-sidenav-activation rbt-round-btn" href="#">
-                                            <i class="feather-shopping-cart"></i>
-                                            <span class="rbt-cart-count">{{ $totalItem }}</span>
-                                        </a>
-                                    </li>
+                                    @if(Auth::user()->role == 'student')
+                                        @php
+                                            $totalItem = session('cart') ? count(session('cart')) : 0;
+                                            $totalMoney = 0;
+                                            foreach (session('cart', []) as $item) {
+                                                $totalMoney += $item['price'];
+                                            }
+                                        @endphp
+                                        <li class="access-icon rbt-mini-cart">
+                                            <a class="rbt-cart-sidenav-activation rbt-round-btn" href="#">
+                                                <i class="feather-shopping-cart"></i>
+                                                <span class="rbt-cart-count">{{ $totalItem }}</span>
+                                            </a>
+                                        </li>
+                                    @endif
                                     <li class="account-access rbt-user-wrapper right-align-dropdown d-none d-xl-block">
                                         <a href="#">
                                             <i class="feather-user"></i>{{ Auth::user()->name }}
@@ -91,13 +92,12 @@
                                                 <div class="rbt-admin-profile">
                                                     <div class="admin-thumbnail">
                                                         <img
-                                                            src="{{ Auth::user()->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
-                                                            alt="User Images"/>
+                                                            src="{{ Auth::user()->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="User Images"/>
                                                     </div>
                                                     <div class="admin-info">
                                                         <span class="name">{{ Auth::user()->name }}</span>
                                                         <a class="rbt-btn-link color-primary"
-                                                           href="{{ route('student.profile') }}">Trang cá nhân</a>
+                                                           href="{{ Auth::user()->role == 'student' ? route('student.profile') : route('instructor.profile') }}">Trang cá nhân</a>
                                                     </div>
                                                 </div>
                                                 <ul class="user-list-wrapper">
@@ -413,7 +413,7 @@
         </div>
     </div>
 </div>
-@if(Auth::check())
+@if(Auth::check() && Auth::user()->role == 'student')
 <div class="rbt-cart-side-menu">
     <div class="inner-wrapper">
         <div class="inner-top">

@@ -9,7 +9,6 @@
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Danh sách học viên  </h4>
-                                <a href="" class="btn btn-primary">+ Tạo mới</a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -32,9 +31,9 @@
                                             <tr>
                                                 <td><a href="{{ route('admin.student.show', ['student' => $student]) }}">#{{ $student->user->id }}</a> </td>
                                                 <td><a href="{{ route('admin.student.show', ['student' => $student]) }}">{{ $student->name }}</a></td>
-                                                <td><img class="rounded-circle" width="35" src="{{ asset('admin_assets/images/profile/small/pic1.jpg') }}" alt=""></td>
+                                                <td><img class="rounded-circle" width="35" src="{{ $student->avatar ?? asset('client_assets/images/avatar/default_avatar.png') }}" alt=""></td>
                                                 <td>{{ $student->gender === 0 ? 'Nữ' : 'Nam' }}</td>
-                                                <td>23</td>
+                                                <td>{{ number_format($student->courses->count()) }}</td>
                                                 <td>{{ $student->phone_number }}</td>
                                                 <td>{{ $student->user->email }}</td>
                                                 <td>

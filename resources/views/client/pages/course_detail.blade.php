@@ -98,13 +98,10 @@
                 <div class="col-lg-8">
                     <div class="course-details-content">
                         <div class="rbt-course-feature-box rbt-shadow-box thumbnail">
-                            <img class="w-100" src="{{ asset('client_assets/images/course/course-01.jpg') }}"
-                                 alt="Card image"/>
+                            <img class="w-100" src="{{ $course->thumbnail }}" alt="Course Thumbnail"/>
                         </div>
 
-                        <div
-                            class="rbt-inner-onepage-navigation sticky-top mt--30"
-                        >
+                        <div class="rbt-inner-onepage-navigation sticky-top mt--30">
                             <nav class="mainmenu-nav onepagenav">
                                 <ul class="mainmenu">
                                     <li class="current">
@@ -241,10 +238,7 @@
                         <!-- End Course Feature Box  -->
 
                         <!-- Start Course Content  -->
-                        <div
-                            class="course-content rbt-shadow-box coursecontent-wrapper mt--30"
-                            id="coursecontent"
-                        >
+                        <div class="course-content rbt-shadow-box coursecontent-wrapper mt--30" id="coursecontent">
                             <div class="rbt-course-feature-inner">
                                 <div class="section-title">
                                     <h4 class="rbt-title-style-3">
@@ -275,9 +269,8 @@
                                                                 <li>
                                                                     <a href="">
                                                                         <div class="course-content-left">
-                                                                            <i class="feather-play-circle"></i>
-                                                                            <span
-                                                                                class="text">{{ $lesson->title }}</span>
+                                                                            {!! $lesson->video ? '<i class="feather-play-circle"></i>' : '<i class="fa-regular fa-file"></i>' !!}
+                                                                            <span class="text">{{ $lesson->title }}</span>
                                                                         </div>
                                                                         <div class="course-content-right">
                                                                             <span class="min-lable">30m in</span>
@@ -287,8 +280,8 @@
                                                                                 </span>
                                                                             @else
                                                                                 <span class="course-lock">
-                                                                                <i class="feather-lock"></i>
-                                                                            </span>
+                                                                                    <i class="feather-lock"></i>
+                                                                                </span>
                                                                             @endif
                                                                         </div>
                                                                     </a>
@@ -672,7 +665,7 @@
                                         <div class="media">
                                             <div class="thumbnail">
                                                 <a href="#">
-                                                    <img src="{{ $review->user->students->avatar }}"
+                                                    <img src="{{ $review->user->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
                                                          alt="Author Images"/>
                                                 </a>
                                             </div>
@@ -819,11 +812,10 @@
                             @endphp
                             @if($course->author->courses->count() >= 1)
                                 @foreach($course->author->courses as $item)
-                                    <div class="col-lg-6 col-md-6 col-sm-6 col-12" data-sal-delay="150"
-                                         data-sal="slide-up" data-sal-duration="800">
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-12" data-sal-delay="150" data-sal="slide-up" data-sal-duration="800">
                                         <div class="rbt-card variation-01 rbt-hover">
                                             <div class="rbt-card-img">
-                                                <a href="{{ route('client.course_detail', [$item->slug]) }}">{{ $item->title }}">
+                                                <a href="{{ route('client.course_detail', [$item->slug]) }}">
                                                     <img src="{{ $item->thumbnail }}" alt="Card image"/>
                                                     <div class="rbt-badge-3 bg-white">
                                                         <span>-40%</span>
