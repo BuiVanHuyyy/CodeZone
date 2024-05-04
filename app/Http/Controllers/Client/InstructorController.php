@@ -5,15 +5,17 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInstructorRequest;
 use App\Http\Requests\UpdateInstructorRequest;
+use App\Http\Requests\UpdatePasswordRequest;
 use App\Models\Instructor;
-use App\Models\Student;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use phpseclib3\Crypt\Hash;
+use \Illuminate\Support\Facades\Hash;
 
 class InstructorController extends Controller
 {
@@ -52,34 +54,34 @@ class InstructorController extends Controller
         $file->move(public_path('client_assets/cv_instructor'), $fileName);
         return '/client_assets/cv_instructor/' . $fileName;
     }
-    public function update(UpdateInstructorRequest $request, Instructor $instructor)
+    public function update(Request $request, Instructor $instructor): \Illuminate\Http\RedirectResponse
     {
         DB::beginTransaction();
         try {
             $user = Auth::user();
-            if ($request->name != Auth::user()->$instructors->name) {
+            if ($request->name != Auth::user()->instructors->name) {
                 $instructor->name = $request->name;
                 $user->name = $request->name;
             }
-            if (!is_null($request->nickname) || $request->nickname != Auth::user()->$instructors->nickname) {
+            if (!is_null($request->nickname) || $request->nickname != Auth::user()->instructors->nickname) {
                 $instructor->nickname = $request->nickname;
             }
-            if (!is_null( $request->phone_number) || $request->phone_number != Auth::user()->$instructors->phone_number) {
+            if (!is_null( $request->phone_number) || $request->phone_number != Auth::user()->instructors->phone_number) {
                 $instructor->phone_number = $request->phone_number;
             }
-            if (!is_null($request->dob) || $request->dob != Auth::user()->$instructors->dob) {
+            if (!is_null($request->dob) || $request->dob != Auth::user()->instructors->dob) {
                 $instructor->dob = $request->dob;
             }
-            if (!is_null($request->bio) || $request->bio != Auth::user()->$instructors->bio) {
+            if (!is_null($request->bio) || $request->bio != Auth::user()->instructors->bio) {
                 $instructor->bio = $request->bio;
             }
-            if (!is_null($request->facebook) || $request->facebook != Auth::user()->$instructors->facebook) {
+            if (!is_null($request->facebook) || $request->facebook != Auth::user()->instructors->facebook) {
                 $instructor->facebook = $request->facebook;
             }
-            if (!is_null($request->linkedin) || $request->linkedin != Auth::user()->$instructors->linkedin) {
+            if (!is_null($request->linkedin) || $request->linkedin != Auth::user()->instructors->linkedin) {
                 $instructor->linkedin = $request->linkedin;
             }
-            if (!is_null($request->github) || $request->github != Auth::user()->$instructors->github) {
+            if (!is_null($request->github) || $request->github != Auth::user()->instructors->github) {
                 $instructor->github = $request->github;
             }
             $instructor->save();
@@ -122,16 +124,20 @@ class InstructorController extends Controller
             return redirect()->back();
         }
     }
-    public function uploadTmpAvatar(Request $request)
+    public function resetPassword(UpdatePasswordRequest $request): \Illuminate\Http\RedirectResponse
     {
-        if ($request->hasFile('avatar')) {
-            $file = $request->file('avatar');
-            $fileName = $this->saveImageToSystem($file);
-            $url = '/client_assets/images/tmp/' . $fileName;
-            session()->put('tmp_avatar', $url);
-            $file->move(public_path('client_assets/images/tmp/'), $fileName);
-            return response()->json(['path'  => $url]);
+        $user = Auth::user();
+        if (!Hash::check($request->old_password, $user->password)) {
+            session()->flash('msg', 'Mật khẩu cũ không chính xác!');
+            session()->flash('i', 'error');
+            return back();
         }
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        session()->flash('msg', 'Đổi mật khẩu thành công!');
+        session()->flash('i', 'success');
+        return back();
     }
     private function saveImageToSystem(UploadedFile $file): string
     {

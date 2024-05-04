@@ -5,7 +5,8 @@
         HandleViewController,
         InstructorController,
         CourseController,
-        StudentController
+        StudentController,
+        BlogController
     };
 
     Route::prefix('/admin')->middleware('check.user.is.admin')->group(function(){
@@ -15,10 +16,12 @@
             '/student' => StudentController::class,
             '/course-category' => CourseCategoryController::class,
             '/course' => CourseController::class,
+            '/blog' => BlogController::class
         ], ['as' => 'admin']);
     });
     Route::middleware('check.user.is.admin')->group(function(){
         Route::post('/update-course-status/{id}/{status?}', [CourseController::class, 'updateStatus'])->name('admin.update-course-status');
+        Route::post('/update-blog-status/{id}/{status?}', [BlogController::class, 'updateStatus'])->name('admin.update-blog-status');
         Route::post('/update-status/{id}/{status?}', [InstructorController::class, 'updateStatus'])->name('admin.update-status');
     });
 

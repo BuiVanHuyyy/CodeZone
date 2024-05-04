@@ -18,10 +18,10 @@ class LikeFactory extends Factory
     public function definition(): array
     {
         return [
-            'likeable_id' => $this->faker->numberBetween(1, 1000),
+            'likeable_id' => $this->faker->numberBetween(1, 5),
 //            'likeable_type' => $this->faker->randomElement(['course', 'subject', 'lesion', 'instructor', 'review', 'comment', 'blog']),
-            'likeable_type' => $this->faker->randomElement(['review']),
-            'user_id' => $this->faker->numberBetween(31, 530),
+            'likeable_type' => $this->faker->randomElement(['blog']),
+            'user_id' => $this->faker->unique()->numberBetween(31, 530),
         ];
     }
 }

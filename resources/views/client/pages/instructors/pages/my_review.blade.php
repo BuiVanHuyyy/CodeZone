@@ -79,14 +79,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(Auth::user()->instructors->courses->where('status', 'active')->count() === 0)
+                            @if(Auth::user()->instructors->courses->where('status', 'approved')->count() === 0)
                                 <tr>
                                     <td colspan="3" class="text-center">Không có đánh giá nào</td>
                                 </tr>
                                 @else
-                                @foreach(Auth::user()->instructors->courses as $course)
+                                @foreach(Auth::user()->instructors->courses->where('status', 'approved') as $course)
                                     <tr>
-                                        <th>Khóa học: {{ $course->title }}</th>
+                                        <th>Khóa học: <a href="{{ route('client.course_detail', $course->slug) }}">{{ $course->title }}</a></th>
                                         <td>
                                             <div class="rbt-review">
                                                 @php

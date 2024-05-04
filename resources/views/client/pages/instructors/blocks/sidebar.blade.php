@@ -38,12 +38,6 @@
                 </nav>
 
                 <div class="section-title mt--40 mb--20">
-                    <h6 class="rbt-title-style-2">
-                        Instructor
-                    </h6>
-                </div>
-
-                <div class="section-title mt--40 mb--20">
                     <h6 class="rbt-title-style-2">User</h6>
                 </div>
 
@@ -52,7 +46,7 @@
                         <li>
                             <a href="{{ route('instructor.edit') }}">
                                 <i class="feather-settings"></i>
-                                <span>Cài đặt</span>
+                                <span>Chỉnh sửa thông tin</span>
                             </a>
                         </li>
                         <li>

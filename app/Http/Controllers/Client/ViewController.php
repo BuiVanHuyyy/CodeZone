@@ -3,16 +3,21 @@
     namespace App\Http\Controllers\Client;
 
     use App\Http\Controllers\Controller;
+    use App\Models\Blog;
     use App\Models\Course;
     use App\Models\CourseCategory;
     use App\Models\Dislike;
+    use App\Models\Instructor;
     use App\Models\Like;
     use App\Models\Review;
+    use Illuminate\Contracts\View\Factory;
+    use Illuminate\Contracts\View\View;
+    use Illuminate\Foundation\Application;
     use Illuminate\Support\Facades\Auth;
 
     class ViewController extends Controller
     {
-        public function index(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function index(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             $courses = Course::all();
             $categories = CourseCategory::all();
@@ -38,12 +43,12 @@
             return view('client.pages.index', compact('popularCourses', 'categories', 'courses'));
         }
 
-        public function about(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function about(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.about');
         }
 
-        public function showCourses(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function showCourses(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             $courses = Course::where('status', 'approved')->get();
             foreach ($courses as $course) {
@@ -64,17 +69,16 @@
             return view('client.pages.all_courses', compact('courses', 'categories'));
         }
 
-        public function showCourseDetail(string $slug): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function showCourseDetail(string $slug): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             $course = Course::where('slug', $slug)->first();
             $reviews = Review::where('reviewable_id', $course->id)->where('reviewable_type', 'course')->get();
-            $reviews->map(function ($review) {
+            foreach ($reviews as $review) {
                 $likeAmount = Like::where('likeable_type', 'review')->where('likeable_id', $review->id)->count();
                 $dislikeAmount = Dislike::where('dislikeable_type', 'review')->where('dislikeable_id', $review->id)->count();
                 $review->setAttribute('like_amount', $likeAmount);
                 $review->setAttribute('dislike_amount', $dislikeAmount);
-                return $review;
-            });
+            }
             $totalStars = 0;
             foreach ($reviews as $review) {
                 $totalStars += $review->rating;
@@ -104,7 +108,7 @@
             $course->setAttribute('rating', $rating);
             $course->setAttribute('reviews', $reviews);
             $isBought = false;
-            if (Auth::check()) {
+            if (Auth::check() && Auth::user()->students) {
                 foreach (Auth::user()->students->courses as $item) {
                     if ($item->course_id == $course->id) {
                         $isBought = true;
@@ -115,71 +119,70 @@
             return view('client.pages.course_detail', compact('course', 'isBought'));
         }
 
-        public function showInstructors(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function showInstructors(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.all_instructors');
         }
 
-        public function showInstructorDetail(string $slug): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function showInstructorDetail(string $slug): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.instructor_detail');
         }
 
-        public function registerInstructor(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function registerInstructor(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.become_instructor');
         }
 
-        public function allBlogs(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function allBlogs(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
-            return view('client.pages.all_blogs');
+            $blogs = Blog::where('status', 'approved')->get();
+            return view('client.pages.all_blogs', compact('blogs'));
         }
 
-        public function showBlogDetail(string $slug): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function showBlogDetail(string $slug): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
-            return view('client.pages.blog_detail');
+            $blog = Blog::where('slug', $slug)->first();
+            $like_amount = Like::where('likeable_type', 'blog')->where('likeable_id', $blog->id)->count();
+            $dislike_amount = Dislike::where('dislikeable_type', 'blog')->where('dislikeable_id', $blog->id)->count();
+            return view('client.pages.blog_detail', compact('blog', 'like_amount', 'dislike_amount'));
         }
 
-        public function showStudentIndex(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function showStudentIndex(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.students.pages.index');
         }
-
-        public function showStudentProfile(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function showStudentProfile(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.students.pages.profile');
         }
-
-        public function showStudentEdit(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function showStudentEdit(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.students.pages.edit');
         }
-
-        public function showInstructorIndex(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function showInstructorIndex(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.instructors.pages.index');
         }
-
-        public function showInstructorProfile(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function showInstructorProfile(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.instructors.pages.profile');
         }
-
-        public function showInstructorEdit(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+        public function showInstructorEdit(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.instructors.pages.edit');
         }
-        public function showInstructorCourses(): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+        public function showInstructorCourses(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.instructors.pages.my_course');
         }
-        public function showInstructorReviews(): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+        public function showInstructorReviews(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.instructors.pages.my_review');
         }
-        public function showEnrolledCourses(): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+        public function showEnrolledCourses(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
         {
-            $enrolledCourses = Auth::user()->students->courses;
+            $enrolledCourses = Auth::user()->students->courses->where('status', 'paid');
             foreach ($enrolledCourses as $course) {
                 $reviews = Review::where('reviewable_id', $course->course_id)->where('reviewable_type', 'course')->get();
                 $totalStars = 0;
@@ -196,8 +199,35 @@
             }
             return view('client.pages.students.pages.enrolled_courses', compact('enrolledCourses'));
         }
-        public function showCreateCourse(): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+        public function showCreateCourse(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.instructors.pages.create_course');
+        }
+        public function notFound(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
+        {
+            return view('client.pages.404');
+        }
+        public function showProfile(Instructor $instructor): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
+        {
+            $reviews = Review::where('reviewable_id', $instructor->id)->where('reviewable_type', 'instructor')->get();
+            foreach ($reviews as $review) {
+                $review->setAttribute('like_amount', Like::where('likeable_type', 'review')->where('likeable_id', $review->id)->count());
+                $review->setAttribute('dislike_amount', Dislike::where('dislikeable_type', 'review')->where('dislikeable_id', $review->id)->count());
+            }
+            $totalStars = $reviews->sum('rating');
+            $rating = $reviews->count() > 0 ? $totalStars / $reviews->count() : 0;
+
+            $isStudent = false;
+            foreach ($instructor->courses as $course) {
+                if ($course->enrollments->where('status', 'paid')->where('student_id', Auth::id())) {
+                    $isStudent = true;
+                    break;
+                }
+            }
+            return view('client.pages.profile', compact('instructor', 'reviews', 'rating', 'isStudent'));
+        }
+        public function showCreateBlog(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
+        {
+            return view('client.pages.instructors.pages.create_blog');
         }
     }

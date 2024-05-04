@@ -12,6 +12,17 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
+                                    <form method="get" action="{{ route('admin.instructor.index') }}">
+                                        <div class="d-flex">
+                                            <select name="status" class="w-50" aria-label="Default select example">
+                                                <option selected>Lọc theo status</option>
+                                                <option {{ $status == 'pending' ? 'selected' : '' }} value="pending">Chờ xác thực</option>
+                                                <option {{ $status == 'active' ? 'selected' : '' }} value="active">Xác thực</option>
+                                                <option {{ $status == 'suspended' ? 'selected' : '' }} value="suspended">Từ chối</option>
+                                            </select>
+                                            <button class="w-25 btn btn-primary">Lọc</button>
+                                        </div>
+                                    </form>
                                     <table id="dataTable" class="display" style="min-width: 1200px">
                                         <thead>
                                         <tr>

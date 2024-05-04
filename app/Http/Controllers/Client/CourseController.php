@@ -25,10 +25,12 @@ class CourseController extends Controller
             $lesson_slug = $course->subjects()->where('slug', $subject_slug)->first()->lessons()->orderBy('order')->first()->slug;
         }
         $lesson = \App\Models\Lesion::where('slug', $lesson_slug)->first();
-        $comments = \App\Models\Comment::where('commentable_id', $lesson->id)->where('commentable_type', 'lesion')->get();
+        $comments = \App\Models\Comment::where('commentable_id', $lesson->id)->where('commentable_type', 'lesson')->get();
         foreach ($comments as $comment) {
             $like_amount = \App\Models\Like::where('likeable_type', 'comment')->where('likeable_id', $comment->id)->count();
             $dislike_amount = \App\Models\Dislike::where('dislikeable_type', 'comment')->where('dislikeable_id', $comment->id)->count();
+            $comment->setAttribute('like_amount', $like_amount);
+            $comment->setAttribute('dislike_amount', $dislike_amount);
             $replies = \App\Models\Comment::where('commentable_id', $comment->id)->where('commentable_type', 'comment')->get();
             foreach ($replies as $reply) {
                 $like_amount = \App\Models\Like::where('likeable_type', 'comment')->where('likeable_id', $reply->id)->count();
@@ -36,8 +38,6 @@ class CourseController extends Controller
                 $reply->setAttribute('like_amount', $like_amount);
                 $reply->setAttribute('dislike_amount', $dislike_amount);
             }
-            $comment->setAttribute('like_amount', $like_amount);
-            $comment->setAttribute('dislike_amount', $dislike_amount);
             $comment->setAttribute('replies', $replies);
         }
         return view('client.pages.students.pages.lesson', compact('course', 'lesson', 'comments'));
@@ -91,6 +91,7 @@ class CourseController extends Controller
             return redirect()->back()->with('msg', 'Khóa học của bạn đã được gửi đi, vui lòng chờ xác nhận')->with('i', 'success');
         } catch (\Exception $e) {
             DB::rollBack();
+            dd($e->getMessage());
             return redirect()->back()->with('msg', 'Tạo khóa học thất bại')->with('i', 'error');
         }
     }

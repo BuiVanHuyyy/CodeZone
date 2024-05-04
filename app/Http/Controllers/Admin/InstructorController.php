@@ -7,21 +7,34 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInstructorRequest;
 use App\Http\Requests\UpdateInstructorRequest;
 use App\Mail\NoticeInstructorAboutStatusAccount;
+use App\Models\Course;
 use App\Models\Dislike;
 use App\Models\Instructor;
 use App\Models\Like;
 use App\Models\Review;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class InstructorController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $instructors = Instructor::with('user')->get();
-        return view('admin.pages.instructor_list', ['instructors' => $instructors]);
+        $status = $request->status ?? null;
+        if (!is_null($status)) {
+            $instructors = Instructor::whereHas('user', function ($query) use ($status) {
+                $query->where('status', $status);
+            })->get();
+        } else {
+            $instructors = Instructor::with('user')->get();
+        }
+        return view('admin.pages.instructor_list', compact('instructors', 'status'));
     }
 
     /**
@@ -43,7 +56,7 @@ class InstructorController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Instructor $instructor): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+    public function show(Instructor $instructor): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $reviews = Review::where('reviewable_id', $instructor->id)->where('reviewable_type', 'instructor')->get();
         foreach ($reviews as $review) {
@@ -94,6 +107,7 @@ class InstructorController extends Controller
     {
         //
     }
+
     public function updateStatus(int|string $id, \Illuminate\Http\Request $request ): \Illuminate\Http\JsonResponse
     {
         DB::beginTransaction();
@@ -103,7 +117,7 @@ class InstructorController extends Controller
             $user = $instructor->user;
             $user->status = $request->status;
             $tmp_password = substr(str_shuffle($characters), 0, 8);
-            $user->password = bcrypt($tmp_password);
+            $user->password = Hash::make($tmp_password);
             $user->save();
             $instructor->setAttribute('tmp_password', $tmp_password);
             DB::commit();

@@ -91,79 +91,45 @@
                                             <div class="inner">
                                                 <div class="rbt-admin-profile">
                                                     <div class="admin-thumbnail">
-                                                        <img
-                                                            src="{{ Auth::user()->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="User Images"/>
+                                                        @if(Auth::user()->role == 'student')
+                                                            <img src="{{ Auth::user()->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="User Images"/>
+                                                        @else
+                                                            <img src="{{ Auth::user()->instructors->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="User Images"/>
+                                                        @endif
                                                     </div>
                                                     <div class="admin-info">
                                                         <span class="name">{{ Auth::user()->name }}</span>
-                                                        <a class="rbt-btn-link color-primary"
-                                                           href="{{ Auth::user()->role == 'student' ? route('student.profile') : route('instructor.profile') }}">Trang cá nhân</a>
                                                     </div>
                                                 </div>
                                                 <ul class="user-list-wrapper">
                                                     <li>
-                                                        <a href="">
+                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.profile') : route('instructor.profile') }}">
                                                             <i class="feather-home"></i>
                                                             <span>Dashboard</span>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="#">
+                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.show') }}">
                                                             <i class="feather-bookmark"></i>
-                                                            <span>Bookmark</span>
+                                                            <span>Trang cá nhân</span>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="">
+                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.enrolled_courses') : route('instructor.my_courses') }}">
                                                             <i class="feather-shopping-bag"></i>
-                                                            <span>Enrolled Courses</span>
+                                                            <span>{{ Auth::user()->role == 'student' ? 'Các khóa học đăng ký' : 'Các khóa học của tôi' }}</span>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="">
+                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.my_reviews') }}">
                                                             <i class="feather-heart"></i>
-                                                            <span>Wishlist</span>
+                                                            <span>Đánh giá</span>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="">
+                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.edit') : route('instructor.edit') }}">
                                                             <i class="feather-star"></i>
-                                                            <span>Reviews</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">
-                                                            <i class="feather-list"></i>
-                                                            <span>My Quiz Attempts</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">
-                                                            <i class="feather-clock"></i>
-                                                            <span>Order History</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">
-                                                            <i class="feather-message-square"></i>
-                                                            <span>Question & Answer</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                                <hr class="mt--10 mb--10"/>
-                                                <ul class="user-list-wrapper">
-                                                    <li>
-                                                        <a href="#"><i class="feather-book-open"></i>
-                                                            <span>Getting Started</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                                <hr class="mt--10 mb--10"/>
-                                                <ul class="user-list-wrapper">
-                                                    <li>
-                                                        <a href="">
-                                                            <i class="feather-settings"></i>
-                                                            <span>Settings</span>
+                                                            <span>Chỉnh sửa thông tin</span>
                                                         </a>
                                                     </li>
                                                     <li>
@@ -292,7 +258,7 @@
                                 <a href="{{ route('client.home') }}#category">Chương trình đào tạo</a>
                             </li>
                             <li>
-                                <a href={{ route('client.home') }}#blog">Blog </a>
+                                <a href="{{ route('client.home') }}#blog">Blog</a>
                             </li>
                             <li>
                                 <a href="{{ route('client.home') }}#contact">Liện hệ </a>

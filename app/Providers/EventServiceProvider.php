@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Events\SendMailNoticeCourseEvent;
 use App\Events\SendMailNoticeToInstructorEvent;
+use App\Events\SendMailNotiveBlogEvent;
+use App\Listeners\SendMailToNoticeBlogStatusListener;
 use App\Listeners\SendMailToNoticeCourseStatusListener;
 use App\Listeners\SendMailToNoticeInstructorStatusListener;
 use Illuminate\Auth\Events\Registered;
@@ -27,7 +29,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         SendMailNoticeCourseEvent::class => [
             SendMailToNoticeCourseStatusListener::class,
-        ]
+        ],
+        SendMailNotiveBlogEvent::class => [
+            SendMailToNoticeBlogStatusListener::class,
+        ],
     ];
 
     /**

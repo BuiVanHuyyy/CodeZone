@@ -18,9 +18,9 @@ class DislikeFactory extends Factory
     public function definition(): array
     {
         return [
-            'dislikeable_id' => $this->faker->numberBetween(1, 1000),
+            'dislikeable_id' => $this->faker->numberBetween(1, 5),
 //            'dislikeable_type' => $this->faker->randomElement(['course', 'subject', 'lesion', 'instructor', 'review', 'comment', 'blog']),
-            'dislikeable_type' => $this->faker->randomElement(['review']),
+            'dislikeable_type' => $this->faker->randomElement(['blog']),
             'user_id' => $this->faker->numberBetween(31, 530),
         ];
     }

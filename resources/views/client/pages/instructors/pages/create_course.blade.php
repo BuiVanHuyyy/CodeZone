@@ -114,7 +114,7 @@
                                                         <div class="subject-container py-3"
                                                              style="border-bottom: 1px solid gray; padding-bottom: 20px; margin-bottom: 30px">
                                                             <h5>Môn học 1</h5>
-                                                            <input value="{{ old('subjects[0][name]') }}" name="subjects[0][name]" type="text" placeholder="Nhập tên môn học"/>
+                                                            <input value="{{ old('subjects[1][name]') }}" name="subjects[1][name]" type="text" placeholder="Nhập tên môn học"/>
                                                             @error('subjects.0.name')
                                                                 <small class="d-block mt_dec--5 text-danger">{{ $message }}</small>
                                                             @enderror
@@ -123,11 +123,11 @@
                                                                     <h6 class="mt-3" style="margin-bottom: -10px">Bài giảng 1</h6>
                                                                     <div class="d-flex">
                                                                         <div class="col-lg-10">
-                                                                           <input name="subjects[0][lessons][0][name]" value="{{ old('subjects[0][lessons][0][name]') }}" style="width: 90%" type="text" class="my-3" placeholder="Nhập tên bài giảng"/>
+                                                                           <input name="subjects[1][lessons][1][name]" value="{{ old('subjects[1][lessons][1][name]') }}" style="width: 90%" type="text" class="my-3" placeholder="Nhập tên bài giảng"/>
                                                                         </div>
                                                                         <div class="col-lg-2">
-                                                                            <input name="subjects[0][lessons][0][is_preview]" class="form-check-input" type="checkbox" id="subjects[0][lessons][0][is_preview]">
-                                                                            <label class="form-check-label" for="subjects[0][lessons][0][is_preview]">Cho xem trước</label>
+                                                                            <input name="subjects[1][lessons][1][is_preview]" class="form-check-input" type="checkbox" id="subjects[1][lessons][1][is_preview]">
+                                                                            <label class="form-check-label" for="subjects[1][lessons][1][is_preview]">Cho xem trước</label>
                                                                         </div>
                                                                     </div>
                                                                     @error('subjects.0.lessons.0.name')
@@ -137,15 +137,15 @@
                                                                         <div class="row g-3">
                                                                             <div class="col-lg-6">
                                                                                 <label for="video-source">Video url (iframe)</label>
-                                                                                <input type="text" name="subjects[0][lessons][0][video]" value="{{ old('subjects[0][lessons][0][video]') }}" id="video-source">
+                                                                                <input type="text" name="subjects[1][lessons][1][video]" value="{{ old('subjects[1][lessons][1][video]') }}" id="video-source">
                                                                             </div>
                                                                             <div class="col-lg-6">
                                                                                 <label for="code-source">Source code github(url)</label>
-                                                                                <input type="text" name="subjects[0][lessons][0][resource]" value="{{ old('subjects[0][lessons][0][resource]') }}" id="code-source">
+                                                                                <input type="text" name="subjects[1][lessons][1][resource]" value="{{ old('subjects[1][lessons][1][resource]') }}" id="code-source">
                                                                             </div>
                                                                             <div class="col-lg-12">
                                                                                 <label for="Content">Content</label>
-                                                                                <textarea name="subjects[0][lessons][0][content]" id="Content" cols="10" rows="5">{{ old('subjects[0][lessons][0][content]') }}</textarea>
+                                                                                <textarea name="subjects[1][lessons][1][content]" id="Content" cols="10" rows="5">{{ old('subjects[1][lessons][1][content]') }}</textarea>
                                                                                 @error('subjects.0.lessons.0.content')
                                                                                     <small class="d-block mt_dec--5 text-danger">{{ $message }}</small>
                                                                                 @enderror

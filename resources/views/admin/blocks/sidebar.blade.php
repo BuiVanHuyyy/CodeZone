@@ -26,6 +26,12 @@
                     <span class="nav-text">Khóa học</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ route('admin.blog.index') }}" aria-expanded="false">
+                    <i class="fa-solid fa-blog"></i>
+                    <span class="nav-text">Các bài blog</span>
+                </a>
+            </li>
         </ul>
     </div>
 </div>

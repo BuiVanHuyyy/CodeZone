@@ -30,7 +30,11 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-
+        if (Auth::user()->status == 'suspended') {
+            Auth::logout();
+            session()->flash('login_required', 'Tài khoản của bạn đã bị khóa');
+            return redirect()->back();
+        }
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 

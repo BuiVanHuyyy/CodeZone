@@ -48,6 +48,18 @@
                     </span>
                 </a>
             </div>
+            <div class="tutor-btn">
+                <a class="rbt-btn btn-coral hover-icon-reverse" href="{{ route('instructor.create_blog') }}">
+                    <span class="icon-reverse-wrapper">
+                        <span class="btn-text">Tạo một bài Blog mới</span>
+                        <span class="btn-icon">
+                            <i class="feather-arrow-right"></i></span>
+                        <span class="btn-icon">
+                            <i class="feather-arrow-right"></i>
+                        </span>
+                    </span>
+                </a>
+            </div>
         </div>
     </div>
     <!-- End Tutor Information  -->

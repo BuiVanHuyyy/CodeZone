@@ -44,7 +44,6 @@
                                                 @php
                                                     $filePath = $course->thumbnail;
                                                     $defaultPath = asset('client_assets/images/avatar/default_course_thumbnail.png');
-
                                                     if (isset($filePath) && file_exists(public_path($filePath))) {
                                                         $fileToUse = $filePath;
                                                     } else {
@@ -85,7 +84,7 @@
                                                             class="feather-bookmark"></i></a>
                                                 </div>
                                             </div>
-                                            <h4 class="rbt-card-title"><a href="">{{ $course->title }}</a>
+                                            <h4 class="rbt-card-title"><a href="{{ route('client.course_detail', [$course->slug]) }}">{{ $course->title }}</a>
                                             </h4>
                                             <ul class="rbt-meta">
                                                 <li><i class="feather-book"></i>{{ $course->subjects->count() }} bài học
@@ -97,7 +96,7 @@
 
                                             <div class="rbt-card-bottom">
                                                 <div class="rbt-price">
-                                                    <span class="current-price">₫ {{ $course->price }}</span>
+                                                    <span class="current-price">₫ {{ number_format($course->price, 0) }}</span>
                                                     {{--                                                    <span class="off-price">$120</span>--}}
                                                 </div>
                                                 <a class="rbt-btn-link left-icon" href="#"><i class="feather-edit"></i>

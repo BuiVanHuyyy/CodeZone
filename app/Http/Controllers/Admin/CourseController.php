@@ -8,6 +8,9 @@ use App\Models\Course;
 use App\Models\Dislike;
 use App\Models\Like;
 use App\Models\Review;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -16,37 +19,21 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function index(Request $request): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
         $status = $request->status ?? null;
         if (!is_null($status)) {
             $courses = Course::where('status', $status)->get();
         } else {
-            $courses = Course::all();
+            $courses = Course::with('reviews')->withTrashed()->get();
         }
         return view('admin.pages.courses_list', compact('courses', 'status'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      */
-    public function show(string $id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function show(string $id): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
         $course = Course::find($id);
         $reviews = Review::where('reviewable_id', $id)->where('reviewable_type', 'course')->get();
@@ -66,24 +53,7 @@ class CourseController extends Controller
         } else {
             $rating = 0;
         };
-        $likeAmount = Like::where('likeable_type', 'course')->where('likeable_id', $id)->count();
-        $dislikeAmount = Dislike::where('dislikeable_type', 'course')->where('dislikeable_id', $id)->count();
-        return view('admin.pages.course_detail', compact('course','dislikeAmount', 'likeAmount', 'reviews', 'rating'));
-    }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+        return view('admin.pages.course_detail', compact('course', 'reviews', 'rating'));
     }
 
     /**
@@ -97,7 +67,12 @@ class CourseController extends Controller
     {
         DB::beginTransaction();
         try {
-            $course = Course::find($id);
+            $course = Course::withTrashed()->find($id);
+            if ($request->status == 'rejected') {
+                $course->delete();
+            }else {
+                $course->deleted_at = null;
+            }
             $course->status = $request->status;
             $course->save();
             DB::commit();

@@ -16,7 +16,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
-                            <img class="img-fluid" src="/{{ $course->thumbnail ?? asset('client_assets/images/avatar/default_course_thumbnail.png') }}" alt="Course thumbnail">
+                            <img class="img-fluid" src="{{ $course->thumbnail ?? asset('client_assets/images/avatar/default_course_thumbnail.png') }}" alt="Course thumbnail">
                             <div class="card-body">
                                 <h4 class="mb-0 text-center">{{ $course->title }}</h4>
                             </div>
@@ -46,6 +46,10 @@
                                         <span class="mb-0">₫ {{number_format($course->price, 0)}}</span>
                                     </li>
                                     <li class="list-group-item d-flex px-0 justify-content-between">
+                                        <strong>Số lượng học viên</strong>
+                                        <span class="mb-0">{{ number_format(count($course->enrollments)) }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex px-0 justify-content-between">
                                         <strong>Doanh thu</strong>
                                         <span class="mb-0">₫ {{ number_format(count($course->enrollments) * $course->price, 1) }}</span>
                                     </li>
@@ -54,22 +58,6 @@
                                         <span class="mb-0">{{ date_format(date_create($course->created_at), 'd/m/Y') }}</span>
                                     </li>
                                 </ul>
-                            </div>
-                            <div class="card-footer pt-0 pb-0 text-center">
-                                <div class="row">
-                                    <div class="col-4 pt-3 pb-3 border-right">
-                                        <h3 class="mb-1 text-primary">{{ number_format(count($course->enrollments), 0) }}</h3>
-                                        <span>Học viên</span>
-                                    </div>
-                                    <div class="col-4 pt-3 pb-3 border-right">
-                                        <h3 class="mb-1 text-primary">{{number_format($likeAmount, 0) }}</h3>
-                                        <span>Like</span>
-                                    </div>
-                                    <div class="col-4 pt-3 pb-3">
-                                        <h3 class="mb-1 text-primary">{{ number_format($dislikeAmount, 0) }}</h3>
-                                        <span>Dislike</span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -83,11 +71,11 @@
                         <h4 class="text-primary">Nội dung khóa học</h4>
                         <div class="course-detail-content">
                             <ul>
-                                @foreach($course->subjects as $subject)
+                                @foreach($course->subjects->sortBy('order') as $subject)
                                     <li {{ $subject->lessons->count() !== 0 ? 'class=has-submenu' : '' }}><span>{{ $subject->title }}</span>{!! $subject->lessons->count() !== 0 ? '<span><i class="fa-solid fa-caret-down"></i></span>' : '' !!}
                                         @if($subject->lessons->count() !== 0 && !is_null($subject->lessons))
                                             <ul>
-                                                @foreach($subject->lessons as $lesson)
+                                                @foreach($subject->lessons->sortBy('order') as $lesson)
                                                     <li>{{ $lesson->title }}</li>
                                                 @endforeach
                                             </ul>
@@ -102,12 +90,12 @@
                                 @if($reviews->count() === 0)
                                     <p>Khóa học này chưa có reviews</p>
                                 @endif
-                                @foreach($reviews as $review)
+                                @foreach($reviews->sortByDesc('created_at') as $review)
                                     <div class="col-lg-6 review-item">
                                         <div class="top d-flex">
                                             <div class="thumbnail">
                                                 <a href="{{ route('admin.student.show', ['student' => $review->user->students->id]) }}">
-                                                    <img class="circle" src="{{ asset('admin_assets/images/avatar/1.jpg') }}" alt="">
+                                                    <img class="circle" src="{{ $review->user->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="">
                                                 </a>
                                             </div>
                                             <div class="author">
@@ -155,19 +143,6 @@
                 $(this).find('ul').slideToggle();
                 $(this).find('.fa-caret-down').toggleClass('rotated');
             });
-            // $('.like-btn').on('click', function() {
-            //     var likeValue = parseInt($(this).text().trim(), 10);
-            //     if ($(this).hasClass('active')) {
-            //         likeValue -= 1;
-            //     } else {
-            //         likeValue += 1;
-            //     }
-            //     $(this).text(likeValue);
-            //     $(this).toggleClass('active');
-            // });
-            // $('.dislike-btn').on('click', function() {
-            //     $(this).toggleClass('active');
-            // });
         });
     </script>
 @endsection

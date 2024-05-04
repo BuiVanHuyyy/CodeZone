@@ -97,7 +97,6 @@
                             <div class="custom-tab-1">
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item"><a href="#about-me" data-bs-toggle="tab" class="nav-link active show">Profile cá nhân</a></li>
-                                    <li class="nav-item"><a href="#my-posts" data-bs-toggle="tab" class="nav-link">Blogs</a></li>
                                 </ul>
                                 <div class="tab-content">
                                     <div id="about-me" class="tab-pane fade active show">
@@ -209,12 +208,12 @@
                                                         @if($reviews->count() === 0)
                                                             <p>Giảng viên này chưa có reviews</p>
                                                         @endif
-                                                        @foreach($reviews as $review)
+                                                        @foreach($reviews->sortByDesc('created_at') as $review)
                                                                 <div class="col-lg-6 review-item">
                                                                     <div class="top d-flex">
                                                                         <div class="thumbnail">
                                                                             <a href="{{ route('admin.student.show', ['student' => $review->user]) }}">
-                                                                                <img class="circle" src="{{ asset('admin_assets/images/avatar/1.jpg') }}" alt="">
+                                                                                <img class="circle" src="{{ $review->user->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="">
                                                                             </a>
                                                                         </div>
                                                                         <div class="author">
@@ -246,34 +245,6 @@
                                                             @endforeach
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="my-posts" class="tab-pane fade">
-                                        <div class="my-post-content pt-3">
-                                            <div class="post-input">
-                                                <label for="textarea"></label><textarea name="textarea" id="textarea" cols="30" rows="5" class="form-control bg-transparent" placeholder="Please type what you want...."></textarea> <a
-                                                    href="javascript:void()"><i class="ti-clip"></i> </a>
-                                                <a href="javascript:void()"><i class="ti-camera"></i> </a>
-                                                <a href="javascript:void()" class="btn btn-primary">Post</a>
-                                            </div>
-                                            <div class="profile-uoloaded-post border-bottom-1 pb-5">
-                                                <img src="images/profile/8.jpg" alt="" class="img-fluid">
-                                                <a class="post-title" href="javascript:void()">
-                                                    <h4>Collection of textile samples lay spread</h4>
-                                                </a>
-                                                <p>A wonderful serenity has take possession of my entire soul like these
-                                                    sweet morning of spare which enjoy whole heart.A wonderful serenity
-                                                    has take possession of my entire soul like these sweet morning
-                                                    of spare which enjoy whole heart.</p>
-                                                <button class="btn btn-primary me-3"><span class="me-3"><i
-                                                            class="fas fa-heart"></i></span>Like
-                                                </button>
-                                                <button class="btn btn-secondary"><span class="me-3"><i
-                                                            class="fas fa-reply"></i></span>Reply
-                                                </button>
-                                            </div>
-                                            <div class="text-center mb-2"><a href="javascript:void()" class="btn btn-primary">Load More</a>
                                             </div>
                                         </div>
                                     </div>

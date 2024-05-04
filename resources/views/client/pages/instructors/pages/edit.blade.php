@@ -65,7 +65,6 @@
                     <form action="{{ route('instructor.update', ['instructor' => Auth::user()->instructors]) }}"
                           method="POST" class="rbt-profile-row rbt-default-form row row--15">
                         @csrf
-                        @method('PUT')
                         <div class="col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="rbt-form-group">
                                 <label for="name">Tên</label>
@@ -209,76 +208,43 @@
 
                 <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
                     <!-- Start Profile Row  -->
-                    <form action="#" class="rbt-profile-row rbt-default-form row row--15">
+                    <form method="POST" action="{{ route('instructor.reset_password') }}" class="rbt-profile-row rbt-default-form row row--15">
+                        @csrf
                         <div class="col-12">
                             <div class="rbt-form-group">
-                                <label for="currentpassword">Current Password</label>
-                                <input id="currentpassword" type="password" placeholder="Current Password">
+                                <label for="currentpassword">Mật khẩu hiện tại</label>
+                                <input id="currentpassword" name="old_password" type="password">
+                                @error('old_password')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="rbt-form-group">
-                                <label for="newpassword">New Password</label>
-                                <input id="newpassword" type="password" placeholder="New Password">
+                                <label for="newpassword">Mật khẩu mới</label>
+                                <input id="newpassword" name="password" type="text">
+                                @error('password')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="rbt-form-group">
-                                <label for="retypenewpassword">Re-type New Password</label>
-                                <input id="retypenewpassword" type="password" placeholder="Re-type New Password">
+                                <label for="retypenewpassword">Nhập lại mật khẩu</label>
+                                <input id="retypenewpassword" name="password_confirmation" type="text">
+                                @error('password_confirmation')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-12 mt--10">
                             <div class="rbt-form-group">
-                                <a class="rbt-btn btn-gradient" href="#">Update Password</a>
+                                <button type="submit" class="rbt-btn btn-gradient" href="#">Cập nhật mật khẩu</button>
                             </div>
                         </div>
                     </form>
                     <!-- End Profile Row  -->
                 </div>
-
-                <div class="tab-pane fade" id="social" role="tabpanel" aria-labelledby="social-tab">
-                    <!-- Start Profile Row  -->
-                    <form action="#" class="rbt-profile-row rbt-default-form row row--15">
-                        <div class="col-12">
-                            <div class="rbt-form-group">
-                                <label for="facebook"><i class="feather-facebook"></i> Facebook</label>
-                                <input id="facebook" type="text" placeholder="https://facebook.com/">
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="rbt-form-group">
-                                <label for="twitter"><i class="feather-twitter"></i> Twitter</label>
-                                <input id="twitter" type="text" placeholder="https://twitter.com/">
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="rbt-form-group">
-                                <label for="linkedin"><i class="feather-linkedin"></i> Linkedin</label>
-                                <input id="linkedin" type="text" placeholder="https://linkedin.com/">
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="rbt-form-group">
-                                <label for="website"><i class="feather-globe"></i> Website</label>
-                                <input id="website" type="text" placeholder="https://website.com/">
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="rbt-form-group">
-                                <label for="github"><i class="feather-github"></i> Github</label>
-                                <input id="github" type="text" placeholder="https://github.com/">
-                            </div>
-                        </div>
-                        <div class="col-12 mt--10">
-                            <div class="rbt-form-group">
-                                <a class="rbt-btn btn-gradient" href="#">Update Profile</a>
-                            </div>
-                        </div>
-                    </form>
-                    <!-- End Profile Row  -->
-                </div>
-
             </div>
 
 
@@ -290,13 +256,13 @@
 @endsection
 @section('cus_js')
     <script>
-        let message = "{{ session('message') }}";
-        let icon = "{{ session('icon') }}";
-        if (message) {
+        let msg = "{{ session('msg') }}";
+        let i = "{{ session('i') }}";
+        if (msg) {
             Swal.fire({
                 position: 'center',
-                icon: icon,
-                title: message,
+                icon: i,
+                title: msg,
             });
         }
         document.getElementById('avatar').addEventListener('change', function(e) {

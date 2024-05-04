@@ -30,16 +30,12 @@
                         <h2 class="title">{{ $course->title }}</h2>
                         <p class="description">{{ $course->description }}</p>
 
-                        <div
-                            class="d-flex align-items-center mb--20 flex-wrap rbt-course-details-feature"
-                        >
+                        <div class="d-flex align-items-center mb--20 flex-wrap rbt-course-details-feature">
                             <div class="feature-sin best-seller-badge">
                                     <span class="rbt-badge-2">
-                                        <span class="image"
-                                        ><img
-                                                src="{{ asset('client_assets/images/icons/card-icon-1.png') }}"
-                                                alt="Best Seller Icon"
-                                            /></span>
+                                        <span class="image">
+                                            <img src="{{ asset('client_assets/images/icons/card-icon-1.png') }}" alt="Best Seller Icon"/>
+                                        </span>
                                         Bestseller
                                     </span>
                             </div>
@@ -60,21 +56,18 @@
                             </div>
 
                             <div class="feature-sin total-student">
-                                <span>{{ $course->enrollments->count() }} học viên</span>
+                                <span>{{ $course->enrollments->where('status', 'paid')->count() }} học viên</span>
                             </div>
                         </div>
 
                         <div class="rbt-author-meta mb--20">
                             <div class="rbt-avater">
-                                <a href="#">
-                                    <img
-                                        src="{{ asset('client_assets/images/client/avatar-02.png') }}"
-                                        alt="Sophia Jaymes"
-                                    />
+                                <a href="{{ route('client.profile', [$course->author]) }}">
+                                    <img src="{{ $course->author->avatar ?? asset('client_assets/images/client/avatar-02.png') }}" alt="{{ $course->author->name }} avatar"/>
                                 </a>
                             </div>
                             <div class="rbt-author-info">
-                                bỡi <a href="">{{ $course->author->name }}</a> thuộc danh mục
+                                bỡi <a href="{{ route('client.profile', [$course->author]) }}">{{ $course->author->name }}</a> thuộc danh mục
                                 <a href="#">{{ $course->category->title }}</a>
                             </div>
                         </div>
@@ -123,13 +116,8 @@
                         </div>
 
                         <!-- Start Course Feature Box  -->
-                        <div
-                            class="rbt-course-feature-box overview-wrapper rbt-shadow-box mt--30 has-show-more"
-                            id="overview"
-                        >
-                            <div
-                                class="rbt-course-feature-inner has-show-more-inner-content"
-                            >
+                        <div class="rbt-course-feature-box overview-wrapper rbt-shadow-box mt--30 has-show-more" id="overview">
+                            <div class="rbt-course-feature-inner has-show-more-inner-content">
                                 <div class="section-title">
                                     <h4 class="rbt-title-style-3">
                                         Bạn sẽ học được gì
@@ -665,15 +653,14 @@
                                         <div class="media">
                                             <div class="thumbnail">
                                                 <a href="#">
-                                                    <img src="{{ $review->user->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
-                                                         alt="Author Images"/>
+                                                    <img src="{{ $review->user->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images"/>
                                                 </a>
                                             </div>
                                             <div class="media-body">
                                                 <div class="author-info">
                                                     <h5 class="title">
                                                         <a class="hover-flip-item-wrapper"
-                                                           href="#">{{ $review->user->name }}</a>
+                                                           href="{{ route('client.profile', [$course->author]) }}">{{ $review->user->name }}</a>
                                                     </h5>
                                                     <div class="rating">
                                                         @for($i = 1; $i <= ceil($review->rating); $i++)
@@ -701,7 +688,7 @@
                                                                     }
                                                                 }
                                                             @endphp
-                                                            <a data-url="{{ route('student.like', [ $review->id, 'review']) }}"
+                                                            <a data-url="{{ route('client.like', [ $review->id, 'review']) }}"
                                                                class="{{ $is_active ? 'active' : '' }} like_btn">
                                                                 <i class="feather-thumbs-up"></i>
                                                             </a>
@@ -722,7 +709,7 @@
                                                                 }
                                                             @endphp
                                                             <a class="dislike_btn {{ $is_active ? 'active' : '' }}"
-                                                               data-url="{{ route('student.dislike', [$review->id, 'review']) }}">
+                                                               data-url="{{ route('client.dislike', [$review->id, 'review']) }}">
                                                                 <i class="feather-thumbs-down"></i>
                                                             </a>
                                                             <span class="dislike_amount">
@@ -794,7 +781,7 @@
                                     <span class="subtitle bg-pink-opacity">Top Course</span>
                                     <h4 class="title">
                                         Các khóa học khác của
-                                        <strong class="color-primary">{{ $course->author->name }}</strong>
+                                        <a href="{{ route('client.profile', [$course->author]) }}"><strong class="color-primary">{{ $course->author->name }}</strong></a>
                                     </h4>
                                 </div>
                             </div>
@@ -811,7 +798,7 @@
                                 $i = 1;
                             @endphp
                             @if($course->author->courses->count() >= 1)
-                                @foreach($course->author->courses as $item)
+                                @foreach($course->author->courses->where('status', 'approved') as $item)
                                     <div class="col-lg-6 col-md-6 col-sm-6 col-12" data-sal-delay="150" data-sal="slide-up" data-sal-duration="800">
                                         <div class="rbt-card variation-01 rbt-hover">
                                             <div class="rbt-card-img">
@@ -848,10 +835,10 @@
 
                                                 <ul class="rbt-meta">
                                                     <li>
-                                                        <i class="feather-book"></i>12 Lessons
+                                                        <i class="feather-book"></i>{{ $item->subjects->count() }} bài giảng
                                                     </li>
                                                     <li>
-                                                        <i class="feather-users"></i>50 Students
+                                                        <i class="feather-users"></i>{{ $item->enrollments->where('status')->count() }} học viên
                                                     </li>
                                                 </ul>
 
@@ -867,7 +854,7 @@
                                                         </a>
                                                     </div>
                                                     <div class="rbt-author-info">
-                                                        Bỡi <a href="">{{ $item->author->name }}</a>In
+                                                        Bỡi <a href="{{ route('client.profile', [$course->author]) }}"> {{ $item->author->name }}</a> In
                                                         <a href="#">{{$item->category->title }}</a>
                                                     </div>
                                                 </div>
@@ -939,6 +926,13 @@
                                             <span class="btn-icon"><i class="feather-arrow-right"></i></span>
                                         </a>
                                     </div>
+                                @elseif (Auth::check() && $course->author->user->id === Auth::user()->id)
+                                    <div class="add-to-card-button mt--15">
+                                        <a href="{{ route('course.index', $course->slug) }}" class="add-to-cart-btn rbt-btn btn-gradient icon-hover w-100 d-block text-center">
+                                            <span class="btn-text">Xem khóa học</span>
+                                            <span class="btn-icon"><i class="feather-arrow-right"></i></span>
+                                        </a>
+                                    </div>
                                 @else
                                     <div class="add-to-card-button mt--15">
                                         <button data-url="{{ route('cart.add', ['id' => $course->id]) }}"
@@ -948,7 +942,6 @@
                                         </button>
                                     </div>
                                 @endif
-
                                 <div class="rbt-widget-details has-show-more">
                                     <ul class="has-show-more-inner-content rbt-course-details-list-wrapper">
                                         <li>

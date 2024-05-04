@@ -83,10 +83,11 @@
     <script>
         window.onload = function() {
             let message = "{{ session('message') }}";
+            let icon = "{{ session('icon') ?? 'success' }}";
             if (message !== "") {
                 Swal.fire({
                     position: "top-end",
-                    icon: "success",
+                    icon: icon,
                     title: message,
                     showConfirmButton: false,
                     timer: 1500

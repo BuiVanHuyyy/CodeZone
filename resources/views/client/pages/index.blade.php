@@ -24,15 +24,3 @@
     @include('client.blocks.newsletter')
     <!-- End Newsletter -->
 @endsection
-@section('cus_js')
-    <script>
-        let errorMessage = "{{ session('error_msg') }}";
-        if (errorMessage) {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: errorMessage,
-            });
-        }
-    </script>
-@endsection

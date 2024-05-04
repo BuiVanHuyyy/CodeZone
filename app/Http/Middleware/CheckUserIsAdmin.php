@@ -22,7 +22,7 @@ class CheckUserIsAdmin
         }
         if (Auth::user()->role != 'admin') {
             session()->flash('error_msg', 'Bạn không có quyền truy cập vào trang admin!');
-            return redirect()->route('client.home');
+            return redirect()->route('client.404');
         }
         return $next($request);
     }

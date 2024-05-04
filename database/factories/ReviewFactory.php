@@ -18,9 +18,9 @@ class ReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'reviewable_id' => $this->faker->numberBetween(1, 17),
-            'reviewable_type' => $this->faker->randomElement(['course']),
-            'user_id' => $this->faker->numberBetween(1, 500),
+            'reviewable_id' => $this->faker->numberBetween(1, 10),
+            'reviewable_type' => $this->faker->randomElement(['instructor']),
+            'user_id' => $this->faker->numberBetween(31, 540),
             'content' => $this->faker->text('255'),
             'rating' => $this->faker->numberBetween(1, 5),
         ];

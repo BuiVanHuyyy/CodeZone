@@ -50,7 +50,7 @@
                             <div class="tab-pane fade active show" id="home-4" role="tabpanel"
                                  aria-labelledby="home-tab-4">
                                 <div class="row g-5">
-                                    <p>{{ $lesson->content }}</p>
+                                    <p>{!! $lesson->content !!}</p>
                                     @if(!is_null($lesson->resource))
                                         <a href="{{ $lesson->resource }}"
                                            class="rbt-btn icon-hover icon-hover-left btn-md bg-primary-opacity">
@@ -81,8 +81,7 @@
                                         <h4 class="title">{{ $comments->count() }} bình luận</h4>
                                         <div id="comment-respond" class="comment-respond">
                                             <h4 class="title">Thêm bình luận của bạn</h4>
-                                            <form id="commentForm" method="post"
-                                                  action="{{ route('client.comment', [$lesson->id, 'lesion']) }}">
+                                            <form id="commentForm" method="post" action="{{ route('client.comment', [$lesson->id, 'lesson']) }}">
                                                 @csrf
                                                 <div class="row row--10">
                                                     <div class="col-12">
@@ -121,21 +120,25 @@
                                                         <div class="comment-body">
                                                             <div class="single-comment">
                                                                 <div class="comment-img">
-                                                                    <img src="{{ $comment->author->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images">
+                                                                    @php
+                                                                        if (($comment->author->role) === 'instructor') {
+                                                                            $avatar = $comment->author->instructors->avatar;
+                                                                        } else {
+                                                                            $avatar = $comment->author->students->avatar;
+                                                                        }
+                                                                    @endphp
+                                                                    <img src="{{ $avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images">
                                                                 </div>
                                                                 <div class="comment-inner">
-                                                                    <h6 class="commenter">
-                                                                        <a class="author_name"
-                                                                           href="#">{{ optional($comment->author->students)->name }}</a>
+                                                                    <h6 class="commenter">{!! $comment->author->role === 'instructor' ? '<i class="fa-solid fa-chalkboard-user"></i>' : '' !!}
+                                                                        <a class="author_name" href="#">{{ $comment->author->name }}</a>
                                                                     </h6>
                                                                     <div class="comment-meta">
                                                                         <div
-                                                                            class="time-spent">{{ date_format(date_create(optional($comment->author->students)->created_at), 'd/m/Y') }}</div>
+                                                                            class="time-spent">{{ date_format(date_create($comment->created_at) , 'd/m/Y') }}</div>
                                                                         <div class="reply-edit">
                                                                             <div class="reply">
-                                                                                <a class="comment-reply-link"
-                                                                                   data-id="{{ $comment->id }}"
-                                                                                   href="#comment-respond">Trả lời</a>
+                                                                                <a class="comment-reply-link" data-id="{{ $comment->id }}" href="#">Trả lời</a>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -154,10 +157,10 @@
                                                                                 }
                                                                             @endphp
                                                                             <li>
-                                                                                <a data-url="{{ route('student.like', [$comment->id, 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
+                                                                                <a data-url="{{ route('client.like', [$comment->id, 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
                                                                                     <i class="feather-thumbs-up"></i>
                                                                                 </a>
-                                                                                <span class="like_amount">{{ $comment->like_amount }}</span>
+                                                                                <span class="like_qty">{{ $comment->like_amount }}</span>
                                                                             </li>
                                                                             @php
                                                                                 $is_active = false;
@@ -171,29 +174,35 @@
                                                                                 }
                                                                             @endphp
                                                                             <li>
-                                                                                <a class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('student.dislike', [$comment->id, 'comment']) }}">
+                                                                                <a class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('client.dislike', [$comment->id, 'comment']) }}">
                                                                                     <i class="feather-thumbs-down"></i>
                                                                                 </a>
-                                                                                <span class="dislike_amount">{{ $comment->dislike_amount }}</span>
+                                                                                <span class="dislike_qty">{{ $comment->dislike_amount }}</span>
                                                                             </li>
                                                                         </ul>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        @if($comment->replies->count() != 0)
+                                                        @if($comment->replies->count() > 0)
                                                             <ul class="children">
                                                                 @foreach($comment->replies as $reply)
                                                                     <li class="comment">
                                                                         <div class="comment-body">
                                                                             <div class="single-comment">
                                                                                 <div class="comment-img">
-                                                                                    <img src="{{ $reply->author->instructors->avatar ?? $reply->author->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images">
+                                                                                    @php
+                                                                                        if (($reply->author->role) === 'instructor') {
+                                                                                            $avatar = $reply->author->instructors->avatar;
+                                                                                        } else {
+                                                                                            $avatar = $reply->author->students->avatar;
+                                                                                        }
+                                                                                        @endphp
+                                                                                    <img src="{{ $avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images">
                                                                                 </div>
                                                                                 <div class="comment-inner">
-                                                                                    <h6 class="commenter">
-                                                                                        <a class="author_name"
-                                                                                           href="#">{{ $reply->author->instructors->name ?? $reply->author->students->name }}</a>
+                                                                                    <h6 class="commenter"> {!! $reply->author->role === 'instructor' ? '<i class="fa-solid fa-chalkboard-user"></i>' : '' !!}
+                                                                                        <a class="author_name" href="#">{{ $reply->author->name }}</a>
                                                                                     </h6>
                                                                                     <div class="comment-meta">
                                                                                         <div
@@ -221,16 +230,16 @@
                                                                                                 }
                                                                                             @endphp
                                                                                             <li>
-                                                                                                <a data-url="{{ route('student.like', [$reply->id, 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
+                                                                                                <a data-url="{{ route('client.like', [$reply->id, 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
                                                                                                     <i class="feather-thumbs-up"></i>
                                                                                                 </a>
-                                                                                                <span class="like_amount">{{ $reply->like_amount }}</span>
+                                                                                                <span class="like_qty">{{ $reply->like_amount }}</span>
                                                                                             </li>
                                                                                             @php
                                                                                                 $is_active = false;
                                                                                                 if (Auth::check()) {
                                                                                                     foreach (Auth::user()->dislikes as $dislike) {
-                                                                                                        if ($dislike['likeable_id'] == $reply->id) {
+                                                                                                        if ($dislike['dislikeable_id'] == $reply->id) {
                                                                                                             $is_active = true;
                                                                                                             break;
                                                                                                         }
@@ -238,10 +247,10 @@
                                                                                                 }
                                                                                             @endphp
                                                                                             <li>
-                                                                                                <a class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('student.dislike', [$reply->id, 'comment']) }}">
+                                                                                                <a class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('client.dislike', [$reply->id, 'comment']) }}">
                                                                                                     <i class="feather-thumbs-down"></i>
                                                                                                 </a>
-                                                                                                <span class="dislike_amount">{{$reply->dislike_amount}}</span>
+                                                                                                <span class="dislike_qty">{{$reply->dislike_amount}}</span>
                                                                                             </li>
                                                                                         </ul>
                                                                                     </div>
@@ -269,14 +278,6 @@
 @section('cus_js')
     <script>
         $(document).ready(function () {
-            $('.comment-reply-link').click(function (e) {
-                e.preventDefault();
-                let id = $(this).data('id');
-                let name = $(this).closest('.comment').find('.author_name').text();
-                let url = '{{ route('client.comment') }}' + '/' + id + '/comment';
-                $('#commentForm').attr('action', url);
-                $('#message').val(`@${name} `);
-            });
             let msg = "{{ session('msg') }}";
             let i = "{{ session('i') }}";
             if (msg) {
@@ -288,66 +289,70 @@
                     timer: 1000
                 });
             }
-            // Xử lý sự kiện khi bấm vào nút 'like'
-            $('.like_btn').click(function (event) {
-                // event.preventDefault();
-                let $likeBtn = $(this);
-
-                let likeUrl = $likeBtn.data('url');
-
-                $.ajax({
-                    url: likeUrl,
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            let $likeAmount = $likeBtn.siblings('.like_amount');
-
-                            let likeAmount = parseInt($likeAmount.text(), 10);
-
-                            $likeBtn.toggleClass('active');
-                            if ($likeBtn.hasClass('active')) {
-                                likeAmount++;
-                            } else {
-                                likeAmount--;
-                            }
-                            $likeAmount.text(likeAmount);
-                            location.reload();
-                        }
-                    },
-                })
-            })
-            // Xử lý sự kiện khi bấm vào nút 'dislike'
-            $('.dislike_btn').click(function (event) {
-                // event.preventDefault();
-                let $dislikeBtn = $(this);
-                let dislikeUrl = $dislikeBtn.data('url');
-                $.ajax({
-                    url: dislikeUrl,
-                    method: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            let $dislikeAmount = $dislikeBtn.siblings('.dislike_amount');
-
-                            let dislikeAmount = parseInt($dislikeAmount.text(), 10);
-
-                            $dislikeBtn.toggleClass('active');
-                            if ($dislikeBtn.hasClass('active')) {
-                                dislikeAmount++;
-                            } else {
-                                dislikeAmount--;
-                            }
-                            $dislikeAmount.text(dislikeAmount);
-                            location.reload();
-                        }
-                    },
-                });
-            });
         });
+        $('.comment-reply-link').click(function (e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            let name = $(this).closest('.comment-inner').find('.author_name').text();
+            let url = '{{ route('client.comment') }}' + '/' + id + '/comment';
+            $('#commentForm').attr('action', url);
+            $('#message').val(`@${name} `);
+        });
+        // Xử lý sự kiện khi bấm vào nút 'like'
+        $('.like_btn').click(function (event) {
+            event.preventDefault();
+            let $likeBtn = $(this);
+            let likeUrl = $likeBtn.data('url');
+            $.ajax({
+                url: likeUrl,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function (response) {
+                    if (response.success) {
+                        let $likeQty = $likeBtn.next('.like_qty');
+                        let $dislikeQty = $likeBtn.parent().siblings().find('.dislike_qty');
+                        let $dislikeBtn = $likeBtn.parent().siblings('.dislike_btn');
+
+                        if ($dislikeBtn.hasClass('active')) {
+                            $dislikeBtn.removeClass('active');
+                        }
+
+                        $likeQty.text(response.like_amount);
+                        $dislikeQty.text(response.dislike_amount);
+                        $likeBtn.toggleClass('active');
+                    }
+                },
+            })
+        })
+        // Xử lý sự kiện khi bấm vào nút 'dislike'
+        $('.dislike_btn').click(function (event) {
+            event.preventDefault();
+            let $dislikeBtn = $(this);
+            let dislikeUrl = $dislikeBtn.data('url');
+            $.ajax({
+                url: dislikeUrl,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function (response) {
+                    if (response.success) {
+                        let $dislikeQty = $dislikeBtn.next('.dislike_qty');
+                        let $likeQty = $dislikeBtn.parent().siblings().find('.like_qty');
+                        let $likeBtn = $dislikeBtn.parent().find('.like_btn');
+                        if($likeBtn.hasClass('active')) {
+                            $likeBtn.removeClass('active');
+                        }
+                        $dislikeQty.text(response.dislike_amount);
+                        $likeQty.text(response.like_amount);
+                        $dislikeBtn.toggleClass('active');
+                    }
+                },
+            })
+        })
+
+
     </script>
 @endsection

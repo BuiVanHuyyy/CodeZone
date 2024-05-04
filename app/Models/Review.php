@@ -13,8 +13,13 @@ class Review extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    public function reviewable(): \Illuminate\Database\Eloquent\Relations\MorphTo
+    public function likes(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
-        return $this->morphTo();
+        return $this->morphMany(Like::class, 'likeable');
+    }
+
+    public function dislikes(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Dislike::class, 'dislikeable');
     }
 }
