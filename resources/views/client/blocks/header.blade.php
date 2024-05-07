@@ -84,66 +84,79 @@
                                         </li>
                                     @endif
                                     <li class="account-access rbt-user-wrapper right-align-dropdown d-none d-xl-block">
-                                        <a href="#">
-                                            <i class="feather-user"></i>{{ Auth::user()->name }}
+                                        @php
+                                        if (\Illuminate\Support\Facades\Auth::user()->role == 'student') {
+                                            $avatar = \Illuminate\Support\Facades\Auth::user()->students->avatar;
+                                            $name = \Illuminate\Support\Facades\Auth::user()->students->name;
+                                        } elseif (\Illuminate\Support\Facades\Auth::user()->role == 'admin') {
+                                            $avatar = \Illuminate\Support\Facades\Auth::user()->admins->avatar;
+                                            $name = \Illuminate\Support\Facades\Auth::user()->admins->name;
+                                            $profile = route('admin.dashboard');
+                                        }
+                                        else {
+                                            $avatar = \Illuminate\Support\Facades\Auth::user()->instructors->avatar;
+                                            $name = \Illuminate\Support\Facades\Auth::user()->instructors->name;
+                                            $profile = route('client.profile', [\Illuminate\Support\Facades\Auth::user()->instructors]);
+                                        }
+                                        @endphp
+                                        <a href="{{ $profile ?? '#' }}">
+                                            <i class="feather-user"></i>{{ $name }}
                                         </a>
-                                        <div class="rbt-user-menu-list-wrapper">
-                                            <div class="inner">
-                                                <div class="rbt-admin-profile">
-                                                    <div class="admin-thumbnail">
-                                                        @if(Auth::user()->role == 'student')
+                                        @if(Auth::user()->role != 'admin')
+                                            <div class="rbt-user-menu-list-wrapper">
+                                                <div class="inner">
+                                                    <div class="rbt-admin-profile">
+                                                        <div class="admin-thumbnail">
                                                             <img src="{{ Auth::user()->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="User Images"/>
-                                                        @else
-                                                            <img src="{{ Auth::user()->instructors->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="User Images"/>
-                                                        @endif
+                                                        </div>
+                                                        <div class="admin-info">
+                                                            <span class="name">{{ $name }}</span>
+                                                        </div>
                                                     </div>
-                                                    <div class="admin-info">
-                                                        <span class="name">{{ Auth::user()->name }}</span>
-                                                    </div>
+                                                        <ul class="user-list-wrapper">
+                                                            <li>
+                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.profile') : route('instructor.profile') }}">
+                                                                    <i class="feather-home"></i>
+                                                                    <span>Dashboard</span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.show') }}">
+                                                                    <i class="feather-bookmark"></i>
+                                                                    <span>Trang cá nhân</span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.enrolled_courses') : route('instructor.my_courses') }}">
+                                                                    <i class="feather-shopping-bag"></i>
+                                                                    <span>{{ Auth::user()->role == 'student' ? 'Các khóa học đăng ký' : 'Các khóa học của tôi' }}</span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.my_reviews') }}">
+                                                                    <i class="feather-heart"></i>
+                                                                    <span>Đánh giá</span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.edit') : route('instructor.edit') }}">
+                                                                    <i class="feather-star"></i>
+                                                                    <span>Chỉnh sửa thông tin</span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <form method="post" action="{{ route('logout') }}">
+                                                                    @csrf
+                                                                    <a onclick="event.preventDefault();
+                                                                        this.closest('form').submit();"
+                                                                       href="{{ route('logout') }}"><i
+                                                                            class="feather-log-out"></i><span>Đăng xuất</span></a>
+                                                                </form>
+                                                            </li>
+                                                        </ul>
                                                 </div>
-                                                <ul class="user-list-wrapper">
-                                                    <li>
-                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.profile') : route('instructor.profile') }}">
-                                                            <i class="feather-home"></i>
-                                                            <span>Dashboard</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.show') }}">
-                                                            <i class="feather-bookmark"></i>
-                                                            <span>Trang cá nhân</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.enrolled_courses') : route('instructor.my_courses') }}">
-                                                            <i class="feather-shopping-bag"></i>
-                                                            <span>{{ Auth::user()->role == 'student' ? 'Các khóa học đăng ký' : 'Các khóa học của tôi' }}</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.my_reviews') }}">
-                                                            <i class="feather-heart"></i>
-                                                            <span>Đánh giá</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.edit') : route('instructor.edit') }}">
-                                                            <i class="feather-star"></i>
-                                                            <span>Chỉnh sửa thông tin</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <form method="post" action="{{ route('logout') }}">
-                                                            @csrf
-                                                            <a onclick="event.preventDefault();
-                                                                this.closest('form').submit();"
-                                                               href="{{ route('logout') }}"><i
-                                                                    class="feather-log-out"></i><span>Đăng xuất</span></a>
-                                                        </form>
-                                                    </li>
-                                                </ul>
                                             </div>
-                                        </div>
+                                        @endif
                                     </li>
                                     <li class="access-icon rbt-user-wrapper right-align-dropdown d-block d-xl-none">
                                         <a class="rbt-round-btn" href="#">

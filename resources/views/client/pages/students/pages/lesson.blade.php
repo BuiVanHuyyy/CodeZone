@@ -352,7 +352,5 @@
                 },
             })
         })
-
-
     </script>
 @endsection

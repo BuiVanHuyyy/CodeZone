@@ -44,7 +44,7 @@
                                                 <td><a href="{{ route('admin.instructor.show', ['instructor' => $instructor]) }}">{{ $instructor->name }}</a></td>
                                                 <td><img class="rounded-circle" width="35" src="{{ $instructor->avatar }}" alt=""></td>
                                                 <td>{{ $instructor->gender === 0 ? 'Nữ' : 'Nam' }}</td>
-                                                <td>{{ $instructor->courses->count() }}</td>
+                                                <td>{{ $instructor->courses->where('status', 'approved')->count() }}</td>
                                                 <td>{{ $instructor->phone_number }}</td>
                                                 <td><a href="javascript:void(0);"><strong>{{ $instructor->user->email }}</strong></a></td>
                                                 <td>
@@ -55,7 +55,6 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></a>
                                                 </td>
                                             </tr>

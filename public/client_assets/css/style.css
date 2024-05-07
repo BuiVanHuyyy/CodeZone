@@ -18951,18 +18951,18 @@ span.transparent-button:hover i {
 .social-default.transparent-with-border li a:hover {
   border-color: transparent !important;
 }
-.social-default.transparent-with-border li a.dislike_btn:hover, .social-default.transparent-with-border li a.dislike_btn:after {
+.social-default.transparent-with-border li a.dislike_btn:hover, .social-default.transparent-with-border li a.dislike_btn:after, #blog_dislike:after {
     background-color: var(--color-danger) !important;
 }
 .social-default.transparent-with-border li a::after {
   border: 1px solid var(--color-primary);
 }
-.social-default.transparent-with-border li a.like_btn.active {
+.social-default.transparent-with-border li a.like_btn.active, #blog_like:after {
     background-color: var(--color-primary);
     color: white;
 }
-.social-default.transparent-with-border li a.dislike_btn.active {
-    background-color: var(--color-danger);
+.social-default.transparent-with-border li a.dislike_btn.active, #blog_dislike.active {
+    background-color: var(--color-danger) !important;
     color: white;
 }
 .social-default.with-gradient li a::after {

@@ -35,6 +35,9 @@ class AuthenticatedSessionController extends Controller
             session()->flash('login_required', 'Tài khoản của bạn đã bị khóa');
             return redirect()->back();
         }
+        if (Auth::user()->role == 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 

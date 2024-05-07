@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreCourseRequest;
 use App\Models\Course;
 use App\Models\Lesion;
 use App\Models\Subject;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -15,9 +18,17 @@ use Illuminate\Support\Str;
 
 class CourseController extends Controller
 {
-    public function index(string $course_slug, string $subject_slug = null, string $lesson_slug = null): \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+    public function index(string $course_slug, string $subject_slug = null, string $lesson_slug = null): Application|Factory|View|\Illuminate\Foundation\Application
     {
         $course = Course::where('slug', $course_slug)->first();
+        if (!$course || $course->status !== 'approved') {
+            return view('client.pages.404');
+        }
+        $userId = Auth::user()->students->id;
+        $isEnrolled = $course->students->contains('student_id', $userId);
+        if (!$isEnrolled) {
+            return view('client.pages.404');
+        }
         if (is_null($subject_slug)) {
             $subject_slug = $course->subjects()->orderBy('order')->first()->slug;
         }
@@ -42,7 +53,7 @@ class CourseController extends Controller
         }
         return view('client.pages.students.pages.lesson', compact('course', 'lesson', 'comments'));
     }
-    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         DB::beginTransaction();
         try {
@@ -91,7 +102,6 @@ class CourseController extends Controller
             return redirect()->back()->with('msg', 'Khóa học của bạn đã được gửi đi, vui lòng chờ xác nhận')->with('i', 'success');
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e->getMessage());
             return redirect()->back()->with('msg', 'Tạo khóa học thất bại')->with('i', 'error');
         }
     }

@@ -17,7 +17,6 @@
         Route::get('/all-courses/{category?}', [ViewController::class, 'showCourses'])->name('client.courses');
         Route::get('/course-detail/{slug}', [ViewController::class, 'showCourseDetail'])->name('client.course_detail');
         Route::get('/all-instructors', [ViewController::class, 'showInstructors'])->name('client.instructors');
-        Route::get('/instructor-detail/{slug}', [ViewController::class, 'showInstructorDetail'])->name('client.instructor_detail');
         Route::get('/register-instructor', [ViewController::class, 'registerInstructor'])->name('client.become_instructor');
         Route::get('/all-blogs', [ViewController::class, 'allBlogs'])->name('client.blogs');
         Route::get('/blog-detail/{slug}', [ViewController::class, 'showBlogDetail'])->name('client.blog_detail');
@@ -35,7 +34,6 @@
             });
         });
         Route::prefix('instructor')->middleware('check.user.is.instructor')->group(function () {
-            Route::post('/register', [InstructorController::class, 'store'])->name('client.instructor.register');
             Route::get('/profile', [ViewController::class, 'showInstructorIndex'])->name('instructor.profile');
             Route::get('/info', [ViewController::class, 'showInstructorProfile'])->name('instructor.show');
             Route::get('/edit', [ViewController::class, 'showInstructorEdit'])->name('instructor.edit');
@@ -56,7 +54,6 @@
         });
         Route::post('/upload-avatar/{student}', [StudentController::class, 'uploadAvatar'])->name('upload.avatar');
         Route::post('/upload-avatar-instructor/{instructor}', [InstructorController::class, 'uploadAvatar'])->name('upload.instructor.avatar');
-
         Route::post('/upload-tmp-avatar', [StudentController::class, 'uploadTmpAvatar'])->name('upload.tmp.avatar');
         Route::prefix('cart')->group(function () {
             Route::post('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('cart.add');
@@ -67,12 +64,14 @@
         Route::post('/comment/{commentable_id?}/{type?}', [CommentController::class, 'store'])->name('client.comment');
         Route::post('review/{reviewable_type}/{reviewable_id?}', [ReviewController::class, 'store'])->name('client.review.store');
         Route::delete('review/{id}', [ReviewController::class, 'destroy'])->name('client.review.destroy');
+        Route::delete('comment/{id}', [CommentController::class, 'destroy'])->name('client.comment.destroy');
     });
 
     Route::get('/google/redirect', [GoogleLoginController::class, 'redirect'])->name('client.google.redirect');
     Route::get('/google/callback', [GoogleLoginController::class, 'callback'])->name('client.google.callback');
     Route::get('/facebook/redirect', [FacebookController::class, 'redirect'])->name('client.facebook.redirect');
     Route::get('/facebook/callback', [FacebookController::class, 'callback'])->name('client.facebook.callback');
+    Route::post('instructor/register', [InstructorController::class, 'store'])->name('client.instructor.register');
 
 
 

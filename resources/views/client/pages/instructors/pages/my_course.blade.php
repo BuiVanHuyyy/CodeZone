@@ -169,7 +169,7 @@
                                             <ul class="rbt-meta">
                                                 <li><i class="feather-book"></i>{{ $course->subjects->count() }} bài học
                                                 </li>
-                                                <li><i class="feather-users"></i>{{ $course->enrollments->count() }}
+                                                <li><i class="feather-users"></i>{{ $course->enrollments->where('status', 'paid')->count() }}
                                                     học viên
                                                 </li>
                                             </ul>

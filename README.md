@@ -6,9 +6,9 @@ Trang web bán khóa học online
 + Cho phép học sinh đăng ký đăng nhập
 + Chỉnh sửa thông tin cá nhân
 + Theo dõi tiến trình, điểm số các bài kiểm tra của bản thân
-+ Xem, trả lời, tạo, (sửa, xóa bình luận của mình) like/dislike bình luận về các khóa học, giảng viên, bài giảng, blog
-+ Tạo, xem, (xóa, sửa review của mình), like/dislike review khóa học, giảng viên
-+ Thanh toán học phí các khóa học đăng ký bằng VNPAY/MOMO (sau khi thanh toán thành công sẽ có email xác nhận)
++ Xem, trả lời, tạo, xóa like/dislike bình luận về các khóa học, giảng viên, bài giảng, blog
++ Tạo, xem, like/dislike review khóa học, giảng viên
++ Thanh toán học phí các khóa học đăng ký bằng VNPAY
 
 2. Quản lý giảng viên
 
@@ -27,9 +27,57 @@ Trang web bán khóa học online
 + Xóa, ẩn các bình luận về blogs, giảng viên, khóa học
 + Xóa, ẩn các review về khóa học giảng viên
 + Xem số lượng học viên, giảng viên trên hệ thống
-+ Xem tổng thu nhập của khóa học, giảng viên theo từng tháng
-+ Xem số lượng học viên, giảng viên đăng ký mới theo từng tháng
++ Xem tổng thu nhập của khóa học, giảng viên
++ Xem số lượng học viên, giảng viên đăng ký mới
 
 ## Bảng ERD
 
 https://app.diagrams.net/#G1L40lbD9kqctuw3pZAJlehjb8rPwR_kpS#%7B%22pageId%22%3A%22UPsowsfwTSBu_0FOHs6g%22%7D
+
+## Công nghệ sử dụng
+
+1. Frontend: 
+- [HiStudy - Online Courses & Education Template](https://themeforest.net/item/histudy-online-courses-education-template/42846507)
+- [Akkhor - School Management Admin Template](https://themeforest.net/item/akkhor-school-management-admin-template/23687250)
+2. Backend: Laravel 10
+- Laravel breeze
+- Laravel socialite
+- Laravel middleware
+- Laravel event listener
+- Laravel mail
+3. Database: MySQL
+4. Công cụ quản lý mã nguồn: Git
+5. jQuery(ajax)
+6. VNPAY
+7. Login with Goodle
+
+### Tài khoản thanh toán
+NCB
+
+Thẻ nội địa
+
+- Thành công: 9704198526191432198
+
+- Không đủ số dư: 9704195798459170488
+
+- Bị hết hạn: 9704194841945513
+
+Thẻ quốc tế thành công: 
+
+- Thành công: 
+
+    Loại thẻ quốc tếVISA (3DS)
+    
+    Số thẻ: 4456530000001096
+    
+    CVC/CVV: 123
+    
+    Tên chủ thẻ:NGUYEN VAN A
+    
+    Ngày hết hạn:12/24
+    
+    Email:test@gmail.com
+    
+    Địa chỉ:22 Lang Ha
+    
+    Thành phố:Ha Noi

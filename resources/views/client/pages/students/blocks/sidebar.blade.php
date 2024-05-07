@@ -25,12 +25,6 @@
                                 <span>Khóa học đăng ký</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="">
-                                <i class="feather-star"></i>
-                                <span>Đánhgiá</span>
-                            </a>
-                        </li>
                     </ul>
                 </nav>
 

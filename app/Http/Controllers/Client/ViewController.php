@@ -72,6 +72,9 @@
         public function showCourseDetail(string $slug): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             $course = Course::where('slug', $slug)->first();
+            if (!$course) {
+                return view('client.pages.404');
+            }
             $reviews = Review::where('reviewable_id', $course->id)->where('reviewable_type', 'course')->get();
             foreach ($reviews as $review) {
                 $likeAmount = Like::where('likeable_type', 'review')->where('likeable_id', $review->id)->count();
@@ -124,11 +127,6 @@
             return view('client.pages.all_instructors');
         }
 
-        public function showInstructorDetail(string $slug): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
-        {
-            return view('client.pages.instructor_detail');
-        }
-
         public function registerInstructor(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             return view('client.pages.become_instructor');
@@ -143,9 +141,36 @@
         public function showBlogDetail(string $slug): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
             $blog = Blog::where('slug', $slug)->first();
+            if (!$blog) {
+                return view('client.pages.404');
+            }
+            if(Auth::check()) {
+                $blog->setAttribute('is_liked', Like::where('likeable_type', 'blog')->where('likeable_id', $blog->id)->where('user_id', Auth::id())->count() > 0);
+                $blog->setAttribute('is_disliked', Dislike::where('dislikeable_type', 'blog')->where('dislikeable_id', $blog->id)->where('user_id', Auth::id())->count() > 0);
+            }
             $like_amount = Like::where('likeable_type', 'blog')->where('likeable_id', $blog->id)->count();
             $dislike_amount = Dislike::where('dislikeable_type', 'blog')->where('dislikeable_id', $blog->id)->count();
-            return view('client.pages.blog_detail', compact('blog', 'like_amount', 'dislike_amount'));
+            $comments = \App\Models\Comment::where('commentable_id', $blog->id)->where('commentable_type', 'blog')->get();
+            foreach ($comments as $comment) {
+                $comment->setAttribute('like_amount', Like::where('likeable_type', 'comment')->where('likeable_id', $comment->id)->count());
+                $comment->setAttribute('dislike_amount', Dislike::where('dislikeable_type', 'comment')->where('dislikeable_id', $comment->id)->count());
+                $comment->setAttribute('replies', \App\Models\Comment::where('commentable_id', $comment->id)->where('commentable_type', 'comment')->get());
+                if (Auth::check()) {
+                    $comment->setAttribute('is_liked', Like::where('likeable_type', 'comment')->where('likeable_id', $comment->id)->where('user_id', Auth::id())->count() > 0);
+                    $comment->setAttribute('is_disliked', Dislike::where('dislikeable_type', 'comment')->where('dislikeable_id', $comment->id)->where('user_id', Auth::id())->count() > 0);
+                }
+                if ($comment->replies->count() > 0) {
+                    foreach ($comment->replies as $reply) {
+                        $reply->setAttribute('like_amount', Like::where('likeable_type', 'comment')->where('likeable_id', $reply->id)->count());
+                        $reply->setAttribute('dislike_amount', Dislike::where('dislikeable_type', 'comment')->where('dislikeable_id', $reply->id)->count());
+                        if (Auth::check()) {
+                            $reply->setAttribute('is_liked', Like::where('likeable_type', 'comment')->where('likeable_id', $reply->id)->where('user_id', Auth::id())->count() > 0);
+                            $reply->setAttribute('is_disliked', Dislike::where('dislikeable_type', 'comment')->where('dislikeable_id', $reply->id)->where('user_id', Auth::id())->count() > 0);
+                        }
+                    }
+                }
+            }
+            return view('client.pages.blog_detail', compact('blog', 'like_amount', 'dislike_amount', 'comments'));
         }
 
         public function showStudentIndex(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application

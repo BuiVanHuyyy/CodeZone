@@ -60,7 +60,7 @@
                                 @php
                                     $totalStudents = 0;
                                     foreach (\Illuminate\Support\Facades\Auth::user()->instructors->courses->where('status', 'approved') as $course) {
-                                        $totalStudents += $course->enrollments->count();
+                                        $totalStudents += $course->enrollments->where('status', 'paid')->count();
                                     }
                                 @endphp
                                 <h3 class="counter without-icon color-pink">
@@ -85,7 +85,7 @@
                                 @php
                                 $totalMoney = 0;
                                 foreach (\Illuminate\Support\Facades\Auth::user()->instructors->courses->where('status', 'approved') as $course) {
-                                    $totalMoney += $course->enrollments->sum('price');
+                                    $totalMoney += $course->enrollments->where('status', 'paid')->sum('price');
                                 }
                                 @endphp
                                 <h3 class="counter color-warning">

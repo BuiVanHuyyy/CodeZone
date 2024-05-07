@@ -342,7 +342,7 @@
                     </div>
                     <div class="rbt-show-more-btn">Xem thêm</div>
 
-                    @if(Auth::check() && $isStudent && !$isReviewed)
+                    @if(Auth::check() && $isStudent && !$isReviewed && $instructor->id != Auth::user()->instructors->id)
                         <div id="review-respond" class="review-respond">
                             <h4 class="title">Thêm đánh giá của bạn về giảng viên</h4>
                             <form id="reviewForm" method="post" action="{{ route('client.review.store', ['instructor', $instructor->id]) }}">

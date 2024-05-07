@@ -59,9 +59,28 @@ class CourseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
-        //
+        DB::beginTransaction();
+        try {
+            $course = Course::find($id);
+            if (file_exists(public_path($course->thumbnail))) {
+                unlink(public_path($course->thumbnail));
+            }
+            foreach ($course->subjects as $subject) {
+                foreach ($subject->lessons as $lesson) {
+                    $lesson->forceDelete();
+                }
+                $subject->forceDelete();
+            }
+            $course->forceDelete();
+            DB::commit();
+            return response()->json(['status' => 'success', 'msg' => 'Xóa khóa học thành công']);
+        }
+        catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error', 'msg' => 'Xóa khóa học thất bại']);
+        }
     }
     public function updateStatus(int|string $id, Request $request): \Illuminate\Http\JsonResponse
     {

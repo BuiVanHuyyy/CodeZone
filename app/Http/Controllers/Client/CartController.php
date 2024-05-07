@@ -14,6 +14,7 @@ class CartController extends Controller
 {
     public function addToCart(int|string $id): \Illuminate\Http\JsonResponse
     {
+
         $course = Course::find($id);
         $cart = session()->get('cart', []);
         if (isset($cart[$course->id])) {
@@ -142,17 +143,19 @@ class CartController extends Controller
                 $enrollment->status = 'failed';
                 $enrollment->save();
             }
-        }
-        foreach ($order->enrollments as $enrollment){
-            $enrollment->status = 'paid';
-            $enrollment->save();
-        }
+            session()->flash('message', 'Thanh toán thất bại!');
+        } else {
+            foreach ($order->enrollments as $enrollment){
+                $enrollment->status = 'paid';
+                $enrollment->save();
+            }
 
-        //Update order status
-        $order->status = 'paid';
-        $order->save();
-        session()->forget('cart');
-        session()->flash('message', 'Thanh toán thành công!');
+            //Update order status
+            $order->status = 'paid';
+            $order->save();
+            session()->forget('cart');
+            session()->flash('message', 'Thanh toán thành công!');
+        }
         return redirect()->route('client.home');
     }
 }

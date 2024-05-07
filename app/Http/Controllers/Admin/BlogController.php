@@ -6,7 +6,10 @@ use App\Events\SendMailNoticeCourseEvent;
 use App\Events\SendMailNotiveBlogEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
+use App\Models\Comment;
 use App\Models\Course;
+use App\Models\Dislike;
+use App\Models\Like;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -19,7 +22,7 @@ class BlogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $status = $request->status ?? null;
         if (!is_null($status)) {
@@ -52,6 +55,9 @@ class BlogController extends Controller
     public function show(string $id): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $blog = Blog::withTrashed()->find($id);
+        $blog->setAttribute('like_amount', Like::where('likeable_id', $blog->id)->where('likeable_type', 'blog')->count());
+        $blog->setAttribute('comments', Comment::where('commentable_id', $blog->id)->where('commentable_type', 'blog')->get());
+        $blog->setAttribute('dislike_amount', Dislike::where('dislikeable_id', $blog->id)->where('dislikeable_type', 'blog')->count());
         return view('admin.pages.blog_detail', compact('blog'));
     }
 
@@ -74,9 +80,24 @@ class BlogController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
-        //
+        $blog = Blog::find($id);
+        if($blog->thumbnail != '') {
+            unlink(public_path('client_assets/images/blog/' . $blog->thumbnail));
+            $content = $blog->content;
+            preg_match_all('/<img[^>]+src="([^">]+)"/i', $content, $matches);
+            $imageUrls = $matches[1];
+            foreach ($imageUrls as $url) {
+                $filePath = public_path(str_replace(url('/'), '', $url));
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+        }
+
+        $blog->forceDelete();
+        return response()->json(['status' => 'success', 'msg' => 'Xóa bài viết thành công']);
     }
     public function updateStatus(int|string $id, Request $request): JsonResponse
     {

@@ -37,7 +37,7 @@
                                     </thead>
                                     <tbody>
                                     @foreach($courses->sortByDesc('created_at') as $course)
-                                        <tr class="text-center">
+                                        <tr id="tr-{{ $course->id }}" class="text-center">
                                             <td>#{{ $course->id }}</td>
                                             <td>
                                                 <a href="{{ route('admin.course.show', ['course' => $course]) }}"><strong>{{ $course->title }}</strong></a>
@@ -67,10 +67,7 @@
                                             <td>{{ $course->category->title }}</td>
                                             <td>{{ date_format(date_create($course->created_at), 'd/m/Y') }}</td>
                                             <td>
-                                                <a href="javascript:void(0);" class="btn btn-sm btn-primary"><i
-                                                        class="la la-pencil"></i></a>
-                                                <a href="javascript:void(0);" class="btn btn-sm btn-danger"><i
-                                                        class="la la-trash-o"></i></a>
+                                                <button data-id="{{ $course->id }}" data-url="{{ route('admin.course.destroy', [$course->id]) }}" class="del-button btn btn-sm btn-danger"><i class="la la-trash-o"></i></button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -121,5 +118,41 @@
         let table = new DataTable('#dataTable', {
             responsive: true
         });
+        $('.del-button').on('click', function (e) {
+            e.preventDefault();
+            let url = $(this).data('url');
+            let id = $(this).data('id');
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn xóa?',
+                text: "Thao tác này không thể hoàn tác!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Có, xóa nó!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                Swal.fire({
+                                    position: "center",
+                                    icon: "success",
+                                    title: response.msg,
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                });
+                                $('#tr-' + id).remove();
+                            }
+                        }
+                    });
+                }
+            })
+        })
     </script>
 @endsection

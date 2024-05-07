@@ -294,16 +294,15 @@
                                 </div>
                                 <div class="media align-items-center">
                                     <div class="thumbnail">
-                                        <a href="#">
-                                            <img src="{{ $course->author->avatar }}"
-                                                 alt="{{ $course->author->name }} avatar"/>
+                                        <a href="{{ route('client.profile', [$course->author]) }}">
+                                            <img src="{{ $course->author->avatar }}" alt="{{ $course->author->name }} avatar"/>
                                         </a>
                                     </div>
                                     <div class="media-body">
                                         <div class="author-info">
                                             <h5 class="title">
                                                 <a class="hover-flip-item-wrapper"
-                                                   href="#}">{{ $course->author->name }}</a>
+                                                   href="{{ route('client.profile', [$course->author]) }}">{{ $course->author->name }}</a>
                                             </h5>
                                             <span class="b3 subtitle">{{ $course->author->current_job }}</span>
                                             <ul class="rbt-meta mb--20 mt--10">
@@ -726,7 +725,7 @@
                                                         <form id="deleteForm" action="{{ route('client.review.destroy', [$review->id]) }}" method="POST">
                                                              @csrf
                                                             @method('DELETE')
-                                                            <a id="deleteButton" href="" ><i class="fa-solid fa-trash"></i></a>
+                                                            <a class="deleteButton" href="" ><i class="fa-solid fa-trash"></i></a>
                                                         </form>
                                                     </div>
                                                 @endif
@@ -915,12 +914,6 @@
                                 </div>
                                 @if($isBought)
                                     <div class="add-to-card-button mt--15">
-                                        <button class="rbt-btn btn-border icon-hover w-100 d-block text-center">
-                                            <span class="btn-text">Đã mua</span>
-                                            <span class="btn-icon"><i class="feather-check"></i></span>
-                                        </button>
-                                    </div>
-                                    <div class="add-to-card-button mt--15">
                                         <a href="{{ route('course.index', $course->slug) }}" class="add-to-cart-btn rbt-btn btn-gradient icon-hover w-100 d-block text-center">
                                             <span class="btn-text">Vào học ngay</span>
                                             <span class="btn-icon"><i class="feather-arrow-right"></i></span>
@@ -945,9 +938,9 @@
                                 <div class="rbt-widget-details has-show-more">
                                     <ul class="has-show-more-inner-content rbt-course-details-list-wrapper">
                                         <li>
-                                            <span>Đăng đăng ký</span>
+                                            <span>Số lượng học viên</span>
                                             <span
-                                                class="rbt-feature-value rbt-badge-5">{{ $course->enrollments->count() }}</span>
+                                                class="rbt-feature-value rbt-badge-5">{{ $course->enrollments->where('status', 'paid')->count() }}</span>
                                         </li>
                                         <li>
                                             <span>Bài giảng</span>
@@ -1075,7 +1068,7 @@
                         timer: 1000
                     });
                 }
-                $('#deleteButton').on('click', function(e) {
+                $('.deleteButton').on('click', function(e) {
                     e.preventDefault();
                     Swal.fire({
                         title: 'Bạn có chắc chắn muốn xóa không?',

@@ -112,7 +112,7 @@
                 ['Chờ phê duyệt', {{ $pendingInstructorCount }}],
             ]);
             let optionsInstructor = {
-                title: 'Trạng thái các khóa học'
+                title: 'Trạng thái các giảng viên'
             };
             let chartInstructor = new google.visualization.PieChart(document.getElementById('statusInstructor'));
             chartInstructor.draw(dataInstructor, optionsInstructor);
