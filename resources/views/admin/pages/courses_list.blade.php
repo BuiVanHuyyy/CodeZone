@@ -43,7 +43,7 @@
                                                 <a href="{{ route('admin.course.show', ['course' => $course]) }}"><strong>{{ $course->title }}</strong></a>
                                             </td>
                                             <td>₫ {{ number_format($course->price, 0) }}</td>
-                                            <td>{{ count($course->enrollments) }}</td>
+                                            <td>{{ count($course->students) }}</td>
                                             <td>
                                                 <a href="{{ route('admin.instructor.show', ['instructor' => $course->author]) }}"><strong>{{ $course->author->name }}</strong></a>
                                             </td>

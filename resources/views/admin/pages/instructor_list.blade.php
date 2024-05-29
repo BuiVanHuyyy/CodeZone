@@ -14,19 +14,19 @@
                                 <div class="table-responsive">
                                     <form method="get" action="{{ route('admin.instructor.index') }}">
                                         <div class="d-flex">
-                                            <select name="status" class="w-50" aria-label="Default select example">
+                                            <select name="status" class="w-25" aria-label="Default select example">
                                                 <option selected>Lọc theo status</option>
                                                 <option {{ $status == 'pending' ? 'selected' : '' }} value="pending">Chờ xác thực</option>
                                                 <option {{ $status == 'active' ? 'selected' : '' }} value="active">Xác thực</option>
                                                 <option {{ $status == 'suspended' ? 'selected' : '' }} value="suspended">Từ chối</option>
                                             </select>
-                                            <button class="w-25 btn btn-primary">Lọc</button>
+                                            <button style="width: 15%" class="btn btn-primary p-0">Lọc</button>
                                         </div>
                                     </form>
-                                    <table id="dataTable" class="display" style="min-width: 1200px">
+                                    <table id="dataTable" class="display text-center" style="min-width: 1200px">
                                         <thead>
                                         <tr>
-                                            <th>Id</th>
+                                            <th>#</th>
                                             <th>Tên</th>
                                             <th>Avatar</th>
                                             <th>Giới tính</th>
@@ -34,28 +34,24 @@
                                             <th>Số điện thoai</th>
                                             <th>Email</th>
                                             <th>Trạng thái</th>
-                                            <th>Action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         @foreach($instructors->sortByDesc('id') as $instructor)
                                             <tr>
-                                                <td>#{{ $instructor->user->id }}</td>
+                                                <td>{{ $loop->iteration }}</td>
                                                 <td><a href="{{ route('admin.instructor.show', ['instructor' => $instructor]) }}">{{ $instructor->name }}</a></td>
-                                                <td><img class="rounded-circle" width="35" src="{{ $instructor->avatar }}" alt=""></td>
-                                                <td>{{ $instructor->gender === 0 ? 'Nữ' : 'Nam' }}</td>
+                                                <td><img class="rounded-circle" width="35" src="{{ $instructor->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt=""></td>
+                                                <td>{{ $instructor->gender == 0 ? 'Nữ' : 'Nam' }}</td>
                                                 <td>{{ $instructor->courses->where('status', 'approved')->count() }}</td>
                                                 <td>{{ $instructor->phone_number }}</td>
                                                 <td><a href="javascript:void(0);"><strong>{{ $instructor->user->email }}</strong></a></td>
                                                 <td>
-                                                    <select data-url="{{ route('admin.update-status', [$instructor->id]) }}" class="statusSelect form-select" name="status" aria-label="Status select">
+                                                    <select data-url="{{ route('admin.update-status', [$instructor->id]) }}" class="form-select p-0 statusSelect" name="status" aria-label="Status select">
                                                         <option {{ $instructor->user->status === 'pending' ? 'selected' : '' }} value="pending">Chờ phê duyệt</option>
                                                         <option {{ $instructor->user->status === 'active' ? 'selected' : '' }} value="active">Hoạt động</option>
                                                         <option {{ $instructor->user->status === 'suspended' ? 'selected' : '' }} value="suspended">Khóa</option>
                                                     </select>
-                                                </td>
-                                                <td>
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></a>
                                                 </td>
                                             </tr>
                                         @endforeach

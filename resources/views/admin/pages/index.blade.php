@@ -1,7 +1,6 @@
 @extends('admin.layout.master')
 @section('content')
     <div class="container-fluid">
-
         <div class="row">
             <div class="col-xl-12 col-xxl-12 col-sm-12">
                 <div class="row">
@@ -76,7 +75,7 @@
                 $pendingCount = $courses->where('status', 'pending')->count();
                 $activeCount = $courses->where('status', 'approved')->count();
                 $rejectCount = $courses->where('status', 'rejected')->count();
-                $instructors = \App\Models\Instructor::all();
+                $instructors = \App\Models\Instructor::with('user')->get();
 
                 $pendingInstructorCount = 0;
                 $activeInstructorCount = 0;

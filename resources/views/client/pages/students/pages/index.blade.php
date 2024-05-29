@@ -19,7 +19,7 @@
                                 </div>
                                 <div class="content">
                                     <h3 class="counter without-icon color-primary">
-                                        <span class="odometer" data-count="{{ Auth::user()->students->courses->count() }}">00</span>
+                                        <span class="odometer" data-count="{{ Auth::user()->student->courses->count() }}">00</span>
                                     </h3>
                                     <span class="rbt-title-style-2 d-block">Khóa học đã đăng ký</span>
                                 </div>

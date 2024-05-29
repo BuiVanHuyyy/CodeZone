@@ -4,22 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Review extends Model
 {
     use HasFactory, softDeletes;
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    public function likes(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function likes(): MorphMany
     {
         return $this->morphMany(Like::class, 'likeable');
     }
 
-    public function dislikes(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function dislikes(): MorphMany
     {
         return $this->morphMany(Dislike::class, 'dislikeable');
+    }
+    public function reviewable(): MorphTo
+    {
+        return $this->morphTo();
     }
 }

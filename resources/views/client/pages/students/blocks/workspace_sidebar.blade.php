@@ -14,7 +14,7 @@
         <hr class="mt--10">
         <div class="rbt-accordion-style rbt-accordion-02 for-right-content accordion">
             <div class="accordion" id="accordionExampleb2">
-                @foreach($course->subjects()->orderBy('order')->get() as $i => $subject)
+                @foreach($course->subjects()->with('lessons')->orderBy('order')->get() as $i => $subject)
                     <div class="accordion-item card">
                         <h2 class="accordion-header card-header" id="headingTwo{{ $loop->iteration }}">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"

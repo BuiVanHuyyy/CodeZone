@@ -5,10 +5,12 @@
         .rbt-header .rbt-header-wrapper.rbt-sticky {
             position: absolute;
         }
+
         .star_count i.fa-star {
             color: #ccc;
             font-size: 30px;
         }
+
         .star_count i.fa-star.checked {
             color: orange;
         }
@@ -18,10 +20,7 @@
     <!-- Start breadcrumb Area -->
     <div class="rbt-breadcrumb-default rbt-breadcrumb-style-3">
         <div class="breadcrumb-inner">
-            <img
-                src="{{ asset('client_assets/images/bg/bg-image-10.jpg') }}"
-                alt="Education Images"
-            />
+            <img src="{{ asset('client_assets/images/bg/bg-image-10.jpg') }}" alt="Education Images"/>
         </div>
         <div class="container">
             <div class="row">
@@ -34,40 +33,43 @@
                             <div class="feature-sin best-seller-badge">
                                     <span class="rbt-badge-2">
                                         <span class="image">
-                                            <img src="{{ asset('client_assets/images/icons/card-icon-1.png') }}" alt="Best Seller Icon"/>
+                                            <img src="{{ asset('client_assets/images/icons/card-icon-1.png') }}"
+                                                 alt="Best Seller Icon"/>
                                         </span>
                                         Bestseller
                                     </span>
                             </div>
 
                             <div class="feature-sin rating">
-                                @for($i = 1; $i <= ceil($course->rating); $i++)
+                                @for($i = 1; $i <= ceil($course->reviews->avg('rating') ?? 0); $i++)
                                     <i class="fa-solid fa-star"></i>
                                 @endfor
-                                @for($i = 1; $i <= 5 - $course->rating; $i++)
+                                @for($i = 1; $i <= 5 - ceil($course->reviews->avg('rating') ?? 0); $i++)
                                     <i class="fa-solid fa-star" style="color: #0F0F0F;"></i>
                                 @endfor
                             </div>
 
                             <div class="feature-sin total-rating">
-                                <a class="rbt-badge-4" href="#"
-                                >{{ $course->reviews->count() }} đánh giá</a
-                                >
+                                <a class="rbt-badge-4" href="#">{{ $course->reviews->count() }} đánh giá</a>
                             </div>
 
                             <div class="feature-sin total-student">
-                                <span>{{ $course->enrollments->where('status', 'paid')->count() }} học viên</span>
+                                <span>{{ $course->students->where('status', 'paid')->count() }} học viên</span>
                             </div>
                         </div>
 
                         <div class="rbt-author-meta mb--20">
                             <div class="rbt-avater">
-                                <a href="{{ route('client.profile', [$course->author]) }}">
-                                    <img src="{{ $course->author->avatar ?? asset('client_assets/images/client/avatar-02.png') }}" alt="{{ $course->author->name }} avatar"/>
+                                <a href="{{ route('client.profile', [$course->author->slug]) }}">
+                                    <img
+                                        src="{{ $course->author->avatar ?? asset('client_assets/images/client/avatar-02.png') }}"
+                                        alt="{{ $course->author->name }} avatar"/>
                                 </a>
                             </div>
                             <div class="rbt-author-info">
-                                bỡi <a href="{{ route('client.profile', [$course->author]) }}">{{ $course->author->name }}</a> thuộc danh mục
+                                bỡi <a
+                                    href="{{ route('client.profile', [$course->author->slug]) }}">{{ $course->author->name }}</a>
+                                thuộc danh mục
                                 <a href="#">{{ $course->category->title }}</a>
                             </div>
                         </div>
@@ -101,9 +103,7 @@
                                         <a href="#overview">Tổng quan</a>
                                     </li>
                                     <li>
-                                        <a href="#coursecontent"
-                                        >Học phần</a
-                                        >
+                                        <a href="#coursecontent">Học phần</a>
                                     </li>
                                     <li>
                                         <a href="#itructor">Giảng viên</a>
@@ -116,7 +116,8 @@
                         </div>
 
                         <!-- Start Course Feature Box  -->
-                        <div class="rbt-course-feature-box overview-wrapper rbt-shadow-box mt--30 has-show-more" id="overview">
+                        <div class="rbt-course-feature-box overview-wrapper rbt-shadow-box mt--30 has-show-more"
+                             id="overview">
                             <div class="rbt-course-feature-inner has-show-more-inner-content">
                                 <div class="section-title">
                                     <h4 class="rbt-title-style-3">
@@ -235,7 +236,7 @@
                                 </div>
                                 <div class="rbt-accordion-style rbt-accordion-02 accordion">
                                     <div class="accordion" id="accordionExample2">
-                                        @foreach($course->subjects->sortBy('order') as $subject)
+                                        @foreach($course->subjects()->with('lessons')->get()->sortBy('order') as $subject)
                                             <div class="accordion-item card">
                                                 <h2 class="accordion-header card-header"
                                                     id="headingTwo{{ $loop->iteration }}">
@@ -258,12 +259,14 @@
                                                                     <a href="">
                                                                         <div class="course-content-left">
                                                                             {!! $lesson->video ? '<i class="feather-play-circle"></i>' : '<i class="fa-regular fa-file"></i>' !!}
-                                                                            <span class="text">{{ $lesson->title }}</span>
+                                                                            <span
+                                                                                class="text">{{ $lesson->title }}</span>
                                                                         </div>
                                                                         <div class="course-content-right">
                                                                             <span class="min-lable">30m in</span>
                                                                             @if($lesson->is_preview)
-                                                                                <span class="rbt-badge variation-03 bg-primary-opacity">
+                                                                                <span
+                                                                                    class="rbt-badge variation-03 bg-primary-opacity">
                                                                                     <i class="feather-eye"></i>Preview
                                                                                 </span>
                                                                             @else
@@ -294,35 +297,33 @@
                                 </div>
                                 <div class="media align-items-center">
                                     <div class="thumbnail">
-                                        <a href="{{ route('client.profile', [$course->author]) }}">
-                                            <img src="{{ $course->author->avatar }}" alt="{{ $course->author->name }} avatar"/>
+                                        <a href="{{ route('client.profile', [$course->author->slug]) }}">
+                                            <img src="{{ $course->author->avatar }}"
+                                                 alt="{{ $course->author->name }} avatar"/>
                                         </a>
                                     </div>
                                     <div class="media-body">
                                         <div class="author-info">
                                             <h5 class="title">
                                                 <a class="hover-flip-item-wrapper"
-                                                   href="{{ route('client.profile', [$course->author]) }}">{{ $course->author->name }}</a>
+                                                   href="{{ route('client.profile', [$course->author->slug]) }}">{{ $course->author->name }}</a>
                                             </h5>
                                             <span class="b3 subtitle">{{ $course->author->current_job }}</span>
                                             <ul class="rbt-meta mb--20 mt--10">
                                                 <li>
-                                                    {{ number_format($course->author->additional_info['rating'], 0) }}<i
+                                                    {{ number_format($course->author->reviews->avg('rating') ?? 0, 1) }}<i
                                                         style="margin-left: 5px" class="fa fa-star color-warning"></i>
                                                     <span class="rbt-badge-5 ml--5"> Rating</span>
-                                                    {{ number_format($course->author->additional_info['reviews']->count()) }}
+                                                    {{ number_format($course->author->reviews->count()) }}
                                                     đánh giá
                                                 </li>
                                                 <li>
-                                                    <i
-                                                        class="feather-users"
-                                                    ></i
-                                                    >{{ $course->author->additional_info['total_students'] }} học viên
+                                                    <i class="feather-users"></i>{{ $course->author->courses()->withCount('students')->get()->sum('students_count') }}
+                                                    học viên
                                                 </li>
                                                 <li>
-                                                    <a href="#"><i
-                                                            class="feather-video"></i>{{ $course->author->courses->count() }}
-                                                        khóa học</a>
+                                                    <i class="feather-video"></i>{{ $course->author->courses->where('status', 'approved')->count() }}
+                                                    khóa học
                                                 </li>
                                             </ul>
                                         </div>
@@ -403,37 +404,17 @@
                                     </div>
                                     <div class="col-lg-9">
                                         @php
-                                            $fiveStar = 0;
-                                            $fourStar = 0;
-                                            $threeStar = 0;
-                                            $twoStar = 0;
-                                            $oneStar = 0;
+                                            $ratings = array_fill(1, 5, 0);
+                                            $totalReviews = count($course->reviews);
+
                                             foreach ($course->reviews as $review) {
-                                                switch ($review->rating) {
-                                                    case 1:
-                                                        $oneStar++;
-                                                        break;
-                                                    case 2:
-                                                        $twoStar++;
-                                                        break;
-                                                    case 3:
-                                                        $threeStar++;
-                                                        break;
-                                                    case 4:
-                                                        $fourStar++;
-                                                        break;
-                                                    case 5:
-                                                        $fiveStar++;
-                                                        break;
-                                                }
+                                                $ratings[$review->rating]++;
                                             }
-                                            $totalReviews = $oneStar + $twoStar + $threeStar + $fourStar + $fiveStar;
+
                                             if ($totalReviews !== 0) {
-                                                $oneStar = ($oneStar / $totalReviews) * 100;
-                                                $twoStar = ($twoStar / $totalReviews) * 100;
-                                                $threeStar = ($threeStar / $totalReviews) * 100;
-                                                $fourStar = ($fourStar / $totalReviews) * 100;
-                                                $fiveStar = ($fiveStar / $totalReviews) * 100;
+                                                foreach ($ratings as $stars => $count) {
+                                                    $ratings[$stars] = ($count / $totalReviews) * 100;
+                                                }
                                             }
                                         @endphp
                                         <div class="review-wrapper">
@@ -472,10 +453,10 @@
                                                 </div>
                                                 <div class="progress">
                                                     <div class="progress-bar" role="progressbar"
-                                                         style="width: {{ $fiveStar }}%" aria-valuenow="63"
+                                                         style="width: {{ $ratings[5] }}%" aria-valuenow="63"
                                                          aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
-                                                <span class="value-text">{{ number_format($fiveStar, 0) }}%</span>
+                                                <span class="value-text">{{ number_format($ratings[5], 0) }}%</span>
                                             </div>
 
                                             <div class="single-progress-bar">
@@ -512,11 +493,11 @@
                                                 </div>
                                                 <div class="progress">
                                                     <div class="progress-bar" role="progressbar"
-                                                         style="width: {{ $fourStar }}%" aria-valuenow="29"
+                                                         style="width: {{ $ratings[4] }}%" aria-valuenow="29"
                                                          aria-valuemin="0" aria-valuemax="100"
                                                     ></div>
                                                 </div>
-                                                <span class="value-text">{{ number_format($fourStar, 0) }}%</span>
+                                                <span class="value-text">{{ number_format($ratings[4], 0) }}%</span>
                                             </div>
 
                                             <div class="single-progress-bar">
@@ -552,10 +533,10 @@
                                                 </div>
                                                 <div class="progress">
                                                     <div class="progress-bar" role="progressbar"
-                                                         style="width: {{ $threeStar }}%" aria-valuenow="6"
+                                                         style="width: {{ $ratings[2] }}%" aria-valuenow="6"
                                                          aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
-                                                <span class="value-text">{{ number_format($threeStar, 0) }}%</span>
+                                                <span class="value-text">{{ number_format($ratings[3], 0) }}%</span>
                                             </div>
 
                                             <div class="single-progress-bar">
@@ -590,10 +571,10 @@
                                                 </div>
                                                 <div class="progress">
                                                     <div class="progress-bar" role="progressbar"
-                                                         style="width: {{ $twoStar }}%" aria-valuenow="1"
+                                                         style="width: {{ $ratings[2] }}%" aria-valuenow="1"
                                                          aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
-                                                <span class="value-text">{{ number_format($twoStar, 0) }}%</span>
+                                                <span class="value-text">{{ number_format($ratings[2], 0) }}%</span>
                                             </div>
 
                                             <div class="single-progress-bar">
@@ -627,10 +608,10 @@
                                                 </div>
                                                 <div class="progress">
                                                     <div class="progress-bar" role="progressbar"
-                                                         style="width: {{ $oneStar }}%" aria-valuenow="1"
+                                                         style="width: {{ $ratings[1] }}%" aria-valuenow="1"
                                                          aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
-                                                <span class="value-text">{{ number_format($oneStar, 0)  }}%</span>
+                                                <span class="value-text">{{ number_format($ratings[1], 0)  }}%</span>
                                             </div>
                                         </div>
                                     </div>
@@ -645,14 +626,16 @@
                             </div>
                             <div class="has-show-more-inner-content rbt-featured-review-list-wrapper">
                                 @php
-                                $isReviewed = false;
+                                    $isReviewed = false;
                                 @endphp
-                                @foreach($course->reviews->sortByDesc('created_at') as $review)
+                                @foreach($course->reviews()->with('user')->get()->sortByDesc('created_at') as $review)
                                     <div class="rbt-course-review about-author position-relative">
                                         <div class="media">
                                             <div class="thumbnail">
                                                 <a href="#">
-                                                    <img src="{{ $review->user->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images"/>
+                                                    <img
+                                                        src="{{ $review->user->student->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
+                                                        alt="Author Images"/>
                                                 </a>
                                             </div>
                                             <div class="media-body">
@@ -722,10 +705,13 @@
                                                         $isReviewed = true;
                                                     @endphp
                                                     <div class="position-absolute" style="top: 10px; right: 10px">
-                                                        <form id="deleteForm" action="{{ route('client.review.destroy', [$review->id]) }}" method="POST">
-                                                             @csrf
+                                                        <form id="deleteForm"
+                                                              action="{{ route('client.review.destroy', [$review->id]) }}"
+                                                              method="POST">
+                                                            @csrf
                                                             @method('DELETE')
-                                                            <a class="deleteButton" href="" ><i class="fa-solid fa-trash"></i></a>
+                                                            <a class="deleteButton" href=""><i
+                                                                    class="fa-solid fa-trash"></i></a>
                                                         </form>
                                                     </div>
                                                 @endif
@@ -739,7 +725,8 @@
                                 @if($isBought)
                                     <div id="review-respond" class="review-respond">
                                         <h4 class="title">Thêm đánh giá của bạn về khóa học</h4>
-                                        <form id="reviewForm" method="post" action="{{ route('client.review.store', ['course', $course->id]) }}">
+                                        <form id="reviewForm" method="post"
+                                              action="{{ route('client.review.store', ['course', $course->id]) }}">
                                             @csrf
                                             <div class="star_count">
                                                 @for($i = 1; $i <= 5; $i++)
@@ -754,16 +741,21 @@
                                                 <div class="col-12">
                                                     <div class="form-group">
                                                         <label for="message">Viết đánh giá của bạn</label>
-                                                        <textarea {{ $isReviewed ? 'disabled' : '' }} id="message" name="review_content"></textarea>
+                                                        <textarea {{ $isReviewed ? 'disabled' : '' }} id="message"
+                                                                  name="review_content"></textarea>
                                                         @error('review_content')
-                                                        <p style="font-size: 12px" class="text-danger">{{ $message }}</p>
+                                                        <p style="font-size: 12px"
+                                                           class="text-danger">{{ $message }}</p>
                                                         @enderror
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-12">
-                                                    <button {{ $isReviewed ? 'disabled' : '' }} type="submit" class="rbt-btn btn-gradient icon-hover radius-round btn-md">
-                                                        <span class="btn-text">{{ $isReviewed ? 'Bạn đã đánh giá rồi' : 'Đăng đánh giá' }}</span>
-                                                        <span class="btn-icon"><i class="feather-arrow-right"></i></span>
+                                                    <button {{ $isReviewed ? 'disabled' : '' }} type="submit"
+                                                            class="rbt-btn btn-gradient icon-hover radius-round btn-md">
+                                                        <span
+                                                            class="btn-text">{{ $isReviewed ? 'Bạn đã đánh giá rồi' : 'Đăng đánh giá' }}</span>
+                                                        <span class="btn-icon"><i
+                                                                class="feather-arrow-right"></i></span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -780,7 +772,8 @@
                                     <span class="subtitle bg-pink-opacity">Top Course</span>
                                     <h4 class="title">
                                         Các khóa học khác của
-                                        <a href="{{ route('client.profile', [$course->author]) }}"><strong class="color-primary">{{ $course->author->name }}</strong></a>
+                                        <a href="{{ route('client.profile', [$course->author->slug]) }}"><strong
+                                                class="color-primary">{{ $course->author->name }}</strong></a>
                                     </h4>
                                 </div>
                             </div>
@@ -796,9 +789,10 @@
                             @php
                                 $i = 1;
                             @endphp
-                            @if($course->author->courses->count() >= 1)
+                            @if($course->author->courses()->with(['categories', 'students', 'subjects', 'author'])->where('status', 'approved')->count() >= 1)
                                 @foreach($course->author->courses->where('status', 'approved') as $item)
-                                    <div class="col-lg-6 col-md-6 col-sm-6 col-12" data-sal-delay="150" data-sal="slide-up" data-sal-duration="800">
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-12" data-sal-delay="150"
+                                         data-sal="slide-up" data-sal-duration="800">
                                         <div class="rbt-card variation-01 rbt-hover">
                                             <div class="rbt-card-img">
                                                 <a href="{{ route('client.course_detail', [$item->slug]) }}">
@@ -819,7 +813,7 @@
                                                             <i class="fas fa-star"></i>
                                                             <i class="fas fa-star"></i>
                                                         </div>
-                                                        <span class="rating-count">({{ $item->reviews->count() }} Reviews)</span>
+                                                        <span class="rating-count">({{ $item->students->count() }} Reviews)</span>
                                                     </div>
                                                     <div class="rbt-bookmark-btn">
                                                         <a class="rbt-round-btn" title="Bookmark" href="#">
@@ -837,7 +831,7 @@
                                                         <i class="feather-book"></i>{{ $item->subjects->count() }} bài giảng
                                                     </li>
                                                     <li>
-                                                        <i class="feather-users"></i>{{ $item->enrollments->where('status')->count() }} học viên
+                                                        <i class="feather-users"></i>{{ $item->students->where('status')->count() }} học viên
                                                     </li>
                                                 </ul>
 
@@ -853,14 +847,17 @@
                                                         </a>
                                                     </div>
                                                     <div class="rbt-author-info">
-                                                        Bỡi <a href="{{ route('client.profile', [$course->author]) }}"> {{ $item->author->name }}</a> In
+                                                        Bỡi <a
+                                                            href="{{ route('client.profile', [$course->author]) }}"> {{ $item->author->name }}</a>
+                                                        In
                                                         <a href="#">{{$item->category->title }}</a>
                                                     </div>
                                                 </div>
                                                 <div class="rbt-card-bottom">
                                                     <div class="rbt-price">
-                                                        <span class="current-price">₫  {{ number_format($item->price, 0) }}</span>
-{{--                                                        <span class="off-price">$120</span>--}}
+                                                        <span
+                                                            class="current-price">₫  {{ number_format($item->price, 0) }}</span>
+                                                        <span class="off-price">$120</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -882,8 +879,7 @@
                     <div class="course-sidebar sticky-top rbt-shadow-box course-sidebar-top rbt-gradient-border">
                         <div class="inner">
                             <!-- Start Video Wrapper  -->
-                            <a class="video-popup-with-text video-popup-wrapper text-center popup-video sidebar-video-hidden mb--15"
-                               href="https://www.youtube.com/watch?v=nA1Aqp0sPQo">
+                            <a class="video-popup-with-text video-popup-wrapper text-center popup-video sidebar-video-hidden mb--15" href="https://www.youtube.com/watch?v=nA1Aqp0sPQo">
                                 <div class="video-content">
                                     <img class="w-100 rbt-radius"
                                          src="{{ asset('client_assets/images/others/video-01.jpg') }}"
@@ -914,14 +910,16 @@
                                 </div>
                                 @if($isBought)
                                     <div class="add-to-card-button mt--15">
-                                        <a href="{{ route('course.index', $course->slug) }}" class="add-to-cart-btn rbt-btn btn-gradient icon-hover w-100 d-block text-center">
+                                        <a href="{{ route('course.index', $course->slug) }}"
+                                           class="add-to-cart-btn rbt-btn btn-gradient icon-hover w-100 d-block text-center">
                                             <span class="btn-text">Vào học ngay</span>
                                             <span class="btn-icon"><i class="feather-arrow-right"></i></span>
                                         </a>
                                     </div>
                                 @elseif (Auth::check() && $course->author->user->id === Auth::user()->id)
                                     <div class="add-to-card-button mt--15">
-                                        <a href="{{ route('course.index', $course->slug) }}" class="add-to-cart-btn rbt-btn btn-gradient icon-hover w-100 d-block text-center">
+                                        <a href="{{ route('course.index', $course->slug) }}"
+                                           class="add-to-cart-btn rbt-btn btn-gradient icon-hover w-100 d-block text-center">
                                             <span class="btn-text">Xem khóa học</span>
                                             <span class="btn-icon"><i class="feather-arrow-right"></i></span>
                                         </a>
@@ -940,7 +938,7 @@
                                         <li>
                                             <span>Số lượng học viên</span>
                                             <span
-                                                class="rbt-feature-value rbt-badge-5">{{ $course->enrollments->where('status', 'paid')->count() }}</span>
+                                                class="rbt-feature-value rbt-badge-5">{{ $course->students->where('status', 'paid')->count() }}</span>
                                         </li>
                                         <li>
                                             <span>Bài giảng</span>
@@ -1043,12 +1041,12 @@
                         },
                     });
                 });
-                $('.fa-star').on('click', function() {
+                $('.fa-star').on('click', function () {
                     var rating = $(this).data('rating');
                     $('#rating').val(rating);
 
                     // Highlight the stars
-                    $('.fa-star').each(function() {
+                    $('.fa-star').each(function () {
                         if ($(this).data('rating') <= rating) {
                             $(this).addClass('checked');
                         } else {
@@ -1068,7 +1066,7 @@
                         timer: 1000
                     });
                 }
-                $('.deleteButton').on('click', function(e) {
+                $('.deleteButton').on('click', function (e) {
                     e.preventDefault();
                     Swal.fire({
                         title: 'Bạn có chắc chắn muốn xóa không?',

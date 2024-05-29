@@ -47,9 +47,10 @@ https://app.diagrams.net/#G1L40lbD9kqctuw3pZAJlehjb8rPwR_kpS#%7B%22pageId%22%3A%
 - Laravel mail
 3. Database: MySQL
 4. Công cụ quản lý mã nguồn: Git
-5. jQuery(ajax)
+5. jQuery(ajax, sweet alert, dataTables)
 6. VNPAY
 7. Login with Goodle
+8. Google chart
 
 ### Tài khoản thanh toán
 NCB

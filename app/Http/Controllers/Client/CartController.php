@@ -6,13 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Order;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
-    public function addToCart(int|string $id): \Illuminate\Http\JsonResponse
+    public function addToCart(int|string $id): JsonResponse
     {
 
         $course = Course::find($id);
@@ -21,7 +25,6 @@ class CartController extends Controller
             return response()->json(['message' => 'Khóa học đã có trong giỏ hàng rồi  !', 'cart' => $cart, 'type' => 'warning']);
         }
         $cart[$course->id] = [
-            'id' => $course->id,
             'name' => $course->title,
             'price' => $course->price,
             'image' => $course->thumbnail,
@@ -29,7 +32,7 @@ class CartController extends Controller
         session()->put('cart', $cart);
         return response()->json(['message' => 'Khóa học đã được thêm vào giỏ hành thành công!', 'cart' => $cart, 'type' => 'success']);
     }
-    public function removeFromCart(int|string $id): \Illuminate\Http\JsonResponse
+    public function removeFromCart(int|string $id): JsonResponse
     {
         $course = Course::find($id);
         $cart = session()->get('cart', []);
@@ -39,16 +42,17 @@ class CartController extends Controller
         }
         return response()->json(['message' => 'Course removed from cart successfully!', 'totalItem' => count($cart)]);
     }
-    public function placeOrder(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
+    public function placeOrder(Request $request): Application|JsonResponse|Redirector|\Illuminate\Contracts\Foundation\Application|RedirectResponse
     {
         DB::beginTransaction();
         try {
             $cart = session()->get('cart', []);
+
             if (count($cart) === 0) {
-                return response()->json(['message' => 'Giỏ hàng trống!', 'type' => 'warning']);
+                return redirect()->back()->with(['message' => 'Giỏ hàng trống!', 'icon' => 'warning']);
             }
             $order = new Order();
-            $order->student_id = Auth::user()->students->id;
+            $order->student_id = Auth::user()->student->id;
             $order->total_price = collect($cart)->sum('price');
             $order->payment_method = $request->payment_method;
             $order->status = 'pending';
@@ -58,7 +62,7 @@ class CartController extends Controller
                 $enrollment->order_id = $order->id;
                 $enrollment->course_id = $id;
                 $enrollment->price = $item['price'];
-                $enrollment->student_id = Auth::user()->students->id;
+                $enrollment->student_id = Auth::user()->student->id;
                 $enrollment->status = 'pending';
                 $enrollment->save();
             }
@@ -68,7 +72,7 @@ class CartController extends Controller
         }
         catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => $e->getMessage(), 'type' => 'error']);
+            return redirect()->back()->with(['message' => 'Thanh toán thất bại!', 'icon' => 'error']);
         }
     }
     private function processWithVnpay(Order $order, string $method): string
@@ -123,27 +127,36 @@ class CartController extends Controller
 
         return $vnp_Url;
     }
-    public function vnpayCallback(Request $request): \Illuminate\Http\RedirectResponse
+    public function vnpayCallback(Request $request): RedirectResponse
     {
-//        $hashMap = [
-//            '00' => 'Giao dịch thành công',
-//            '07' => 'Trừ tiền thành công. Giao dịch bị nghi ngờ (liên quan tới lừa đảo, giao dịch bất thường).',
-//            '09' => 'Giao dịch không thành công do: Thẻ/Tài khoản của khách hàng chưa đăng ký dịch vụ InternetBanking tại ngân hàng.',
-//            '10' => 'Giao dịch không thành công do: Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần'
-//        ];
+        $hashMap = [
+            '00' => 'Giao dịch thành công',
+            '07' => 'Trừ tiền thành công. Giao dịch bị nghi ngờ (liên quan tới lừa đảo, giao dịch bất thường).',
+            '09' => 'Thẻ/Tài khoản của khách hàng chưa đăng ký dịch vụ InternetBanking tại ngân hàng.',
+            '10' => 'Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần',
+            '11' => 'Đã hết hạn chờ thanh toán. Xin quý khách vui lòng thực hiện lại giao dịch.',
+            '12' => 'Thẻ/Tài khoản của khách hàng bị khóa',
+            '13' => 'Quý khách nhập sai mật khẩu xác thực giao dịch (OTP).',
+            '24' => 'Khách hàng hủy giao dịch',
+            '51' => 'Số tiền không đủ để thanh toán',
+            '65' => 'Tài khoản của Quý khách đã vượt quá hạn mức giao dịch trong ngày.',
+            '75' => 'Ngân hàng thanh toán đang bảo trì.',
+            '79' => 'Khách hàng nhập sai mật khẩu thanh toán quá số lần quy định.',
+            '99' => 'Lỗi không xác định'
+            ];
 
         $orderId = $request->get('vnp_TxnRef');
 
         $order = Order::find($orderId);
-
-        if($request->get('vnp_ResponseCode') !== "00"){
-            $order->status = 'failed';
+        $code = $request->get('vnp_ResponseCode');
+        if($code !== "00"){
+            $order->status = $hashMap[$code];
             $order->save();
             foreach ($order->enrollments as $enrollment){
                 $enrollment->status = 'failed';
                 $enrollment->save();
             }
-            session()->flash('message', 'Thanh toán thất bại!');
+            return redirect()->route('client.home')->with(['message' => $hashMap[$code], 'icon' => 'error']);
         } else {
             foreach ($order->enrollments as $enrollment){
                 $enrollment->status = 'paid';
@@ -154,8 +167,7 @@ class CartController extends Controller
             $order->status = 'paid';
             $order->save();
             session()->forget('cart');
-            session()->flash('message', 'Thanh toán thành công!');
+            return redirect()->route('client.home')->with(['message' => 'Thanh toán thành công!', 'icon' => 'success']);
         }
-        return redirect()->route('client.home');
     }
 }

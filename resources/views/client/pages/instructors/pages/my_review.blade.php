@@ -43,10 +43,10 @@
                                 <td colspan="3" class="text-center">Không có đánh giá nào</td>
                             </tr>
                             @else
-                                @foreach($reviews as $review)
+                                @foreach($reviews->sortByDesc('created_at') as $review)
                                     <tr>
                                         <th>{{ $review->user->students->name }}</th>
-                                        <td>{{ date_format(date_create($review->creatted_at), 'd/m/Y') }}</td>
+                                        <td>{{ date_format(date_create($review->created_at), 'd/m/Y') }}</td>
                                         <td>
                                             <div class="rbt-review">
                                                 <div class="rating">
@@ -76,6 +76,7 @@
                             <tr>
                                 <th>Tên khóa học</th>
                                 <th>Ngày tạo</th>
+                                <th>Nội dung</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -87,6 +88,7 @@
                                 @foreach(Auth::user()->instructors->courses->where('status', 'approved') as $course)
                                     <tr>
                                         <th>Khóa học: <a href="{{ route('client.course_detail', $course->slug) }}">{{ $course->title }}</a></th>
+                                        <td>{{ date_format(date_create($course->created_at), 'd/m/Y') }}</td>
                                         <td>
                                             <div class="rbt-review">
                                                 @php

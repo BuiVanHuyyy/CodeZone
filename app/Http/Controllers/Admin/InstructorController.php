@@ -32,7 +32,7 @@ class InstructorController extends Controller
                 $query->where('status', $status);
             })->get();
         } else {
-            $instructors = Instructor::with('user')->get();
+            $instructors = Instructor::with(['user', 'courses'])->get();
         }
         return view('admin.pages.instructor_list', compact('instructors', 'status'));
     }

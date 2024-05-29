@@ -13,19 +13,23 @@ class CommentController extends Controller
 {
     public function store(Request $request, string $commentable_id, string $type): RedirectResponse
     {
-        DB::beginTransaction();
         try {
+            if($type == 'blog') {
+                $type = 'App\Models\Blog';
+            } elseif ($type == 'comment') {
+                $type = 'App\Models\Comment';
+            } else {
+              $type = 'App\Models\Comment';
+            }
             $comment = new Comment();
             $comment->content = $request->comment_content;
             $comment->user_id = Auth::id();
             $comment->commentable_id = $commentable_id;
             $comment->commentable_type = $type;
             $comment->save();
-            DB::commit();
             session()->flash('msg', 'Thêm bình luận thành công');
             session()->flash('i', 'success');
         }catch (\Exception $e) {
-            DB::rollBack();
             session()->flash('msg', 'Có lỗi xảy ra, vui lòng thử lại sau');
             session()->flash('i', 'error');
         }

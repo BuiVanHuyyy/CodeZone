@@ -40,10 +40,7 @@
                             <div class="content">
                                 <div class="inner">
                                     <h4 class="title">
-                                        <a
-                                            href=""
-                                        >Aaron Griffe</a
-                                        >
+                                        <a href="">Aaron Griffe</a>
                                     </h4>
                                     <p class="designation">
                                         Depertment Head

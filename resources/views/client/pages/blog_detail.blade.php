@@ -1,4 +1,20 @@
 @extends('client.layout.master')
+@section('cus_css')
+    <style>
+        div#social-links {
+            margin-left: auto;
+            max-width: 500px;
+        }
+        div#social-links ul li {
+            display: inline-block;
+        }
+        div#social-links ul li a {
+            padding: 10px;
+            margin: 1px;
+            font-size: 20px;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="rbt-overlay-page-wrapper">
         <div class="breadcrumb-image-container breadcrumb-style-max-width">
@@ -10,11 +26,11 @@
                     <li class="list-item">
                         <div class="author-thumbnail">
                             <img
-                                src="{{ $blog->author->instructors->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
+                                src="{{ $blog->author->instructor->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
                                 alt="blog-image"/>
                         </div>
                         <div class="author-info">
-                            <a href="{{ route('client.profile', [$blog->author->instructors]) }}"><strong>{{ $blog->author->instructors->name }}</strong></a>
+                            <a href="{{ route('client.profile', [$blog->author->instructor->slug]) }}"><strong>{{ $blog->author->instructor->name }}</strong></a>
                         </div>
                     </li>
                     <li class="list-item">
@@ -48,60 +64,36 @@
                                         <i class="feather-thumbs-up"></i>
                                     </a>
                                     <span
-                                        class="like_qty">{{ $like_amount }}</span>
+                                        class="like_qty">{{ number_format($blog->likes->count(), 0) }}</span>
                                 </li>
                                 <li>
                                     <a id="blog_dislike" class="dislike_btn {{ $blog->is_disliked ? 'active' : '' }}" data-url="{{ route('client.dislike', [$blog->id, 'blog']) }}">
                                         <i class="feather-thumbs-down"></i>
                                     </a>
                                     <span
-                                        class="dislike_qty">{{ $dislike_amount }}</span>
+                                        class="dislike_qty">{{ number_format($blog->dislikes->count(), 0) }}</span>
                                 </li>
-                            </ul>
-                        <ul class="social-icon social-default transparent-with-border">
-                            <li>
-                                <a href="https://www.facebook.com/">
-                                    <i class="feather-facebook"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://www.twitter.com/">
-                                    <i class="feather-twitter"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://www.instagram.com/">
-                                    <i class="feather-instagram"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://www.linkdin.com/">
-                                    <i class="feather-linkedin"></i>
-                                </a>
-                            </li>
                         </ul>
+                        {!! $shareComponent !!}
                     </div>
 
                     <!-- Blog Author  -->
                     <div class="about-author">
                         <div class="media">
                             <div class="thumbnail">
-                                <a href="{{ route('client.profile', [$blog->author->instructors]) }}">
-                                    <img
-                                        src="{{ $blog->author->instructors->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
-                                        alt="Author Images"/>
+                                <a href="{{ route('client.profile', [$blog->author->instructor->slug]) }}">
+                                    <img src="{{ $blog->author->instructor->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images"/>
                                 </a>
                             </div>
                             <div class="media-body">
                                 <div class="author-info">
                                     <h5 class="title">
-                                        <a class="hover-flip-item-wrapper"
-                                           href="#">{{ $blog->author->instructors->name }}</a>
+                                        <a class="hover-flip-item-wrapper" href="{{ route('client.profile', [$blog->author->instructor->slug]) }}">{{ $blog->author->instructor->name }}</a>
                                     </h5>
-                                    <span class="b3 subtitle">{{ $blog->author->instructors->current_job }}</span>
+                                    <span class="b3 subtitle">{{ $blog->author->instructor->current_job }}</span>
                                 </div>
                                 <div class="content">
-                                    <p class="description">{{ $blog->author->instructors->bio }}</p>
+                                    <p class="description">{{ $blog->author->instructor->bio }}</p>
                                     <ul class="social-icon social-default icon-naked justify-content-start">
                                         <li>
                                             <a href="https://www.facebook.com/">
@@ -169,7 +161,7 @@
                     </div>
 
                     <div class="rbt-comment-area">
-                        <h4 class="title">{{ $comments->count() }} bình luận</h4>
+                            <h4 class="title">{{ $comments->count() }} bình luận</h4>
                         <ul class="comment-list">
                             @if($comments->count() === 0)
                                 <li class="comment">
@@ -190,9 +182,9 @@
                                             <div class="single-comment">
                                                 @php
                                                     if (($comment->author->role) === 'instructor') {
-                                                        $avatar = $comment->author->instructors->avatar;
+                                                        $avatar = $comment->author->instructor->avatar;
                                                     } else {
-                                                        $avatar = $comment->author->students->avatar;
+                                                        $avatar = $comment->author->student->avatar;
                                                     }
                                                 @endphp
                                                 <div class="comment-img">
@@ -222,7 +214,7 @@
                                                                     <i class="feather-thumbs-up"></i>
                                                                 </a>
                                                                 <span
-                                                                    class="like_qty">{{ $comment->like_amount }}</span>
+                                                                    class="like_qty">{{ $comment->likes }}</span>
                                                             </li>
                                                             <li>
                                                                 <a class="dislike_btn {{ $comment->is_disliked ? 'active' : '' }}"
@@ -230,7 +222,7 @@
                                                                     <i class="feather-thumbs-down"></i>
                                                                 </a>
                                                                 <span
-                                                                    class="dislike_qty">{{ $comment->dislike_amount }}</span>
+                                                                    class="dislike_qty">{{ $comment->dislikes }}</span>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -258,9 +250,9 @@
                                                                 <div class="comment-img">
                                                                     @php
                                                                         if (($reply->author->role) === 'instructor') {
-                                                                            $avatar = $reply->author->instructors->avatar;
+                                                                            $avatar = $reply->author->instructor->avatar;
                                                                         } else {
-                                                                            $avatar = $reply->author->students->avatar;
+                                                                            $avatar = $reply->author->student->avatar;
                                                                         }
                                                                     @endphp
                                                                     <img
@@ -269,7 +261,7 @@
                                                                 </div>
                                                                 <div class="comment-inner">
                                                                     <h6 class="commenter">{!! $reply->author->id === $blog->user_id ? '<i class="fa-solid fa-user-pen"></i>' : '' !!}
-                                                                        <a href="#" class="author_name">{{ $reply->author->name }}</a>
+                                                                        <a  href="#" class="author_name">{{ $reply->author->name }}</a>
                                                                     </h6>
                                                                     <div class="comment-meta">
                                                                         <div

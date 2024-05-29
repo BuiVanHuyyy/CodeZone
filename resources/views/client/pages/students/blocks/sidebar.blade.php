@@ -35,7 +35,7 @@
                 <nav class="mainmenu-nav">
                     <ul class="dashboard-mainmenu rbt-default-sidebar-list">
                         <li>
-                            <a href="{{ route('student.edit') }}">
+                            <a href="{{ route('client.student.edit', [\Illuminate\Support\Facades\Auth::user()->student]) }}">
                                 <i class="feather-settings"></i>
                                 <span>Chỉnh sửa thông tin</span>
                             </a>

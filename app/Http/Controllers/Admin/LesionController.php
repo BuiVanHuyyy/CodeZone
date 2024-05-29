@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreLessionRequest;
+use App\Http\Requests\StoreLessonRequest;
 use App\Http\Requests\UpdateLessionRequest;
 use App\Models\Lesion;
 
@@ -28,7 +28,7 @@ class LesionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLessionRequest $request)
+    public function store(StoreLessonRequest $request)
     {
         //
     }

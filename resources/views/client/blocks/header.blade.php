@@ -86,17 +86,17 @@
                                     <li class="account-access rbt-user-wrapper right-align-dropdown d-none d-xl-block">
                                         @php
                                         if (\Illuminate\Support\Facades\Auth::user()->role == 'student') {
-                                            $avatar = \Illuminate\Support\Facades\Auth::user()->students->avatar;
-                                            $name = \Illuminate\Support\Facades\Auth::user()->students->name;
+                                            $avatar = \Illuminate\Support\Facades\Auth::user()->student->avatar;
+                                            $name = \Illuminate\Support\Facades\Auth::user()->student->name;
                                         } elseif (\Illuminate\Support\Facades\Auth::user()->role == 'admin') {
-                                            $avatar = \Illuminate\Support\Facades\Auth::user()->admins->avatar;
-                                            $name = \Illuminate\Support\Facades\Auth::user()->admins->name;
+                                            $avatar = \Illuminate\Support\Facades\Auth::user()->admin->avatar;
+                                            $name = \Illuminate\Support\Facades\Auth::user()->admin->name;
                                             $profile = route('admin.dashboard');
                                         }
                                         else {
-                                            $avatar = \Illuminate\Support\Facades\Auth::user()->instructors->avatar;
-                                            $name = \Illuminate\Support\Facades\Auth::user()->instructors->name;
-                                            $profile = route('client.profile', [\Illuminate\Support\Facades\Auth::user()->instructors]);
+                                            $avatar = \Illuminate\Support\Facades\Auth::user()->instructor->avatar;
+                                            $name = \Illuminate\Support\Facades\Auth::user()->instructor->name;
+                                            $profile = route('client.profile', [\Illuminate\Support\Facades\Auth::user()->instructor->slug]);
                                         }
                                         @endphp
                                         <a href="{{ $profile ?? '#' }}">
@@ -121,7 +121,7 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.show') }}">
+                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('client.profile', [\Illuminate\Support\Facades\Auth::user()->instructor->slug]) }}">
                                                                     <i class="feather-bookmark"></i>
                                                                     <span>Trang cá nhân</span>
                                                                 </a>
@@ -139,7 +139,7 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.edit') : route('instructor.edit') }}">
+                                                                <a href="{{ Auth::user()->role == 'student' ? route('client.student.edit', [\Illuminate\Support\Facades\Auth::user()->student]) : route('instructor.edit') }}">
                                                                     <i class="feather-star"></i>
                                                                     <span>Chỉnh sửa thông tin</span>
                                                                 </a>
@@ -441,18 +441,17 @@
             </div>
             <hr class="mb--0">
             <div class="rbt-minicart-bottom mt--20">
-                <form action="{{ route('cart.placeorder') }}" method="post">
+                <form action="{{ route('cart.placeholder') }}" method="post">
                     @csrf
                     <div class="form-check">
-                        <input class="form-check-input" value="VNBANK" type="radio" name="payment_method" id="bankCode">
-                        <label class="form-check-label" for="bankCode">
+                        <input checked class="form-check-input" value="VNBANK" type="radio" name="payment_method" id="VNBANK">
+                        <label class="form-check-label" for="VNBANK">
                             Thanh toán qua thẻ ATM/Tài khoản nội địa
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" value="INTCARD" name="payment_method"
-                               id="flexRadioDefault2" checked>
-                        <label class="form-check-label" for="flexRadioDefault2">
+                        <input class="form-check-input" value="INTCARD" type="radio" name="payment_method" id="INTCARD">
+                        <label class="form-check-label" for="INTCARD">
                             Thanh toán qua thẻ quốc tế
                         </label>
                     </div>

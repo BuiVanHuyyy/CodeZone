@@ -12,14 +12,13 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="dataTable" class="display" style="min-width: 1200px">
+                                    <table id="dataTable" class="display text-center" style="min-width: 1200px">
                                         <thead>
                                         <tr>
-                                            <th>Id</th>
+                                            <th>#</th>
                                             <th>Tên</th>
                                             <th>Avatar</th>
                                             <th>Giới tính</th>
-                                            <th>Khóa học</th>
                                             <th>Số điện thoai</th>
                                             <th>Email</th>
                                             <th>Trạng thái</th>
@@ -29,16 +28,15 @@
                                         <tbody>
                                         @foreach($students as $student)
                                             <tr>
-                                                <td><a href="{{ route('admin.student.show', ['student' => $student]) }}">#{{ $student->user->id }}</a> </td>
+                                                <td>{{ $loop->iteration }}</td>
                                                 <td><a href="{{ route('admin.student.show', ['student' => $student]) }}">{{ $student->name }}</a></td>
                                                 <td><img class="rounded-circle" width="35" src="{{ $student->avatar ?? asset('client_assets/images/avatar/default_avatar.png') }}" alt=""></td>
                                                 <td>{{ $student->gender === 0 ? 'Nữ' : 'Nam' }}</td>
-                                                <td>{{ number_format($student->courses->count()) }}</td>
                                                 <td>{{ $student->phone_number }}</td>
                                                 <td>{{ $student->user->email }}</td>
                                                 <td>
                                                     <form>
-                                                        <select class="form-select p-0" aria-label="Status select">
+                                                        <select class="form-select p-0 statusSelect" aria-label="Status select">
                                                             <option {{ $student->user->status === 'pending' ? 'selected' : '' }} value="pending">Chờ phê duyệt</option>
                                                             <option {{ $student->user->status === 'active' ? 'selected' : '' }} value="active">Hoạt động</option>
                                                             <option {{ $student->user->status === 'suspended' ? 'selected' : '' }} value="suspended">Khóa</option>

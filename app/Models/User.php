@@ -44,15 +44,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function students (): HasOne
+    public function student (): HasOne
     {
         return $this->hasOne(Student::class, 'user_id');
     }
-    public function instructors (): HasOne
+    public function instructor (): HasOne
     {
         return $this->hasOne(Instructor::class, 'user_id');
     }
-    public function admins(): HasOne
+    public function admin(): HasOne
     {
         return $this->hasOne(Admin::class, 'user_id');
     }
@@ -63,5 +63,9 @@ class User extends Authenticatable
     public function dislikes(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Dislike::class, 'user_id');
+    }
+    public function blogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Blog::class, 'user_id');
     }
 }

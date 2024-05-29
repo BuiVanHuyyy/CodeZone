@@ -3,6 +3,18 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+    @if(isset($blog))
+        <meta property="og:title" content="{{ $blog->title }}"/>
+        <meta property="og:description" content="{{ $blog->summary }}"/>
+        <meta property="og:image" content="{{ asset($blog->thumbnail) }}"/>
+        <meta property="og:url" content="{{ route('client.blog_detail', ['slug' => $blog->slug]) }}"/>
+        <meta property="og:type" content="article"/>
+        <meta property="og:site_name" content="CodeZone"/>
+        <meta property="og:locale" content="vi_VN"/>
+        <meta property="article:published_time" content="{{ $blog->created_at }}"/>
+        <meta property="article:modified_time" content="{{ $blog->updated_at }}"/>
+        <meta property="article:author" content="CodeZone"/>
+    @endif
     <title>
         CodeZone | Lập trình là niềm đam mê
     </title>
@@ -79,21 +91,23 @@
 <script src="{{ asset('client_assets/js/vendor/plyr.js') }}"></script>
 <!-- Main JS -->
 <script src="{{ asset('client_assets/js/main.js') }}"></script>
+<script>
+    window.onload = function() {
+        let message = "{{ session('message') }}";
+        let icon = "{{ session('icon') }}";
+        if (message !== "") {
+            Swal.fire({
+                position: "center",
+                icon: icon,
+                title: message,
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    }
+</script>
 @if(Auth::check())
     <script>
-        window.onload = function() {
-            let message = "{{ session('message') }}";
-            let icon = "{{ session('icon') ?? 'success' }}";
-            if (message !== "") {
-                Swal.fire({
-                    position: "top-end",
-                    icon: icon,
-                    title: message,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        }
         $('.add-to-cart-btn').on( "click", function() {
             let url = $(this).data('url');
             $.ajax({

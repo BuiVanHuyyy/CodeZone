@@ -12,6 +12,6 @@ class Subject extends Model
     use HasFactory, softDeletes;
     public function lessons(): HasMany
     {
-        return $this->hasMany(Lesion::class, 'subject_id');
+        return $this->hasMany(Lesson::class, 'subject_id');
     }
 }

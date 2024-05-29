@@ -1,26 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+    namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Course;
-use App\Models\Instructor;
-use App\Models\Student;
-use Illuminate\Http\Request;
+    use App\Http\Controllers\Controller;
+    use App\Models\Course;
+    use App\Models\Enrollment;
+    use App\Models\Instructor;
+    use App\Models\Student;
+    use Illuminate\Contracts\View\Factory;
+    use Illuminate\Contracts\View\View;
+    use Illuminate\Foundation\Application;
 
-class HandleViewController extends Controller
-{
-    public function dashboard(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    class HandleViewController extends Controller
     {
-        $totalStudent = Student::get()->count();
-        $totalInstructor = Instructor::get()->count();
-        $totalCourse = Course::get()->count();
-        $totalMoney = 0;
-        foreach (Course::get() as $course) {
-            foreach ($course->enrollments as $enrollment) {
-                $totalMoney += $enrollment->price;
-            }
+        public function dashboard(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
+        {
+            $totalStudent = Student::count();
+            $totalInstructor = Instructor::count();
+            $totalCourse = Course::count();
+            $totalMoney = Enrollment::sum('price');
+            return view('admin.pages.index', compact('totalStudent', 'totalInstructor', 'totalCourse', 'totalMoney'));
         }
-        return view('admin.pages.index',  compact('totalStudent', 'totalInstructor', 'totalCourse', 'totalMoney'));
     }
-}

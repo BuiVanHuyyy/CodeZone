@@ -78,7 +78,7 @@
                             <div class="tab-pane fade" id="profile-4" role="tabpanel" aria-labelledby="profile-tab-4">
                                 <div class="row g-5">
                                     <div class="rbt-comment-area">
-                                        <h4 class="title">{{ $comments->count() }} bình luận</h4>
+                                        <h4 class="title">{{ $lesson->commentable->count() }} bình luận</h4>
                                         <div id="comment-respond" class="comment-respond">
                                             <h4 class="title">Thêm bình luận của bạn</h4>
                                             <form id="commentForm" method="post" action="{{ route('client.comment', [$lesson->id, 'lesson']) }}">
@@ -102,7 +102,158 @@
                                             </form>
                                         </div>
                                         <ul class="comment-list">
-                                            @if($comments->count() ===0)
+                                            @forelse($lesson->commentable->sortByDesc('created_at')->load('author') as $comment)
+                                                <li class="comment">
+                                                    <div class="comment-body">
+                                                        <div class="single-comment">
+                                                            <div class="comment-img">
+                                                                @php
+                                                                    if (($comment->author->role) === 'instructor') {
+                                                                        $avatar = $comment->author->instructor->avatar;
+                                                                    } else {
+                                                                        $avatar = $comment->author->student->avatar;
+                                                                    }
+                                                                @endphp
+                                                                <img src="{{ $avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images">
+                                                            </div>
+                                                            <div class="comment-inner">
+                                                                <h6 class="commenter">{!! $comment->author->role === 'instructor' ? '<i class="fa-solid fa-chalkboard-user"></i>' : '' !!}
+                                                                    <a class="author_name" href="#">{{ $comment->author->name }}</a>
+                                                                </h6>
+                                                                <div class="comment-meta">
+                                                                    <div
+                                                                        class="time-spent">{{ date_format(date_create($comment->created_at) , 'd/m/Y') }}</div>
+                                                                    <div class="reply-edit">
+                                                                        <div class="reply">
+                                                                            <a class="comment-reply-link" data-id="{{ $comment->id }}" href="#">Trả lời</a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="comment-text">
+                                                                    <p class="b2">{{ $comment->content }}</p>
+                                                                    <ul class="social-icon social-default transparent-with-border justify-content-start">
+                                                                        @php
+                                                                            $is_active = false;
+                                                                            if (Auth::check()) {
+                                                                                foreach (Auth::user()->likes as $like) {
+                                                                                    if ($like['likeable_id'] == $comment->id) {
+                                                                                        $is_active = true;
+                                                                                        break;
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        @endphp
+                                                                        <li>
+                                                                            <a data-url="{{ route('client.like', [$comment->id, 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
+                                                                                <i class="feather-thumbs-up"></i>
+                                                                            </a>
+                                                                            <span class="like_qty">{{ $comment->like_amount }}</span>
+                                                                        </li>
+                                                                        @php
+                                                                            $is_active = false;
+                                                                            if (Auth::check()) {
+                                                                                foreach (Auth::user()->dislikes as $dislike) {
+                                                                                    if ($dislike['dislikeable_id'] == $comment->id) {
+                                                                                        $is_active = true;
+                                                                                        break;
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        @endphp
+                                                                        <li>
+                                                                            <a class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('client.dislike', [$comment->id, 'comment']) }}">
+                                                                                <i class="feather-thumbs-down"></i>
+                                                                            </a>
+                                                                            <span class="dislike_qty">{{ $comment->dislike_amount }}</span>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @php
+                                                        //get all replies of comment
+                                                        $replies = \App\Models\Comment::where('commentable_id', $comment->id)->where('commentable_type', 'comment')->get() ?? [];
+                                                    @endphp
+                                                    @if($replies->count() > 0)
+                                                        <ul class="children">
+                                                            @foreach($comment->replies as $reply)
+                                                                <li class="comment">
+                                                                    <div class="comment-body">
+                                                                        <div class="single-comment">
+                                                                            <div class="comment-img">
+                                                                                @php
+                                                                                    if (($reply->author->role) === 'instructor') {
+                                                                                        $avatar = $reply->author->instructors->avatar;
+                                                                                    } else {
+                                                                                        $avatar = $reply->author->students->avatar;
+                                                                                    }
+                                                                                @endphp
+                                                                                <img src="{{ $avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images">
+                                                                            </div>
+                                                                            <div class="comment-inner">
+                                                                                <h6 class="commenter"> {!! $reply->author->role === 'instructor' ? '<i class="fa-solid fa-chalkboard-user"></i>' : '' !!}
+                                                                                    <a class="author_name" href="#">{{ $reply->author->name }}</a>
+                                                                                </h6>
+                                                                                <div class="comment-meta">
+                                                                                    <div
+                                                                                        class="time-spent">{{ date_format(date_create($reply->created_at), 'd/m/Y') }}</div>
+                                                                                    <div class="reply-edit">
+                                                                                        <div class="reply">
+                                                                                            <a class="comment-reply-link"
+                                                                                               data-id="{{ $reply->id }}"
+                                                                                               href="#comment-respond">Trả lời</a>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="comment-text">
+                                                                                    <p class="b2">{{ $reply->content }}</p>
+                                                                                    <ul class="social-icon social-default transparent-with-border justify-content-start">
+                                                                                        @php
+                                                                                            $is_active = false;
+                                                                                            if (Auth::check()) {
+                                                                                                foreach (Auth::user()->likes as $like) {
+                                                                                                    if ($like['likeable_id'] == $reply->id) {
+                                                                                                        $is_active = true;
+                                                                                                        break;
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        @endphp
+                                                                                        <li>
+                                                                                            <a data-url="{{ route('client.like', [$reply->id, 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
+                                                                                                <i class="feather-thumbs-up"></i>
+                                                                                            </a>
+                                                                                            <span class="like_qty">{{ $reply->like_amount }}</span>
+                                                                                        </li>
+                                                                                        @php
+                                                                                            $is_active = false;
+                                                                                            if (Auth::check()) {
+                                                                                                foreach (Auth::user()->dislikes as $dislike) {
+                                                                                                    if ($dislike['dislikeable_id'] == $reply->id) {
+                                                                                                        $is_active = true;
+                                                                                                        break;
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        @endphp
+                                                                                        <li>
+                                                                                            <a class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('client.dislike', [$reply->id, 'comment']) }}">
+                                                                                                <i class="feather-thumbs-down"></i>
+                                                                                            </a>
+                                                                                            <span class="dislike_qty">{{$reply->dislike_amount}}</span>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @endif
+                                                </li>
+                                            @empty
                                                 <li class="comment">
                                                     <div class="comment-body">
                                                         <div class="single-comment">
@@ -114,156 +265,7 @@
                                                         </div>
                                                     </div>
                                                 </li>
-                                            @else
-                                                @foreach($comments->sortByDesc('created_at') as $comment)
-                                                    <li class="comment">
-                                                        <div class="comment-body">
-                                                            <div class="single-comment">
-                                                                <div class="comment-img">
-                                                                    @php
-                                                                        if (($comment->author->role) === 'instructor') {
-                                                                            $avatar = $comment->author->instructors->avatar;
-                                                                        } else {
-                                                                            $avatar = $comment->author->students->avatar;
-                                                                        }
-                                                                    @endphp
-                                                                    <img src="{{ $avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images">
-                                                                </div>
-                                                                <div class="comment-inner">
-                                                                    <h6 class="commenter">{!! $comment->author->role === 'instructor' ? '<i class="fa-solid fa-chalkboard-user"></i>' : '' !!}
-                                                                        <a class="author_name" href="#">{{ $comment->author->name }}</a>
-                                                                    </h6>
-                                                                    <div class="comment-meta">
-                                                                        <div
-                                                                            class="time-spent">{{ date_format(date_create($comment->created_at) , 'd/m/Y') }}</div>
-                                                                        <div class="reply-edit">
-                                                                            <div class="reply">
-                                                                                <a class="comment-reply-link" data-id="{{ $comment->id }}" href="#">Trả lời</a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="comment-text">
-                                                                        <p class="b2">{{ $comment->content }}</p>
-                                                                        <ul class="social-icon social-default transparent-with-border justify-content-start">
-                                                                            @php
-                                                                                $is_active = false;
-                                                                                if (Auth::check()) {
-                                                                                    foreach (Auth::user()->likes as $like) {
-                                                                                        if ($like['likeable_id'] == $comment->id) {
-                                                                                            $is_active = true;
-                                                                                            break;
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            @endphp
-                                                                            <li>
-                                                                                <a data-url="{{ route('client.like', [$comment->id, 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
-                                                                                    <i class="feather-thumbs-up"></i>
-                                                                                </a>
-                                                                                <span class="like_qty">{{ $comment->like_amount }}</span>
-                                                                            </li>
-                                                                            @php
-                                                                                $is_active = false;
-                                                                                if (Auth::check()) {
-                                                                                    foreach (Auth::user()->dislikes as $dislike) {
-                                                                                        if ($dislike['dislikeable_id'] == $comment->id) {
-                                                                                            $is_active = true;
-                                                                                            break;
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            @endphp
-                                                                            <li>
-                                                                                <a class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('client.dislike', [$comment->id, 'comment']) }}">
-                                                                                    <i class="feather-thumbs-down"></i>
-                                                                                </a>
-                                                                                <span class="dislike_qty">{{ $comment->dislike_amount }}</span>
-                                                                            </li>
-                                                                        </ul>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        @if($comment->replies->count() > 0)
-                                                            <ul class="children">
-                                                                @foreach($comment->replies as $reply)
-                                                                    <li class="comment">
-                                                                        <div class="comment-body">
-                                                                            <div class="single-comment">
-                                                                                <div class="comment-img">
-                                                                                    @php
-                                                                                        if (($reply->author->role) === 'instructor') {
-                                                                                            $avatar = $reply->author->instructors->avatar;
-                                                                                        } else {
-                                                                                            $avatar = $reply->author->students->avatar;
-                                                                                        }
-                                                                                        @endphp
-                                                                                    <img src="{{ $avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images">
-                                                                                </div>
-                                                                                <div class="comment-inner">
-                                                                                    <h6 class="commenter"> {!! $reply->author->role === 'instructor' ? '<i class="fa-solid fa-chalkboard-user"></i>' : '' !!}
-                                                                                        <a class="author_name" href="#">{{ $reply->author->name }}</a>
-                                                                                    </h6>
-                                                                                    <div class="comment-meta">
-                                                                                        <div
-                                                                                            class="time-spent">{{ date_format(date_create($reply->created_at), 'd/m/Y') }}</div>
-                                                                                        <div class="reply-edit">
-                                                                                            <div class="reply">
-                                                                                                <a class="comment-reply-link"
-                                                                                                   data-id="{{ $reply->id }}"
-                                                                                                   href="#comment-respond">Trả lời</a>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="comment-text">
-                                                                                        <p class="b2">{{ $reply->content }}</p>
-                                                                                        <ul class="social-icon social-default transparent-with-border justify-content-start">
-                                                                                            @php
-                                                                                                $is_active = false;
-                                                                                                if (Auth::check()) {
-                                                                                                    foreach (Auth::user()->likes as $like) {
-                                                                                                        if ($like['likeable_id'] == $reply->id) {
-                                                                                                            $is_active = true;
-                                                                                                            break;
-                                                                                                        }
-                                                                                                    }
-                                                                                                }
-                                                                                            @endphp
-                                                                                            <li>
-                                                                                                <a data-url="{{ route('client.like', [$reply->id, 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
-                                                                                                    <i class="feather-thumbs-up"></i>
-                                                                                                </a>
-                                                                                                <span class="like_qty">{{ $reply->like_amount }}</span>
-                                                                                            </li>
-                                                                                            @php
-                                                                                                $is_active = false;
-                                                                                                if (Auth::check()) {
-                                                                                                    foreach (Auth::user()->dislikes as $dislike) {
-                                                                                                        if ($dislike['dislikeable_id'] == $reply->id) {
-                                                                                                            $is_active = true;
-                                                                                                            break;
-                                                                                                        }
-                                                                                                    }
-                                                                                                }
-                                                                                            @endphp
-                                                                                            <li>
-                                                                                                <a class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('client.dislike', [$reply->id, 'comment']) }}">
-                                                                                                    <i class="feather-thumbs-down"></i>
-                                                                                                </a>
-                                                                                                <span class="dislike_qty">{{$reply->dislike_amount}}</span>
-                                                                                            </li>
-                                                                                        </ul>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </li>
-                                                                @endforeach
-                                                            </ul>
-                                                        @endif
-                                                    </li>
-                                                @endforeach
-                                            @endif
+                                            @endforelse
                                         </ul>
                                     </div>
                                 </div>
