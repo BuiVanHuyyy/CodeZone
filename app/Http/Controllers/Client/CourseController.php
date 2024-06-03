@@ -5,7 +5,7 @@
     use App\Http\Controllers\Controller;
     use App\Models\Course;
     use App\Models\CourseCategory;
-    use App\Models\Lesion;
+    use App\Models\Lesson;
     use App\Models\Review;
     use App\Models\Subject;
     use Illuminate\Contracts\Foundation\Application;
@@ -55,10 +55,9 @@
             }
             //Check if the course is bought by the student
             $isBought = false;
-            if (Auth::check() && Auth::user()->student) {
-                $isBought = Auth::user()->student->courses->where('status', 'paid')->contains('course_id', $course->id);
+            if (Auth::check() && Auth::user()->role == 'student') {
+                $isBought = $course->students->where('status', 'paid')->contains('student_id', Auth::user()->student->id);
             }
-
             return view('client.pages.course_detail', compact('course', 'isBought'));
         }
 

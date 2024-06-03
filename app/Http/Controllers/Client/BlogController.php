@@ -14,7 +14,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class BlogController extends Controller
@@ -71,18 +70,26 @@ class BlogController extends Controller
     {
         try {
             $blog = new Blog();
+            $blog->id = Str::uuid();
             $blog->title = $request->blog_title;
-            $blog->slug = Str::slug($request->blog_title);
+            $slug = Str::slug($request->blog_title);
+            // Check if slug already exists
+            if (Blog::where('slug', $slug)->exists()) {
+                // Make slug unique if it already exists
+                $slug = Str::slug($request->blog_title) . '-' . Str::random(4);
+            }
+            $blog->slug = $slug;
             $blog->content = $request->blog_content;
             $blog->thumbnail = $this->saveImageToSystem($request->file('thumbnail'));
-            $blog->user_id = Auth::id();
+            $blog->instructor_id = Auth::user()->instructor->id;
             $blog->status = 'pending';
             $blog->summary = $request->blog_summary;
             $blog->save();
-            return redirect()->route('instructor.profile')->with('message', 'Blog của bạn đã được gửi đên admin và đang chờ phê duyệt');
+            return redirect()->route('instructor.dashboard')->with('message', 'Blog của bạn đã được gửi đên admin và đang chờ phê duyệt')->with('icon', 'success');
         }
         catch (\Exception $e) {
-            return back()->with('message', 'Something went wrong');
+            dd($e->getMessage());
+            return redirect()->back()->with('message', 'Something went wrong')->with('icon', 'error');
         }
     }
 

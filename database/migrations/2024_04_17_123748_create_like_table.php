@@ -1,5 +1,4 @@
 <?php
-
     use Illuminate\Database\Migrations\Migration;
     use Illuminate\Database\Schema\Blueprint;
     use Illuminate\Support\Facades\Schema;
@@ -13,10 +12,10 @@
         {
             Schema::create('likes', function (Blueprint $table) {
                 $table->id();
-                $table->enum('likeable_type', ['course', 'subject', 'lesion', 'instructor', 'review', 'comment', 'blog']);
-                $table->unsignedBigInteger('likeable_id');
-                $table->foreignId('user_id')->constrained('users');
-                $table->softDeletes();
+                $table->string('likeable_type', 30);
+                $table->uuid('likeable_id');
+
+                $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
                 $table->timestamps();
             });
         }

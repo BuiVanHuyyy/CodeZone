@@ -13,10 +13,10 @@
         {
             Schema::create('dislikes', function (Blueprint $table) {
                 $table->id();
-                $table->enum('dislikeable_type', ['course', 'subject', 'lesion', 'instructor', 'review', 'comment', 'blog']);
-                $table->unsignedBigInteger('dislikeable_id');
-                $table->foreignId('user_id')->constrained('users');
-                $table->softDeletes();
+                $table->string('dislikeable_type', 30);
+                $table->uuid('dislikeable_id');
+
+                $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
                 $table->timestamps();
             });
         }

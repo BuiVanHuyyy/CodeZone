@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Student extends Model
 {
     use HasFactory, softDeletes;
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $guarded = [];
     public function user(): BelongsTo
     {

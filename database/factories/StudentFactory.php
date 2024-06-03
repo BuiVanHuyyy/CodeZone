@@ -18,21 +18,9 @@ class StudentFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->name;
-        $slug = Str::slug($name);
         return [
-            'name' => $name,
-            'slug' => $slug,
-            'nickname' => $this->faker->userName,
-            'avatar' => $this->faker->imageUrl('300', '300', 'people'),
-            'phone_number' => $this->faker->phoneNumber(),
-            'gender' => $this->faker->boolean(),
-            'dob' => $this->faker->date(),
-            'bio' => $this->faker->text,
-            'user_id' => $this->faker->unique()->numberBetween(30, 530),
-            'facebook' => $this->faker->url,
-            'github' => $this->faker->url,
-            'linkedin' => $this->faker->url,
+            'id' => Str::uuid(),
+            'user_id' => '053b4f81-2ec4-4e6a-9a79-3e2a59c7d6d8'
         ];
     }
 }

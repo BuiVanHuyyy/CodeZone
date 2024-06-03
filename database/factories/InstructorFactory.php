@@ -18,20 +18,13 @@ class InstructorFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->name();
-        $slug = Str::slug($name);
         return [
-            'name' => $name,
-            'slug' => $slug,
-            'nickname' => $this->faker->userName(),
-            'avatar' => $this->faker->imageUrl('300', '300', 'people'),
+            'id' => Str::uuid(),
             'phone_number' => $this->faker->phoneNumber(),
-            'gender' => $this->faker->boolean(),
-            'dob' => $this->faker->date(),
             'current_job' => $this->faker->jobTitle(),
             'education' => $this->faker->text(),
-            'bio' => $this->faker->text,
-            'user_id' => $this->faker->unique()->numberBetween('1', '30'),
+            'bio' => $this->faker->text(),
+            'user_id' => '1d4f045a-5523-446c-aae1-8f8b1f9f45cf',
             'facebook' => $this->faker->url(),
             'github' => $this->faker->url(),
             'linkedin' => $this->faker->url(),

@@ -12,13 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('student_id')->constrained('students');
+            $table->uuid('id')->primary();
             $table->double('total_price', 10, 1);
             $table->enum('status', ['paid', 'pending', 'failed'])->default('pending');
             $table->enum('payment_method', ['VNBANK', 'INTCARD'])->default('VNBANK');
             $table->softDeletes();
             $table->timestamps();
+
+            $table->foreignUuid('user_id')->constrained('users');
+            $table->index(['status', 'user_id']);
         });
     }
 

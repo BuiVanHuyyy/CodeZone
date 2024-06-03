@@ -36,8 +36,8 @@
                                         </div>
                                         <div class="rbt-card-body">
                                             <ul class="rbt-meta">
-                                                <li><i class="feather-book"></i>{{ $course->subject_count }} Bài học</li>
-                                                <li><i class="feather-users"></i>{{ $course->student_count }} Học viên</li>
+                                                <li><i class="feather-book"></i>{{ $course->subjects->count() }} Bài học</li>
+                                                <li><i class="feather-users"></i>{{ $course->students->where('status', 'paid')->count() }} Học viên</li>
                                             </ul>
                                             <h4 class="rbt-card-title">
                                                 <a href="{{ route('client.course_detail', ['slug' => $course->slug]) }}">{{ $course->title }}</a>

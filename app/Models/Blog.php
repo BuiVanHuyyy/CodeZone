@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Blog extends Model
 {
     use HasFactory, SoftDeletes;
+    public $incrementing = false;
+     protected $keyType = 'string';
     public function author(): BelongsTo
     {
        return $this->belongsTo(User::class, 'user_id');

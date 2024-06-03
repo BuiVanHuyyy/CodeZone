@@ -84,46 +84,31 @@
                                         </li>
                                     @endif
                                     <li class="account-access rbt-user-wrapper right-align-dropdown d-none d-xl-block">
-                                        @php
-                                        if (\Illuminate\Support\Facades\Auth::user()->role == 'student') {
-                                            $avatar = \Illuminate\Support\Facades\Auth::user()->student->avatar;
-                                            $name = \Illuminate\Support\Facades\Auth::user()->student->name;
-                                        } elseif (\Illuminate\Support\Facades\Auth::user()->role == 'admin') {
-                                            $avatar = \Illuminate\Support\Facades\Auth::user()->admin->avatar;
-                                            $name = \Illuminate\Support\Facades\Auth::user()->admin->name;
-                                            $profile = route('admin.dashboard');
-                                        }
-                                        else {
-                                            $avatar = \Illuminate\Support\Facades\Auth::user()->instructor->avatar;
-                                            $name = \Illuminate\Support\Facades\Auth::user()->instructor->name;
-                                            $profile = route('client.profile', [\Illuminate\Support\Facades\Auth::user()->instructor->slug]);
-                                        }
-                                        @endphp
-                                        <a href="{{ $profile ?? '#' }}">
-                                            <i class="feather-user"></i>{{ $name }}
+                                        <a href="{{ Auth::user()->role == 'admin' ? route('admin.dashboard') : '#' }}">
+                                            <i class="feather-user"></i>{{ Auth::user()->name }}
                                         </a>
                                         @if(Auth::user()->role != 'admin')
                                             <div class="rbt-user-menu-list-wrapper">
                                                 <div class="inner">
                                                     <div class="rbt-admin-profile">
                                                         <div class="admin-thumbnail">
-                                                            <img src="{{ Auth::user()->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="User Images"/>
+                                                            <img src="{{ Auth::user()->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="User Images"/>
                                                         </div>
                                                         <div class="admin-info">
-                                                            <span class="name">{{ $name }}</span>
+                                                            <span class="name">{{ Auth::user()->name }}</span>
                                                         </div>
                                                     </div>
                                                         <ul class="user-list-wrapper">
                                                             <li>
-                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.profile') : route('instructor.profile') }}">
+                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.dashboard') : route('instructor.dashboard') }}">
                                                                     <i class="feather-home"></i>
                                                                     <span>Dashboard</span>
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('client.profile', [\Illuminate\Support\Facades\Auth::user()->instructor->slug]) }}">
+                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.profile', [\Illuminate\Support\Facades\Auth::user()->slug]) }}">
                                                                     <i class="feather-bookmark"></i>
-                                                                    <span>Trang cá nhân</span>
+                                                                    <span>Thông tin cá nhân</span>
                                                                 </a>
                                                             </li>
                                                             <li>
@@ -166,77 +151,51 @@
                                             <div class="inner">
                                                 <div class="rbt-admin-profile">
                                                     <div class="admin-thumbnail">
-                                                        <img src="{{ asset('client_assets/images/team/avatar.jpg') }}"
+                                                        <img src="{{ Auth::user()->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
                                                              alt="User Images"/>
                                                     </div>
                                                     <div class="admin-info">
                                                         <span class="name">{{ Auth::user()->name }}</span>
-                                                        <a class="rbt-btn-link color-primary" href="">View Profile</a>
                                                     </div>
                                                 </div>
                                                 <ul class="user-list-wrapper">
                                                     <li>
-                                                        <a href="">
+                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.dashboard') : route('instructor.dashboard') }}">
                                                             <i class="feather-home"></i>
-                                                            <span>My Dashboard</span>
+                                                            <span>Dashboard</span>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="#">
+                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.profile', [\Illuminate\Support\Facades\Auth::user()->slug]) }}">
                                                             <i class="feather-bookmark"></i>
-                                                            <span>Bookmark</span>
+                                                            <span>Thông tin cá nhân</span>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="">
+                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.enrolled_courses') : route('instructor.my_courses') }}">
                                                             <i class="feather-shopping-bag"></i>
-                                                            <span>Enrolled Courses</span>
+                                                            <span>{{ Auth::user()->role == 'student' ? 'Các khóa học đăng ký' : 'Các khóa học của tôi' }}</span>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="">
+                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.my_reviews') }}">
                                                             <i class="feather-heart"></i>
-                                                            <span>Wishlist</span>
+                                                            <span>Đánh giá</span>
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="">
+                                                        <a href="{{ Auth::user()->role == 'student' ? route('client.student.edit', [\Illuminate\Support\Facades\Auth::user()->student]) : route('instructor.edit') }}">
                                                             <i class="feather-star"></i>
-                                                            <span>Reviews</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">
-                                                            <i class="feather-list"></i>
-                                                            <span>My Quiz Attempts</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                                <hr class="mt--10 mb--10"/>
-                                                <ul class="user-list-wrapper">
-                                                    <li>
-                                                        <a href="#">
-                                                            <i class="feather-book-open"></i>
-                                                            <span>Getting Started</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                                <hr class="mt--10 mb--10"/>
-                                                <ul class="user-list-wrapper">
-                                                    <li>
-                                                        <a href="">
-                                                            <i class="feather-settings"></i>
-                                                            <span>Settings</span>
+                                                            <span>Chỉnh sửa thông tin</span>
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <form method="post" action="{{ route('logout') }}">
                                                             @csrf
-                                                            <a onclick="event.preventDefault(); this.closest('form').submit();"
-                                                               href="{{ route('logout') }}">
-                                                                <i class="feather-log-out"></i>
-                                                                <span>Đăng xuất</span>
-                                                            </a>
+                                                            <a onclick="event.preventDefault();
+                                                                        this.closest('form').submit();"
+                                                               href="{{ route('logout') }}"><i
+                                                                    class="feather-log-out"></i><span>Đăng xuất</span></a>
                                                         </form>
                                                     </li>
                                                 </ul>

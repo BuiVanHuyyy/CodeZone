@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Admin extends Model
 {
     use HasFactory;
+    public $incrementing = false;
+     protected $keyType = 'string';
     protected $guarded = [];
     protected $table = 'admin';
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo

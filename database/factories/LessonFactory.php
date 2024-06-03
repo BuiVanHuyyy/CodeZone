@@ -3,13 +3,14 @@
 namespace Database\Factories;
 
 use App\Models\Course;
+use App\Models\Subject;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Subject>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class SubjectFactory extends Factory
+class LessonFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -24,8 +25,10 @@ class SubjectFactory extends Factory
             'id' => Str::uuid(),
             'title' => $title,
             'slug' => $slug,
+            'content' => $this->faker->text,
+            'is_preview' => $this->faker->boolean,
             'order' => $this->faker->numberBetween(1, 10),
-            'course_id' =>'907bd90b-7e0d-3f56-b7d3-832b4d05dcd8',
+            'subject_id' => 'f29340ca-fe95-4018-bf72-c7d15e42cd50',
         ];
     }
 }

@@ -37,15 +37,12 @@ class CommentController extends Controller
     }
     public function destroy(string|int $id): RedirectResponse
     {
-        DB::beginTransaction();
         try {
             $comment = Comment::find($id);
             $comment->delete();
-            DB::commit();
             session()->flash('msg', 'Xóa bình luận thành công');
             session()->flash('i', 'success');
         }catch (\Exception $e) {
-            DB::rollBack();
             session()->flash('msg', 'Có lỗi xảy ra, vui lòng thử lại sau');
             session()->flash('i', 'error');
         }

@@ -12,7 +12,7 @@
         public function up(): void
         {
             Schema::create('course_categories', function (Blueprint $table) {
-                $table->id();
+                $table->uuid('id')->primary();
                 $table->string('title', 100)->unique();
                 $table->string('slug', 100)->unique();
                 $table->string('thumbnail', 100)->nullable();

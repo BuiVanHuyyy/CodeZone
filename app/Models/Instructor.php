@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Instructor extends Model
 {
     use HasFactory, SoftDeletes;
+    public $incrementing = false;
+     protected $keyType = 'string';
     public $guarded = [];
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
@@ -19,6 +21,10 @@ class Instructor extends Model
     public function courses(): HasMany
     {
         return $this->hasMany(Course::class, 'instructor_id');
+    }
+    public function blogs(): HasMany
+    {
+        return $this->hasMany(Blog::class, 'instructor_id');
     }
     public function reviews(): MorphMany
     {

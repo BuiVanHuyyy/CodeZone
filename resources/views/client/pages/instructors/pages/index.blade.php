@@ -22,7 +22,7 @@
                             </div>
                             <div class="content">
                                 <h3 class="counter without-icon color-primary">
-                                    <span class="odometer" data-count="{{ Auth::user()->instructors->courses->count() }}">00</span>
+                                    <span class="odometer" data-count="{{ $instructorCourses->count() }}">00</span>
                                 </h3>
                                 <span class="rbt-title-style-2 d-block">Khóa học đã tạo</span>
                             </div>
@@ -40,7 +40,7 @@
                             </div>
                             <div class="content">
                                 <h3 class="counter without-icon color-secondary">
-                                    <span class="odometer" data-count="{{ Auth::user()->instructors->courses->where('status', 'approved')->count() }}">00</span>
+                                    <span class="odometer" data-count="{{ $instructorCourses->where('status', 'approved')->count() }}">00</span>
                                 </h3>
                                 <span class="rbt-title-style-2 d-block">Khóa học đang hoạt động</span>
                             </div>
@@ -57,12 +57,6 @@
                                 <i class="feather-users"></i>
                             </div>
                             <div class="content">
-                                @php
-                                    $totalStudents = 0;
-                                    foreach (\Illuminate\Support\Facades\Auth::user()->instructors->courses->where('status', 'approved') as $course) {
-                                        $totalStudents += $course->enrollments->where('status', 'paid')->count();
-                                    }
-                                @endphp
                                 <h3 class="counter without-icon color-pink">
                                     <span class="odometer" data-count="{{ $totalStudents }}">00</span>
                                 </h3>
@@ -82,12 +76,6 @@
                                 <i class="feather-dollar-sign"></i>
                             </div>
                             <div class="content">
-                                @php
-                                $totalMoney = 0;
-                                foreach (\Illuminate\Support\Facades\Auth::user()->instructors->courses->where('status', 'approved') as $course) {
-                                    $totalMoney += $course->enrollments->where('status', 'paid')->sum('price');
-                                }
-                                @endphp
                                 <h3 class="counter color-warning">
                                     <span class="odometer" data-count="{{ number_format($totalMoney, 0) }}">00</span>
                                 </h3>

@@ -12,14 +12,16 @@
         public function up(): void
         {
             Schema::create('reviews', function (Blueprint $table) {
-                $table->id();
-                $table->unsignedBigInteger('reviewable_id');
-                $table->enum('reviewable_type',  ['course', 'instructor']);
-                $table->foreignId('user_id')->constrained('users');
+                $table->uuid('id')->primary();
+                $table->uuid('reviewable_id');
+                $table->string('reviewable_type',  30);
                 $table->integer('rating');
                 $table->text('content');
                 $table->softDeletes();
                 $table->timestamps();
+
+                $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
+                $table->index(['reviewable_id', 'reviewable_type', 'user_id', 'rating']);
             });
         }
 

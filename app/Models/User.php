@@ -4,7 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -18,12 +20,21 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+
+     public $incrementing = false;
+     protected $keyType = 'string';
     protected $fillable = [
         'name',
         'email',
         'password',
         'role',
         'status',
+        'slug',
+        'avatar',
+        'status',
+        'role',
+        'gender',
+        'dob',
     ];
 
     /**
@@ -56,16 +67,16 @@ class User extends Authenticatable
     {
         return $this->hasOne(Admin::class, 'user_id');
     }
-    public function likes(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Like::class, 'user_id');
-    }
-    public function dislikes(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Dislike::class, 'user_id');
-    }
-    public function blogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function blogs(): HasMany
     {
         return $this->hasMany(Blog::class, 'user_id');
+    }
+    public function likes(): MorphMany
+    {
+        return $this->morphMany(Like::class, 'likeable');
+    }
+    public function dislikes(): MorphMany
+    {
+        return $this->morphMany(Dislike::class, 'dislikeable');
     }
 }

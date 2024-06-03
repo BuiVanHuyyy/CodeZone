@@ -12,13 +12,15 @@
         public function up(): void
         {
             Schema::create('subjects', function (Blueprint $table) {
-                $table->id();
-                $table->string('title', 100)->unique();
-                $table->string('slug', 100)->unique();
+                $table->uuid('id')->primary();
+                $table->string('title', 100);
+                $table->string('slug', 100);
                 $table->integer('order');
-                $table->foreignId('course_id')->constrained('courses');
-                $table->softDeletes();
                 $table->timestamps();
+
+                $table->foreignUuid('course_id')->constrained('courses');
+                $table->index(['slug', 'title']);
+
             });
         }
 

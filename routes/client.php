@@ -7,12 +7,13 @@
     use \App\Http\Controllers\Client\CartController;
     use \App\Http\Controllers\Client\CourseController;
     use \App\Http\Controllers\Client\CommentController;
-    use \App\Http\Controllers\Admin\ReviewController;
+    use \App\Http\Controllers\Client\ReviewController;
     use \App\Http\Controllers\Client\InstructorController;
     use \App\Http\Controllers\Client\BlogController;
     use \App\Http\Controllers\Client\LessonController;
     use \App\Http\Controllers\Client\LikeController;
     use \App\Http\Controllers\Client\DislikeController;
+    use \App\Http\Controllers\Client\UserActionController;
 
     Route::prefix('/')->group(function () {
         Route::get('/', [ViewController::class, 'index'])->name('client.home');
@@ -24,20 +25,20 @@
         Route::get('/all-blogs', [BlogController::class, 'index'])->name('client.blogs');
         Route::get('/blog-detail/{slug}', [BlogController::class, 'show'])->name('client.blog_detail');
         Route::get('/not-found', [ViewController::class, 'notFound'])->name('client.404');
-        Route::get('/profile/{slug}', [InstructorController::class, 'profile'])->name('client.profile');
+        Route::get('/profile/{slug}', [InstructorController::class, 'profile'])->name('instructor.profile');
     });
     Route::middleware('check.user.is.login')->group(function () {
         Route::prefix('/student')->group(function () {
-           Route::get('/profile', [StudentController::class, 'dashboard'])->name('student.profile');
+           Route::get('/profile', [StudentController::class, 'dashboard'])->name('student.dashboard');
            Route::get('/info', [StudentController::class, 'info'])->name('student.show');
            Route::get('/enrolled-courses', [StudentController::class, 'myCourses'])->name('student.enrolled_courses');
             Route::prefix('/course')->group(function () {
                 Route::get('/{course_slug}/{subject_slug?}/{lesson_slug?}',[LessonController::class, 'index'])->name('course.index');
             });
         });
-        Route::prefix('instructor')->middleware('check.user.is.instructor')->group(function () {
-            Route::get('/profile', [InstructorController::class, 'dashboard'])->name('instructor.profile');
-            Route::get('/info', [InstructorController::class, 'info'])->name('instructor.show');
+        Route::prefix('/instructor')->middleware('check.user.is.instructor')->group(function () {
+            Route::get('/my-profile', [InstructorController::class, 'dashboard'])->name('instructor.dashboard');
+            Route::get('/show', [InstructorController::class, 'show'])->name('instructor.show');
             Route::get('/edit', [InstructorController::class, 'edit'])->name('instructor.edit');
             Route::get('/my-courses', [InstructorController::class, 'courses'])->name('instructor.my_courses');
             Route::get('/my-reviews', [InstructorController::class, 'reviews'])->name('instructor.my_reviews');
@@ -51,12 +52,13 @@
         });
         Route::resources(['/student' => StudentController::class], ['as' => 'client']);
         Route::prefix('/students/')->group(function () {
+            Route::get('/edit-profile', [StudentController::class, 'edit'])->name('student.edit');
             Route::post('like/{id}/{type}', [LikeController::class, 'store'])->name('client.like');
             Route::post('dislike/{id}/{type}', [DislikeController::class, 'store'])->name('client.dislike');
         });
-        Route::post('/upload-avatar/{student}', [StudentController::class, 'uploadAvatar'])->name('upload.avatar');
-        Route::post('/upload-avatar-instructor/{instructor}', [InstructorController::class, 'uploadAvatar'])->name('upload.instructor.avatar');
-        Route::post('/upload-tmp-avatar', [StudentController::class, 'uploadTmpAvatar'])->name('upload.tmp.avatar');
+        Route::post('/upload-avatar', [UserActionController::class, 'handleUploadAvatar'])->name('upload.avatar');
+        Route::post('/upload-tmp-avatar', [UserActionController::class, 'uploadTmpAvatar'])->name('upload.tmp.avatar');
+        Route::delete('/delete-tmp-avatar', [UserActionController::class, 'deleteTmpAvatar'])->name('delete.tmp.avatar');
         Route::prefix('cart')->group(function () {
             Route::post('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('cart.add');
             Route::post('/remove-from-cart/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');

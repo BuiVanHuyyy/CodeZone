@@ -35,17 +35,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @php
-                            $reviews = \App\Models\Review::where('reviewable_id', \Illuminate\Support\Facades\Auth::user()->instructors->id)->where('reviewable_type', 'instructor')->get();
-                            @endphp
-                            @if($reviews->count() === 0)
+                            @if($instructorReviews->count() === 0)
                             <tr>
                                 <td colspan="3" class="text-center">Không có đánh giá nào</td>
                             </tr>
                             @else
-                                @foreach($reviews->sortByDesc('created_at') as $review)
+                                @foreach($instructorReviews as $review)
                                     <tr>
-                                        <th>{{ $review->user->students->name }}</th>
+                                        <th>{{ $review->user->name }}</th>
                                         <td>{{ date_format(date_create($review->created_at), 'd/m/Y') }}</td>
                                         <td>
                                             <div class="rbt-review">
@@ -80,38 +77,26 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(Auth::user()->instructors->courses->where('status', 'approved')->count() === 0)
+                            @if(Auth::user()->instructor->courses->where('status', 'approved')->count() === 0)
                                 <tr>
                                     <td colspan="3" class="text-center">Không có đánh giá nào</td>
                                 </tr>
                                 @else
-                                @foreach(Auth::user()->instructors->courses->where('status', 'approved') as $course)
+                                @foreach($instructorCourses as $course)
                                     <tr>
-                                        <th>Khóa học: <a href="{{ route('client.course_detail', $course->slug) }}">{{ $course->title }}</a></th>
+                                        <th><a href="{{ route('client.course_detail', $course->slug) }}">{{ $course->title }}</a></th>
                                         <td>{{ date_format(date_create($course->created_at), 'd/m/Y') }}</td>
                                         <td>
                                             <div class="rbt-review">
-                                                @php
-                                                $course_reviews = \App\Models\Review::where('reviewable_id', $course->id)->where('reviewable_type', 'course')->get();
-                                                $totalStar = 0;
-                                                foreach($course_reviews as $review) {
-                                                    $totalStar += $review->rating;
-                                                }
-                                                if ($course_reviews->count() > 0) {
-                                                    $averageStar = $totalStar / $course_reviews->count();
-                                                } else {
-                                                    $averageStar = 0;
-                                                }
-                                                @endphp
                                                 <div class="rating">
-                                                    @for($i = 0; $i < ceil($averageStar); $i++)
+                                                    @for($i = 0; $i < ceil($course->reviews->avg('rating')); $i++)
                                                         <i class="fas fa-star"></i>
                                                     @endfor
-                                                    @for($i = 0; $i < 5 - ceil($averageStar); $i++)
+                                                    @for($i = 0; $i < 5 - ceil($course->reviews->avg('rating')); $i++)
                                                         <i class="far fa-star" style="color: #0b0b0b"></i>
                                                     @endfor
                                                 </div>
-                                                <span class="rating-count"> ({{ $course_reviews->count() }} Reviews)</span>
+                                                <span class="rating-count"> ({{ $course->reviews->count() }} Reviews)</span>
                                             </div>
                                         </td>
                                     </tr>

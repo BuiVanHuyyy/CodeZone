@@ -9,7 +9,7 @@ use App\Models\CourseCategory;
 use App\Models\Dislike;
 use App\Models\Enrollment;
 use App\Models\Instructor;
-use App\Models\Lesion;
+use App\Models\Lesson;
 use App\Models\Like;
 use App\Models\Order;
 use App\Models\Review;
@@ -25,15 +25,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-    //    User::factory(500)->create();
-    //    Student::factory(500)->create();
-    //    Instructor::factory(30)->create();
+//       User::factory(30)->create();
+//        Student::factory(30)->create();
+//       Instructor::factory(10)->create();
 //        CourseCategory::factory(5)->create();
-    //    Course::factory(5)->create();
-    //    Subject::factory(50)->create();
-    //    Lesion::factory(200)->create();
-       Like::factory(10)->create();
-       Dislike::factory(5)->create();
+        Course::factory(1)->create();
+        Subject::factory(10)->create();
+        Lesson::factory(39)->create();
+    //    Like::factory(10)->create();
+    //    Dislike::factory(5)->create();
 //        Comment::factory(500)->create();
 //        Review::factory(500)->create();
 //        Order::factory(500)->create();

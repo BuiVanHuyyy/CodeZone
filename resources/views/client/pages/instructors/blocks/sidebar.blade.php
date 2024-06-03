@@ -11,13 +11,13 @@
                 <nav class="mainmenu-nav">
                     <ul class="dashboard-mainmenu rbt-default-sidebar-list">
                         <li>
-                            <a href="{{ route('instructor.profile') }}">
+                            <a href="{{ route('instructor.dashboard') }}">
                                 <i class="feather-home"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('instructor.show') }}">
+                            <a href="{{ route('instructor.profile', ['slug' => Auth::user()->slug]) }}">
                                 <i class="feather-user"></i>
                                 <span>Trang cá nhân</span>
                             </a>

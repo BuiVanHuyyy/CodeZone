@@ -23,31 +23,31 @@
                         <div class="rbt-card variation-01 rbt-hover">
                             <div class="rbt-card-img">
                                 <a href="">
-                                    <img src="{{ $item->course->thumbnail }}" alt="Card image">
+                                    <img src="{{ $item->course->thumbnail }}" alt="{{ $item->title }} thumbnail">
                                 </a>
                             </div>
                             <div class="rbt-card-body">
                                 <div class="rbt-card-top">
                                     <div class="rbt-review">
-                                        <div class="rating">
-                                            @for($i = 1; $i <= ceil($item->rating) ; $i++)
-                                                <i class="fas fa-star"></i>
-                                            @endfor
-                                            @for($i = 1; $i <= 5 - ceil($item->rating); $i++)
-                                                <i class="fas fa-star" style="color: #1a1e21"></i>
-                                            @endfor
-                                        </div>
-                                        <span class="rating-count"> ({{ $item->review_amount }} đánh giá)</span>
-                                    </div>
-                                    <div class="rbt-bookmark-btn">
-                                        <a class="rbt-round-btn" title="Bookmark" href="#"><i class="feather-bookmark"></i></a>
+                                        @if($item->course->reviews->count() == 0)
+                                            <span class="rating-count">Khóa học này chưa có đánh giá</span>
+                                        @else
+                                            <div class="rating">
+                                                    @for($i = 1; $i <= ceil($item->course->reviews->avg('rating')) ; $i++)
+                                                        <i class="fas fa-star"></i>
+                                                    @endfor
+                                                    @for($i = 1; $i <= 5 - ceil($item->course->reviews->avg('rating')); $i++)
+                                                        <i class="fas fa-star" style="color: #1a1e21"></i>
+                                                    @endfor
+                                            </div>
+                                            <span class="rating-count"> ({{ $item->course->reviews->count() }} đánh giá)</span>
+                                        @endif
                                     </div>
                                 </div>
-                                <h4 class="rbt-card-title"><a href="{{ route('client.course_detail', ['slug' => $item->course->slug]) }}">{{ $item->course->title }}</a>
-                                </h4>
+                                <h4 class="rbt-card-title"><a href="{{ route('client.course_detail', ['slug' => $item->course->slug]) }}">{{ $item->course->title }}</a></h4>
                                 <ul class="rbt-meta">
-                                    <li><i class="feather-book"></i>{{ $item->course->subjects->count() }}</li>
-                                    <li><i class="feather-users"></i>{{ $item->course->enrollments->count() }} học viên</li>
+                                    <li><i class="feather-book"></i>{{ $item->course->subjects->count() }} môn học</li>
+                                    <li><i class="feather-users"></i>{{ $item->course->students->count() }} học viên</li>
                                 </ul>
 
                                 <div class="rbt-progress-style-1 mb--20 mt--10">

@@ -39,10 +39,10 @@
                             <div class="rbt-tutor-information-left">
                                 <div class="thumbnail rbt-avatars size-lg position-relative">
                                     <img id="previewImage"
-                                         src="{{ Auth::user()->instructors->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
+                                         src="{{ Auth::user()->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
                                          alt="Students"/>
                                     <div class="rbt-edit-photo-inner">
-                                        <form id="uploadAvatar" method="POST" action="{{ route('upload.instructor.avatar', ['instructor' => Auth::user()->instructors]) }}" enctype="multipart/form-data">
+                                        <form id="uploadAvatar" method="POST" action="{{ route('upload.avatar') }}" enctype="multipart/form-data">
                                             @csrf
                                             <input type="file" id="avatar" name="avatar" style="display: none;">
                                         </form>
@@ -62,14 +62,14 @@
                         </div>
                     </div>
                     <!-- Start Profile Row  -->
-                    <form action="{{ route('instructor.update', ['instructor' => Auth::user()->instructors]) }}"
+                    <form action="{{ route('instructor.update', ['instructor' => Auth::user()->instructor]) }}"
                           method="POST" class="rbt-profile-row rbt-default-form row row--15">
                         @csrf
                         <div class="col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="rbt-form-group">
                                 <label for="name">Tên</label>
                                 <input id="name" type="text" name="name"
-                                       value="{{ old('name') ?? Auth::user()->instructors->name }}"/>
+                                       value="{{ old('name') ?? Auth::user()->name }}"/>
                                 @error('name')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -78,31 +78,34 @@
                         <div class="col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="rbt-form-group">
                                 <label
-                                    class="{{ is_null(Auth::user()->instructors->nickname) ? 'd-flex justify-content-between' : '' }}"
-                                    for="nickname"><span>Nick Name</span>
-                                    @if(is_null(Auth::user()->instructors->nickname))
-                                        <span class="text-danger">Chưa có nickname</span>
+                                    class="{{ is_null(Auth::user()->instructor->phone_number) ? 'd-flex justify-content-between' : '' }}"
+                                    for="phone_number"><span>Số điện thoại</span>
+                                    @if(is_null(Auth::user()->instructor->phone_number))
+                                        <span class="text-danger">Chưa có số điện thoại</span>
                                     @endif
                                 </label>
-                                <input id="nickname" name="nickname" type="text"
-                                       value="{{ old('nickname') ?? Auth::user()->instructors->nickname}}"/>
-                                @error('nickname')
+                                <input name="phone_number" id="phone_number" type="tel"
+                                       value="{{ old('phone_number') ?? Auth::user()->instructor->phone_number }}"/>
+                                @error('phone_number')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="rbt-form-group">
+                            <div class="rbt-form-group rbt-modern-select bg-transparent height-45">
                                 <label
-                                    class="{{ is_null(Auth::user()->instructors->phone_number) ? 'd-flex justify-content-between' : '' }}"
-                                    for="phone_number"><span>Số điện thoại</span>
-                                    @if(is_null(Auth::user()->instructors->phone_number))
-                                        <span class="text-danger">Chưa có số điện thoại</span>
+                                    class="{{ is_null(Auth::user()->gender) ? 'd-flex justify-content-between' : '' }}"
+                                    for="nickname"><span>Giới tính</span>
+                                    @if(is_null(Auth::user()->gender))
+                                        <span class="text-danger">Chưa chọn giới tính</span>
                                     @endif
                                 </label>
-                                <input name="phone_number" id="phone_number" type="tel"
-                                       value="{{ old('phone_number') ?? Auth::user()->instructors->phone_number }}"/>
-                                @error('phone_number')
+                                <select class="w-100" name="gender" id="gender">
+                                    <option>Vui lòng chọn</option>
+                                    <option {{ Auth::user()->gender == 'male' ? 'selected' : '' }}>Nam</option>
+                                    <option {{ Auth::user()->gender == 'female' ? 'selected' : '' }}>Nữ</option>
+                                </select>
+                                @error('gender')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -110,13 +113,33 @@
                         <div class="col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="filter-select rbt-modern-select">
                                 <label for="dob"
-                                       class="{{ is_null(Auth::user()->instructors->dob) ? 'd-flex justify-content-between' : '' }}"><span>Ngày sinh</span>
-                                    @if(is_null(Auth::user()->instructors->bio))
+                                       class="{{ is_null(Auth::user()->instructor->dob) ? 'd-flex justify-content-between' : '' }}"><span>Ngày sinh</span>
+                                    @if(is_null(Auth::user()->dob))
                                         <span class="text-danger">Chưa có ngày sinh</span>
                                     @endif</label>
                                 <input id="dob" name="dob" type="date"
-                                       value="{{ old('dob') ?? Auth::user()->instructors->dob }}"/>
+                                       value="{{ old('dob') ?? Auth::user()->dob }}"/>
                                 @error('dob')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="rbt-form-group">
+                                <label for="current_job">Công việc hiện tại</label>
+                                <input id="current_job" type="text" name="current_job"
+                                       value="{{ old('name') ?? Auth::user()->instructor->current_job }}"/>
+                                @error('name')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="rbt-form-group">
+                                <label for="education">Học vấn</label>
+                                <input id="education" type="text" name="education"
+                                       value="{{ old('education') ?? Auth::user()->instructor->education }}"/>
+                                @error('name')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -124,14 +147,14 @@
                         <div class="col-12">
                             <div class="rbt-form-group">
                                 <label
-                                    class="{{ is_null(Auth::user()->instructors->nickname) ? 'd-flex justify-content-between' : '' }}"
+                                    class="{{ is_null(Auth::user()->instructor->bio) ? 'd-flex justify-content-between' : '' }}"
                                     for="bio"><span>Tiểu sử</span>
-                                    @if(is_null(Auth::user()->instructors->bio))
+                                    @if(is_null(Auth::user()->instructor->bio))
                                         <span class="text-danger">Chưa có tiểu sử</span>
                                     @endif
                                 </label>
                                 <textarea id="bio" cols="20" name="bio"
-                                          rows="5">{{ old('bio') ?? Auth::user()->instructors->bio }}</textarea>
+                                          rows="5">{{ old('bio') ?? Auth::user()->instructor->bio }}</textarea>
                                 @error('bio')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -143,17 +166,17 @@
                         <div class="col-12">
                             <div class="rbt-form-group">
                                 <label
-                                    class="{{ is_null(Auth::user()->instructors->facebook) ? 'd-flex justify-content-between' : '' }}"
+                                    class="{{ is_null(Auth::user()->instructor->facebook) ? 'd-flex justify-content-between' : '' }}"
                                     for="facebook">
                                         <span>
                                             <i class="feather-facebook"></i>Facebook
                                         </span>
-                                    @if(is_null(Auth::user()->instructors->facebook))
+                                    @if(is_null(Auth::user()->instructor->facebook))
                                         <span class="text-danger">Chưa có liên kết facebook</span>
                                     @endif
                                 </label>
                                 <input id="facebook" name="facebook" type="text" placeholder="https://facebook.com/"
-                                       value="{{ old('facebook') ?? Auth::user()->instructors->facebook }}"/>
+                                       value="{{ old('facebook') ?? Auth::user()->instructor->facebook }}"/>
                                 @error('facebook')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -162,17 +185,17 @@
                         <div class="col-12">
                             <div class="rbt-form-group">
                                 <label
-                                    class="{{ is_null(Auth::user()->instructors->linkedin) ? 'd-flex justify-content-between' : '' }}"
+                                    class="{{ is_null(Auth::user()->instructor->linkedin) ? 'd-flex justify-content-between' : '' }}"
                                     for="linkedin">
                                        <span>
                                             <i class="feather-linkedin"></i>Linkedin
                                        </span>
-                                    @if(is_null(Auth::user()->instructors->linkedin))
+                                    @if((is_null(Auth::user()->instructor->linkedin)))
                                         <span class="text-danger">Chưa có liên kết linkedin</span>
                                     @endif
                                 </label>
                                 <input id="linkedin" name="linkedin" type="text" placeholder="https://linkedin.com/"
-                                       value="{{ old('linkedin') ?? Auth::user()->instructors->linkedin }}"/>
+                                       value="{{ old('linkedin') ?? Auth::user()->instructor->linkedin }}"/>
                                 @error('linkedin')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -181,17 +204,17 @@
                         <div class="col-12">
                             <div class="rbt-form-group">
                                 <label
-                                    class="{{ is_null(Auth::user()->instructors->github) ? 'd-flex justify-content-between' : '' }}"
+                                    class="{{ is_null(Auth::user()->instructor->github) ? 'd-flex justify-content-between' : '' }}"
                                     for="github">
                                         <span>
                                             <i class="feather-github"></i>Github
                                         </span>
-                                    @if(is_null(Auth::user()->instructors->github))
+                                    @if(is_null(Auth::user()->instructor->github))
                                         <span class="text-danger">Chưa có liên kết github</span>
                                     @endif
                                 </label>
                                 <input id="github" name="github" type="text" placeholder="'https://github.com/"
-                                       value="{{ old('github') ?? Auth::user()->instructors->github }}"/>
+                                       value="{{ old('github') ?? Auth::user()->instructor->github }}"/>
                                 @error('github')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -280,14 +303,23 @@
                 },
                 success: function(data) {
                     if (data.path) {
-                        $(".rbt-avatars img").attr("src", data.path);
+                        $(".rbt-avatars img").attr("src", "/" + data.path);
                         $('#submit-avatar').css('display', 'block');
                         $('#changeAvatarBtn').on("click",function() {
                             $('#uploadAvatar').submit();
                         });
-                        $('#cancelAvatarBtn').on("click",function() {
-                            $(".rbt-avatars img").attr("src", "{{ Auth::user()->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}");
-                            $('#submit-avatar').css('display', 'none');
+                        $('#cancelAvatarBtn').on("click", function () {
+                            $.ajax({
+                                url: '{{ route('delete.tmp.avatar') }}',
+                                method: 'DELETE',
+                                data: {path: data.path},
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                            }).done(function () {
+                                $(".rbt-avatars img").attr("src", "{{ Auth::user()->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}");
+                                $('#submit-avatar').css('display', 'none');
+                            });
                         });
                     } else {
                         console.error('No image uploaded.');

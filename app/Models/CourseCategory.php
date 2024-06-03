@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class CourseCategory extends Model
 {
     use HasFactory, SoftDeletes;
+    public $incrementing = false;
+     protected $keyType = 'string';
     public function courses(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Course::class, 'course_category_id');

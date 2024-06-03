@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Review extends Model
 {
     use HasFactory, softDeletes;
+    public $incrementing = false;
+     protected $keyType = 'string';
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

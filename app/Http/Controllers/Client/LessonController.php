@@ -19,14 +19,12 @@ class LessonController extends Controller
             return view('client.pages.404');
         }
         if (Auth::user()->role === 'instructor') {
-            if ($course->instructor_id !== Auth::user()->instructor->id) {
+            if ($course->author->id !== Auth::id()) {
                 return view('client.pages.404');
             }
         }
-        elseif (Auth::user()->role === 'student') {
-            $userId = Auth::user()->student->id;
-            $isEnrolled = $course->students->contains('student_id', $userId);
-            if (!$isEnrolled) {
+        else {
+            if (!$course->students->where('status', 'paid')->contains('user_id', Auth::id())) {
                 return view('client.pages.404');
             }
         }

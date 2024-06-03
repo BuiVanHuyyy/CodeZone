@@ -20,6 +20,7 @@ class CourseCategoryFactory extends Factory
         $title = $this->faker->name();
         $slug = Str::slug($title);
         return [
+            'id' => $this->faker->uuid(),
             'title' => $title,
             'slug' => $slug,
             'thumbnail' => $this->faker->imageUrl(500, 500),

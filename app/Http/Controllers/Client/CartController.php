@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
@@ -47,18 +48,19 @@ class CartController extends Controller
         DB::beginTransaction();
         try {
             $cart = session()->get('cart', []);
-
             if (count($cart) === 0) {
                 return redirect()->back()->with(['message' => 'Giỏ hàng trống!', 'icon' => 'warning']);
             }
             $order = new Order();
-            $order->student_id = Auth::user()->student->id;
+            $order->id = Str::uuid();
+            $order->user_id = Auth::id();
             $order->total_price = collect($cart)->sum('price');
             $order->payment_method = $request->payment_method;
             $order->status = 'pending';
             $order->save();
             foreach ($cart as $id => $item) {
                 $enrollment = new Enrollment();
+                $enrollment->id = Str::uuid();
                 $enrollment->order_id = $order->id;
                 $enrollment->course_id = $id;
                 $enrollment->price = $item['price'];
@@ -72,6 +74,7 @@ class CartController extends Controller
         }
         catch (\Exception $e) {
             DB::rollBack();
+            dd($e->getMessage());
             return redirect()->back()->with(['message' => 'Thanh toán thất bại!', 'icon' => 'error']);
         }
     }

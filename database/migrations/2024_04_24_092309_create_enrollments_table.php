@@ -12,14 +12,16 @@
         public function up(): void
         {
             Schema::create('enrollments', function (Blueprint $table) {
-                $table->id();
-                $table->foreignId('order_id')->constrained('orders');
-                $table->foreignId('student_id')->constrained('students');
-                $table->foreignId('course_id')->constrained('courses');
+                $table->uuid('id')->primary();
                 $table->double('price', 10, 2);
                 $table->enum('status', ['paid', 'pending', 'failed'])->default('pending');
                 $table->softDeletes();
                 $table->timestamps();
+
+                $table->foreignUuid('order_id')->constrained('orders');
+                $table->foreignUuid('student_id')->constrained('students');
+                $table->foreignUuid('course_id')->constrained('courses');
+                $table->index(['status', 'student_id', 'course_id', 'price']);
             });
         }
 

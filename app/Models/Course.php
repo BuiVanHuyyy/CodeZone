@@ -13,6 +13,8 @@ class Course extends Model
 {
     use HasFactory, SoftDeletes;
     protected $guarded = ['status'];
+    public $incrementing = false;
+     protected $keyType = 'string';
     public function students(): HasMany
     {
         return $this->hasMany(Enrollment::class, 'course_id');

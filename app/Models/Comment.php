@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Comment extends Model
 {
     use HasFactory;
+    protected $guarded = [];
+    public $incrementing = false;
+     protected $keyType = 'string';
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

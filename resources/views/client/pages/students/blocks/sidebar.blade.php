@@ -9,14 +9,14 @@
                 <nav class="mainmenu-nav">
                     <ul class="dashboard-mainmenu rbt-default-sidebar-list">
                         <li>
-                            <a href="{{ route('student.profile') }}">
+                            <a href="{{ route('student.dashboard') }}">
                                 <i class="feather-home"></i><span>Dashboard</span>
                             </a>
                         </li>
                         <li>
                             <a href="{{ route('student.show') }}">
                                 <i class="feather-user"></i>
-                                <span>Trang cá nhân</span>
+                                <span>Thông tin cá nhân</span>
                             </a>
                         </li>
                         <li>
@@ -35,7 +35,7 @@
                 <nav class="mainmenu-nav">
                     <ul class="dashboard-mainmenu rbt-default-sidebar-list">
                         <li>
-                            <a href="{{ route('client.student.edit', [\Illuminate\Support\Facades\Auth::user()->student]) }}">
+                            <a href="{{ route('student.edit') }}">
                                 <i class="feather-settings"></i>
                                 <span>Chỉnh sửa thông tin</span>
                             </a>

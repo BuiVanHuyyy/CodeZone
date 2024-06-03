@@ -6,32 +6,20 @@
     <div class="rbt-tutor-information">
         <div class="rbt-tutor-information-left">
             <div class="thumbnail rbt-avatars size-lg">
-                <img src="{{ Auth::user()->instructors->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Instructor"/>
+                <img src="{{ !is_null(Auth::user()->avatar) || file_exists(Auth::user()->avatar) ? Auth::user()->avatar : asset('client_assets/images/avatar/default-avatar.png') }}" alt="Instructor"/>
             </div>
             <div class="tutor-content">
                 <h5 class="title">{{ Auth::user()->name }}</h5>
                 <div class="rbt-review">
                     <div class="rating">
-                        @php
-                            $reviews = \App\Models\Review::where('reviewable_type', 'instructor')->where('reviewable_id', Auth::user()->instructors->id)->get();
-                            $totalStars = 0;
-                            foreach ($reviews as $review) {
-                                $totalStars += $review->rating;
-                            }
-                            if (count($reviews) > 0) {
-                                $rating = $totalStars / count($reviews);
-                            } else {
-                                $rating = 0;
-                            }
-                        @endphp
-                        @for($i = 0; $i < ceil($rating); $i++)
+                        @for($i = 0; $i < ceil(Auth::user()->instructor->reviews->avg('rating')); $i++)
                             <i class="fas fa-star"></i>
                         @endfor
-                        @for($i = 0; $i < 5 - ceil($rating); $i++)
+                        @for($i = 0; $i < 5 - ceil(Auth::user()->instructor->reviews->avg('rating')); $i++)
                             <i class="fas fa-star" style="color: #0b0b0b"></i>
                         @endfor
                     </div>
-                    <span class="rating-count">({{ $reviews->count() }} Reviews)</span>
+                    <span class="rating-count">({{ Auth::user()->instructor->reviews->count() }} đánh giá)</span>
                 </div>
             </div>
         </div>

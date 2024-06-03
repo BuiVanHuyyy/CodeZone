@@ -16,23 +16,9 @@
          */
         public function index(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
         {
-            $courses = Course::with('students')->get();
             $categories = CourseCategory::with('courses')->get();
-            $popularCourses = Course::withCount(['students', 'reviews', 'subjects'])->with(['students', 'reviews', 'subjects'])
-                ->get()
-                ->sortByDesc('students_count')
-                ->take(4)
-                ->map(function ($course) {
-                    $totalStars = $course->reviews->sum('rating');
-                    $rating = $course->reviews_count > 0 ? $totalStars / $course->reviews_count : 0;
-                    $course->setAttribute('subject_count', $course->students_count);
-                    $course->setAttribute('student_count', $course->students_count);
-                    $course->setAttribute('review_amount', $course->reviews_count);
-                    $course->setAttribute('rating', $rating);
-                    return $course;
-                });
-
-            return view('client.pages.index', compact('popularCourses', 'categories', 'courses'));
+            $popularCourses = Course::with(['category', 'subjects', 'students'])->withCount('students')->orderBy('students_count', 'desc')->take(4)->get();
+            return view('client.pages.index', compact('popularCourses', 'categories'));
         }
 
         /**
