@@ -196,14 +196,13 @@
 
         public function resetPassword(UpdatePasswordRequest $request): RedirectResponse
         {
-            $user = Auth::user();
-            if (!Hash::check($request->old_password, $user->password)) {
+            if (!Hash::check($request->old_password, Auth::user()->password)) {
                 session()->flash('msg', 'Mật khẩu cũ không chính xác!');
                 session()->flash('i', 'error');
                 return back();
             }
-            $user->password = Hash::make($request->password);
-            $user->save();
+            Auth::user()->password = Hash::make($request->password);
+            Auth::user()->save();
 
             session()->flash('msg', 'Đổi mật khẩu thành công!');
             session()->flash('i', 'success');

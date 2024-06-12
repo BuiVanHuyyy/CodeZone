@@ -245,7 +245,7 @@
                         <div class="col-12">
                             <div class="rbt-form-group">
                                 <label for="newpassword">Mật khẩu mới</label>
-                                <input id="newpassword" name="password" type="text">
+                                <input id="newpassword" name="password" type="password">
                                 @error('password')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -254,7 +254,7 @@
                         <div class="col-12">
                             <div class="rbt-form-group">
                                 <label for="retypenewpassword">Nhập lại mật khẩu</label>
-                                <input id="retypenewpassword" name="password_confirmation" type="text">
+                                <input id="retypenewpassword" name="password_confirmation" type="password">
                                 @error('password_confirmation')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
