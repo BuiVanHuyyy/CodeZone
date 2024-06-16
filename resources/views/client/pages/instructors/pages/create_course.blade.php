@@ -12,11 +12,7 @@
                                 <div class="accordion" id="tutionaccordionExamplea1">
                                     <div class="accordion-item card">
                                         <h2 class="accordion-header card-header" id="accOne">
-                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                                    data-bs-target="#accCollapseOne" aria-expanded="true"
-                                                    aria-controls="accCollapseOne">
-                                                Thông tin khóa học
-                                            </button>
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accCollapseOne" aria-expanded="true" aria-controls="accCollapseOne">Thông tin khóa học</button>
                                         </h2>
                                         <div id="accCollapseOne" class="accordion-collapse collapse show"
                                              aria-labelledby="accOne" data-bs-parent="#tutionaccordionExamplea1">
@@ -53,7 +49,7 @@
                                                     @endphp
 
                                                     <div class="course-field mb--20">
-                                                        <h6>Choose Categories</h6>
+                                                        <h6>Thể loại khóa học</h6>
                                                         <div class="rbt-modern-select bg-transparent height-45 w-100 mb--10">
                                                             <select name="category" class="w-100">
                                                                 <option value="">Chọn thể loại cho khóa học</option>
@@ -72,28 +68,21 @@
                                                         <div class="rbt-create-course-thumbnail upload-area">
                                                             <div class="upload-area">
                                                                 <div class="brows-file-wrapper" data-black-overlay="9">
-                                                                    <!-- actual upload which is hidden -->
-                                                                    <input name="thumbnail" id="createinputfile"
-                                                                           type="file" class="inputfile"/>
-                                                                    <img id="createfileImage"
-                                                                         src="{{ asset('client_assets/images/others/thumbnail-placeholder.svg') }}"
-                                                                         alt="file image"/>
-                                                                    <!-- our custom upload button -->
-                                                                    <label class="d-flex" for="createinputfile"
-                                                                           title="No File Choosen">
+                                                                    <input name="thumbnail" id="createinputfile" type="file" class="inputfile"/>
+                                                                    <img id="createfileImage" src="{{ asset('client_assets/images/others/thumbnail-placeholder.svg') }}" alt="file image"/>
+                                                                    <label class="d-flex" for="createinputfile" title="No File Choosen">
                                                                         <i class="feather-upload"></i>
                                                                         <span class="text-center">Choose a File</span>
                                                                     </label>
                                                                 </div>
                                                             </div>
                                                         </div>
-
                                                         <small>
                                                             <i class="feather-info"></i>
-                                                            <b>Kích thước:</b> 2048 pixels,<b>Hổ trợ file:</b>JPG, JPEG,
-                                                            PNG, GIF, WEBP
+                                                            <b>Kích thước:</b> 2048 pixels,<b>Hổ trợ file:</b>JPG, JPEG, PNG, GIF, WEBP
                                                         </small>
                                                     </div>
+
                                                     @error('thumbnail')
                                                         <small class="d-block mt_dec--5 text-danger">{{ $message }}</small>
                                                     @enderror

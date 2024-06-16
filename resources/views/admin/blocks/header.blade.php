@@ -2,7 +2,6 @@
     <a href="" class="brand-logo">
         <img style="width: 100%" src="{{ asset('client_assets/images/logo/logo.png') }}" alt="CodeZone">
     </a>
-
     <div class="nav-control">
         <div class="hamburger">
             <span class="line"></span><span class="line"></span><span class="line"></span>
@@ -93,7 +92,7 @@
                     </li>
                     <li class="nav-item dropdown header-profile">
                         <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown">
-                            <img src="{{ Auth::user()->admin->first()->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }} " width="20" alt=""/>
+                            <img src="{{ Auth::user()->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }} " width="20" alt=""/>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
                             <a href="app-profile.html" class="dropdown-item ai-icon">

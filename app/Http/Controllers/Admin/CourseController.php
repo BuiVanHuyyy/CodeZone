@@ -92,7 +92,13 @@ class CourseController extends Controller
             }else {
                 $course->deleted_at = null;
             }
+            if(file_exists(public_path($course->thumbnail)) && !is_null($course->thumbnail)) {
+                //code here
+                move_uploaded_file(public_path($course->thumbnail), public_path('client_asses/images/course' . $course->thumbnail));
+                dd(public_path($course->thumbnail));
+            }
             $course->status = $request->status;
+
             $course->save();
             DB::commit();
             event(new SendMailNoticeCourseEvent($course));

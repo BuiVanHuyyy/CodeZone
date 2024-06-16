@@ -1,8 +1,8 @@
 (function($) {
     "use strict";
-	
-	
-	if(jQuery('#spark-bar-2').length > 0 ){	
+
+
+	if(jQuery('#spark-bar-2').length > 0 ){
     $("#spark-bar-2").sparkline([33, 22, 68, 54, 8, 30, 74, 7, 36, 5, 41, 19, 43, 29, 38], {
         type: "bar",
         height: "140",
@@ -11,8 +11,8 @@
         barSpacing: 10,
         barColor: "rgb(200, 255, 135)"
     });
-}	
-	
+}
+
 	if(jQuery('#sparkline12').length > 0 ){
     //Pie
     $("#sparkline12").sparkline([24, 61, 51], {
@@ -21,21 +21,21 @@
         resize: !0,
         sliceColors: ["#8d95ff", "#d7daff", "#c7cbff"]
     });
-	
+
 	$(".bar1").peity("bar", {
-		fill: ["rgb(216, 196, 255)", "rgb(216, 196, 255)", "rgb(216, 196, 255)"],  
+		fill: ["rgb(216, 196, 255)", "rgb(216, 196, 255)", "rgb(216, 196, 255)"],
 		width: "100%",
 		height: "140"
 	});
-	
+
 	$(".peity-line-2").peity("line", {
-        fill: "#ff3232", 
-        stroke: "#fac2c2", 
+        fill: "#ff3232",
+        stroke: "#fac2c2",
         width: "100%",
 		strokeWidth: "3",
         height: "150"
     });
-	
+
 	if(jQuery('#barChart_2').length > 0 ){
 
 	//gradient bar chart
@@ -58,13 +58,13 @@
 						data: [65, 59, 80, 81, 56, 55, 40],
 						borderColor: barChart_2gradientStroke,
 						borderWidth: "0",
-						backgroundColor: barChart_2gradientStroke, 
+						backgroundColor: barChart_2gradientStroke,
 						hoverBackgroundColor: barChart_2gradientStroke
 					}
 				]
 			},
 			options: {
-				legend: false, 
+				legend: false,
 				scales: {
 					yAxes: [{
 						ticks: {
@@ -83,7 +83,7 @@
 	//basic area chart
 if(jQuery('#areaChart_1').length > 0 ){
     const areaChart_1 = document.getElementById("areaChart_1").getContext('2d');
-    
+
     areaChart_1.height = 100;
 
     new Chart(areaChart_1, {
@@ -97,24 +97,24 @@ if(jQuery('#areaChart_1').length > 0 ){
                     data: [25, 20, 60, 41, 66, 45, 80],
                     borderColor: 'rgba(102, 115, 253, 1)',
                     borderWidth: "3",
-                    backgroundColor: 'rgba(102, 115, 253, .2)', 
+                    backgroundColor: 'rgba(102, 115, 253, .2)',
                     pointBackgroundColor: 'rgba(102, 115, 253, 1)'
                 }
             ]
         },
         options: {
-            legend: false, 
+            legend: false,
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true, 
-                        max: 100, 
-                        min: 0, 
-                        stepSize: 20, 
+                        beginAtZero: true,
+                        max: 100,
+                        min: 0,
+                        stepSize: 20,
                         padding: 10
                     }
                 }],
-                xAxes: [{ 
+                xAxes: [{
                     ticks: {
                         padding: 5
                     }
@@ -136,8 +136,6 @@ if(jQuery('#areaChart_1').length > 0 ){
         headerPosition: "fixed",
         containerLayout: "full",
         direction: "ltr"
-    }); 	
+    });
 	}
 })(jQuery);
-
-/* const wt = new PerfectScrollbar('.widget-todo'); */

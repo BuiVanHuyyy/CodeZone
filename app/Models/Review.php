@@ -14,6 +14,10 @@ class Review extends Model
     use HasFactory, softDeletes;
     public $incrementing = false;
      protected $keyType = 'string';
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(Student::class, 'student_id');
+    }
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

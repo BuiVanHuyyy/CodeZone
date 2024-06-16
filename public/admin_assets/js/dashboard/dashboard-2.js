@@ -1,7 +1,7 @@
 (function($) {
-	
+
 	if(jQuery('#morris_bar_2').length > 0 ){
-		
+
 		//bar chart stalked
 
 		Morris.Bar.prototype.fillForSeries = function(i) {
@@ -27,36 +27,34 @@
 			xkey: 'y',
 			ykeys: ['a', 'b', 'c'],
 			labels: ['Series A', 'Series B', 'Series C'],
-			barColors: ['rgb(7, 41, 77)', 'rgb(20, 59, 100)', '#ff8f16'], 
+			barColors: ['rgb(7, 41, 77)', 'rgb(20, 59, 100)', '#ff8f16'],
 			stacked: true,
 			gridTextSize: 10,
 			hideHover: 'auto',
 			resize: true
 		});
 	}
-	
-	
+
+
 	$(".peity-line").peity("line", {
-        fill: ["rgba(162, 186, 211, 1)"], 
-        stroke: 'rgba(20, 59, 100, 1)', 
+        fill: ["rgba(162, 186, 211, 1)"],
+        stroke: 'rgba(20, 59, 100, 1)',
         width: "100%",
         height: "150"
     });
-	
-	$(".peity-line-2").peity("line", {
-        fill: ["rgba(255, 225, 193, 1)"], 
-        stroke: 'rgba(255, 143, 22, 1)', 
-        width: "100%",
-        height: "150"
-    });	
-	
-	$(".peity-line-3").peity("line", {
-        fill: ["rgba(251, 180, 157, 1)"], 
-        stroke: 'rgba(242, 85, 33, 1)', 
-        width: "100%",
-        height: "150"
-    });	
-	
-})(jQuery);
 
-/* const wt = new PerfectScrollbar('.widget-todo'); */
+	$(".peity-line-2").peity("line", {
+        fill: ["rgba(255, 225, 193, 1)"],
+        stroke: 'rgba(255, 143, 22, 1)',
+        width: "100%",
+        height: "150"
+    });
+
+	$(".peity-line-3").peity("line", {
+        fill: ["rgba(251, 180, 157, 1)"],
+        stroke: 'rgba(242, 85, 33, 1)',
+        width: "100%",
+        height: "150"
+    });
+
+})(jQuery);

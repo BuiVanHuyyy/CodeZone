@@ -62,7 +62,7 @@
                             <div class="rbt-avater">
                                 <a href="{{ route('instructor.profile', [$course->author->user->slug]) }}">
                                     <img
-                                        src="{{ $course->author->user->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
+                                        src="{{ $course->author->user->avatarPath() }}"
                                         alt="{{ $course->author->user->name }} avatar"/>
                                 </a>
                             </div>
@@ -94,7 +94,7 @@
                     <div class="course-details-content">
                         <div class="rbt-course-feature-box rbt-shadow-box thumbnail">
                             <img class="w-100"
-                                 src="{{ $course->thumbnail ?? asset('client_assets/images/avatar/default_course_thumbnail.png') }}"
+                                 src="{{ $course->thumbnailPath() }}"
                                  alt="Course Thumbnail"/>
                         </div>
 
@@ -301,7 +301,7 @@
                                     <div class="thumbnail">
                                         <a href="{{ route('instructor.profile', [$course->author->user->slug]) }}">
                                             <img
-                                                src="{{ $course->author->user->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
+                                                src="{{ $course->author->user->avatarPath() }}"
                                                 alt="{{ $course->author->user->name }} avatar"/>
                                         </a>
                                     </div>
@@ -381,7 +381,7 @@
                                     <div class="col-lg-3">
                                         <div class="rating-box">
                                             <div class="rating-number">
-                                                {{ number_format($courseRating = $course->reviews->avg('rating'), 1) }}
+                                                {{ number_format($course->reviews->avg('rating'), 1) }}
                                             </div>
                                             <div class="rating">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -646,15 +646,15 @@
                                             <div class="thumbnail">
                                                 <a href="#">
                                                     <img
-                                                        src="{{ $review->user->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
-                                                        alt="{{ $review->user->name }} Images"/>
+                                                        src="{{ $review->author->user->avatarPath() }}"
+                                                        alt="{{ $review->author->user->name }} Images"/>
                                                 </a>
                                             </div>
                                             <div class="media-body">
                                                 <div class="author-info">
                                                     <h5 class="title">
                                                         <a class="hover-flip-item-wrapper"
-                                                           href="{{ route('instructor.profile', [$course->author]) }}">{{ $review->user->name }}</a>
+                                                           href="{{ route('instructor.profile', [$course->author]) }}">{{ $review->author->user->name }}</a>
                                                     </h5>
                                                     <div class="rating">
                                                         @for($i = 1; $i <= ceil($review->rating); $i++)
@@ -712,7 +712,7 @@
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                @if(Auth::check() && Auth::id() == $review->user->id)
+                                                @if(Auth::check() && Auth::id() == $review->author->user->id)
                                                     @php
                                                         $isReviewed = true;
                                                     @endphp
@@ -804,7 +804,7 @@
                                             <div class="rbt-card-img">
                                                 <a href="{{ route('client.course_detail', [$item->slug]) }}">
                                                     <img
-                                                        src="{{ $item->thumbnail ?? asset('client_assets/images/avatar/default_course_thumbnail.png') }}"
+                                                        src="{{ $item->thumbnailPath() }}"
                                                         alt="Card image"/>
                                                     {{--                                                    <div class="rbt-badge-3 bg-white">--}}
                                                     {{--                                                        <span>-40%</span>--}}
@@ -847,7 +847,7 @@
                                                     <div class="rbt-avater">
                                                         <a href="#">
                                                             <img
-                                                                src="{{ $item->author->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
+                                                                src="{{ $item->author->user->avatarPath() }}"
                                                                 alt="instructor"/>
                                                         </a>
                                                     </div>

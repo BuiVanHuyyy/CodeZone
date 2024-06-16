@@ -17,7 +17,7 @@
                             </div>
                             <div class="right-button">
                                 <a class="rbt-btn-link color-white"
-                                   href="https://themeforest.net/checkout/from_item/42846507?license=regular">
+                                   href="#">
                                     <span>Mua ngay
                                         <i class="feather-arrow-right"></i>
                                     </span>
@@ -92,7 +92,7 @@
                                                 <div class="inner">
                                                     <div class="rbt-admin-profile">
                                                         <div class="admin-thumbnail">
-                                                            <img src="{{ Auth::user()->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="User Images"/>
+                                                            <img src="{{ Auth::user()->avatarPath() }}" alt="User Images"/>
                                                         </div>
                                                         <div class="admin-info">
                                                             <span class="name">{{ Auth::user()->name }}</span>
@@ -106,9 +106,9 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.profile', [\Illuminate\Support\Facades\Auth::user()->slug]) }}">
+                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.profile', [Auth::user()->slug]) }}">
                                                                     <i class="feather-bookmark"></i>
-                                                                    <span>Thông tin cá nhân</span>
+                                                                    <span>Trang cá nhân</span>
                                                                 </a>
                                                             </li>
                                                             <li>
@@ -124,7 +124,7 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="{{ Auth::user()->role == 'student' ? route('client.student.edit', [\Illuminate\Support\Facades\Auth::user()->student]) : route('instructor.edit') }}">
+                                                                <a href="{{ Auth::user()->role == 'student' ? route('client.student.edit', [Auth::user()->student]) : route('instructor.edit') }}">
                                                                     <i class="feather-star"></i>
                                                                     <span>Chỉnh sửa thông tin</span>
                                                                 </a>
@@ -144,14 +144,14 @@
                                         @endif
                                     </li>
                                     <li class="access-icon rbt-user-wrapper right-align-dropdown d-block d-xl-none">
-                                        <a class="rbt-round-btn" href="#">
+                                        <a class="rbt-round-btn" href="{{ Auth::user()->role == 'student' ? route('student.dashboard') : route('instructor.dashboard') }}">
                                             <i class="feather-user"></i>
                                         </a>
                                         <div class="rbt-user-menu-list-wrapper">
                                             <div class="inner">
                                                 <div class="rbt-admin-profile">
                                                     <div class="admin-thumbnail">
-                                                        <img src="{{ Auth::user()->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
+                                                        <img src="{{ Auth::user()->avatarPath() }}"
                                                              alt="User Images"/>
                                                     </div>
                                                     <div class="admin-info">
@@ -166,9 +166,9 @@
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.profile', [\Illuminate\Support\Facades\Auth::user()->slug]) }}">
+                                                        <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.profile', [Auth::user()->slug]) }}">
                                                             <i class="feather-bookmark"></i>
-                                                            <span>Thông tin cá nhân</span>
+                                                            <span>Trang cá nhân</span>
                                                         </a>
                                                     </li>
                                                     <li>
@@ -184,7 +184,7 @@
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="{{ Auth::user()->role == 'student' ? route('client.student.edit', [\Illuminate\Support\Facades\Auth::user()->student]) : route('instructor.edit') }}">
+                                                        <a href="{{ Auth::user()->role == 'student' ? route('client.student.edit', [Auth::user()->student]) : route('instructor.edit') }}">
                                                             <i class="feather-star"></i>
                                                             <span>Chỉnh sửa thông tin</span>
                                                         </a>

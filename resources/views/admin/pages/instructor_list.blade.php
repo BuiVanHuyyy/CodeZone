@@ -37,7 +37,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($instructors->sortByDesc('id') as $instructor)
+                                        @foreach($instructors->sortByDesc('created_at') as $instructor)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td><a href="{{ route('admin.instructor.show', ['instructor' => $instructor]) }}">{{ $instructor->name }}</a></td>

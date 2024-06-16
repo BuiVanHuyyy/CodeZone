@@ -21,7 +21,7 @@ class CheckUserIsInstructor
             return redirect()->route('login');
         }
         if (Auth::user()->role != 'instructor') {
-            session()->flash('message', 'Bạn không phải là giảng viên!');
+            session()->flash('message', 'Bạn không có quyền truy cập!');
             session()->flash('icon', 'error');
             return redirect()->route('client.home');
         }

@@ -14,7 +14,7 @@
                     <a class="rbt-cat-box rbt-cat-box-1 text-center" href="{{ route('client.courses', [$category->slug]) }}">
                         <div class="inner">
                             <div class="icons">
-                                <img src="{{ asset($category->thumbnail) }} " alt="Icons Images"/>
+                                <img src="{{ asset(env('CATEGORY_FOLDER_PATH') . $category->thumbnail)  }} " alt="Icons Images"/>
                             </div>
                             <div class="content">
                                 <h5 class="title">{{ $category->title }}</h5>

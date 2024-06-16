@@ -1,6 +1,5 @@
-@php use Illuminate\Support\Facades\Auth; @endphp
-@extends('client.layout.master')
-@section('content')
+@extends('client.pages.students.layout.master')
+@section('dashboard-main-content')
     <div class="rbt-lesson-area bg-color-white">
         <div class="rbt-lesson-content-wrapper">
             @include('client.pages.students.blocks.workspace_sidebar')

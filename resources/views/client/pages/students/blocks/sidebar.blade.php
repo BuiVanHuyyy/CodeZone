@@ -1,6 +1,4 @@
-<div class="col-lg-3">
-    <!-- Start Dashboard Sidebar  -->
-    <div class="rbt-default-sidebar sticky-top rbt-shadow-box rbt-gradient-border">
+<div class="rbt-default-sidebar sticky-top rbt-shadow-box rbt-gradient-border">
         <div class="inner">
             <div class="content-item-content">
                 <div class="section-title mb--20">
@@ -43,7 +41,8 @@
                         <li>
                             <form method="post" action="{{ route('logout') }}">
                                 @csrf
-                                <a onclick="event.preventDefault(); this.closest('form').submit();" href="{{ route('logout') }}">
+                                <a onclick="event.preventDefault(); this.closest('form').submit();"
+                                   href="{{ route('logout') }}">
                                     <i class="feather-log-out"></i>
                                     <span>Đăng xuất</span>
                                 </a>
@@ -51,8 +50,6 @@
                         </li>
                     </ul>
                 </nav>
-                </div>
             </div>
         </div>
-</div>
-    <!-- End Dashboard Sidebar  -->
+    </div>

@@ -12,10 +12,7 @@
             </div>
             <div class="col-lg-6 col-md-6 col-12">
                 <div class="load-more-btn text-start text-md-end">
-                    <a
-                        class="rbt-btn rbt-switch-btn bg-primary-opacity"
-                        href="{{ route('client.blogs') }}"
-                    >
+                    <a class="rbt-btn rbt-switch-btn bg-primary-opacity" href="{{ route('client.blogs') }}">
                         <span data-text="Xem tất cả">Xem tất cả</span>
                     </a>
                 </div>
@@ -23,9 +20,6 @@
         </div>
         <!-- Start Card Area -->
         <div class="row g-5">
-            @php
-                $blogs = \App\Models\Blog::where('status', 'approved')->orderByDesc('created_at')->take(3)->get();
-            @endphp
             @foreach($blogs as $blog)
                 <div class="col-lg-4 col-md-6 col-sm-12 col-12">
                     <div class="rbt-card variation-02 rbt-hover">

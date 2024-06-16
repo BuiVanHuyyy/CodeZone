@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <img style="border-radius: 20px" src="{{ asset('client_assets/images/huy/sign_in.jpg') }}" alt=""/>
+            <img style="border-radius: 20px" src="{{ asset('client_assets/images/bg/sign_in.jpg') }}" alt=""/>
         </div>
     </div>
 @endsection

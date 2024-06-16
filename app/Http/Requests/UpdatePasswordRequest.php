@@ -22,7 +22,7 @@ class UpdatePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'old_password' => 'required',
+            'current_password' => 'required',
             'password' => 'required|confirmed|min:8',
             'password_confirmation' => 'required'
         ];
@@ -30,7 +30,7 @@ class UpdatePasswordRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'old_password.required' => 'Mật khẩu cũ không được để trống',
+            'current_password.required' => 'Mật khẩu cũ không được để trống',
             'password.required' => 'Mật khẩu mới không được để trống',
             'password.confirmed' => 'Mật khẩu mới không trùng khớp',
             'password.min' => 'Mật khẩu mới phải có ít nhất 8 ký tự',

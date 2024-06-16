@@ -5,9 +5,11 @@
             margin-left: auto;
             max-width: 500px;
         }
+
         div#social-links ul li {
             display: inline-block;
         }
+
         div#social-links ul li a {
             padding: 10px;
             margin: 1px;
@@ -26,11 +28,11 @@
                     <li class="list-item">
                         <div class="author-thumbnail">
                             <img
-                                src="{{ $blog->author->instructor->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
-                                alt="blog-image"/>
+                                src="{{ $blog->author->user->avatarPath() }}"
+                                alt="author-image"/>
                         </div>
                         <div class="author-info">
-                            <a href="{{ route('client.profile', [$blog->author->instructor->slug]) }}"><strong>{{ $blog->author->instructor->name }}</strong></a>
+                            <a href="{{ route('instructor.profile', [$blog->author->user->slug]) }}"><strong>{{ $blog->author->user->name }}</strong></a>
                         </div>
                     </li>
                     <li class="list-item">
@@ -58,21 +60,22 @@
                     <!-- Social Share Block  -->
                     <div class="social-share-block mt-5">
                         <ul class="social-icon social-default transparent-with-border justify-content-start">
-                                <li>
-                                    <a id="blog_like" data-url="{{ route('client.like', [$blog->id, 'blog']) }}"
-                                       class="like_btn {{ $blog->is_liked ? 'active' : '' }}">
-                                        <i class="feather-thumbs-up"></i>
-                                    </a>
-                                    <span
-                                        class="like_qty">{{ number_format($blog->likes->count(), 0) }}</span>
-                                </li>
-                                <li>
-                                    <a id="blog_dislike" class="dislike_btn {{ $blog->is_disliked ? 'active' : '' }}" data-url="{{ route('client.dislike', [$blog->id, 'blog']) }}">
-                                        <i class="feather-thumbs-down"></i>
-                                    </a>
-                                    <span
-                                        class="dislike_qty">{{ number_format($blog->dislikes->count(), 0) }}</span>
-                                </li>
+                            <li>
+                                <a id="blog_like" data-url="{{ route('client.like', [$blog->id, 'blog']) }}"
+                                   class="like_btn {{ $blog->is_liked ? 'active' : '' }}">
+                                    <i class="feather-thumbs-up"></i>
+                                </a>
+                                <span
+                                    class="like_qty">{{ number_format($blog->likes->count(), 0) }}</span>
+                            </li>
+                            <li>
+                                <a id="blog_dislike" class="dislike_btn {{ $blog->is_disliked ? 'active' : '' }}"
+                                   data-url="{{ route('client.dislike', [$blog->id, 'blog']) }}">
+                                    <i class="feather-thumbs-down"></i>
+                                </a>
+                                <span
+                                    class="dislike_qty">{{ number_format($blog->dislikes->count(), 0) }}</span>
+                            </li>
                         </ul>
                         {!! $shareComponent !!}
                     </div>
@@ -81,54 +84,45 @@
                     <div class="about-author">
                         <div class="media">
                             <div class="thumbnail">
-                                <a href="{{ route('client.profile', [$blog->author->instructor->slug]) }}">
-                                    <img src="{{ $blog->author->instructor->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images"/>
+                                <a href="{{ route('instructor.profile', [$blog->author->user->slug]) }}">
+                                    <img
+                                        src="{{ $blog->author->user->avatarPath() }}"
+                                        alt="Author Images"/>
                                 </a>
                             </div>
                             <div class="media-body">
                                 <div class="author-info">
                                     <h5 class="title">
-                                        <a class="hover-flip-item-wrapper" href="{{ route('client.profile', [$blog->author->instructor->slug]) }}">{{ $blog->author->instructor->name }}</a>
+                                        <a class="hover-flip-item-wrapper"
+                                           href="{{ route('instructor.profile', [$blog->author->user->slug]) }}">{{ $blog->author->user->name }}</a>
                                     </h5>
-                                    <span class="b3 subtitle">{{ $blog->author->instructor->current_job }}</span>
+                                    <span class="b3 subtitle">{{ $blog->author->current_job }}</span>
                                 </div>
                                 <div class="content">
-                                    <p class="description">{{ $blog->author->instructor->bio }}</p>
+                                    <p class="description">{{ $blog->author->bio }}</p>
                                     <ul class="social-icon social-default icon-naked justify-content-start">
-                                        <li>
-                                            <a href="https://www.facebook.com/">
-                                                <i
-                                                    class="feather-facebook"
-                                                ></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="https://www.twitter.com/"
-                                            >
-                                                <i
-                                                    class="feather-twitter"
-                                                ></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="https://www.instagram.com/"
-                                            >
-                                                <i
-                                                    class="feather-instagram"
-                                                ></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a
-                                                href="https://www.linkdin.com/"
-                                            >
-                                                <i
-                                                    class="feather-linkedin"
-                                                ></i>
-                                            </a>
-                                        </li>
+                                        @if($blog->author->facebook)
+                                            <li>
+                                                <a href="{{ $blog->author->facebook }}" target="_blank">
+                                                    <i class="feather-facebook"></i>
+                                                </a>
+                                            </li>
+                                        @endif
+                                        @if($blog->author->linkedin)
+                                            )
+                                            <li>
+                                                <a href="{{ $blog->author->linkedin }}" target="_blank">
+                                                    <i class="feather-linkedin"></i>
+                                                </a>
+                                            </li>
+                                        @endif
+                                        @if($blog->author->github)
+                                            <li>
+                                                <a href="{{ $blog->author->github }}" target="_blank">
+                                                    <i class="feather-github"></i>
+                                                </a>
+                                            </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </div>
@@ -138,7 +132,8 @@
                     <div class="rbt-comment-area">
                         <div class="comment-respond">
                             <h4 class="title">Thêm một bình luận</h4>
-                            <form id="commentForm" action="{{ route('client.comment', [$blog->id, 'blog']) }}" method="post">
+                            <form id="commentForm" action="{{ route('client.comment', [$blog->id, 'blog']) }}"
+                                  method="post">
                                 @csrf
                                 <div class="row row--10">
                                     <div class="col-12">
@@ -148,7 +143,8 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
-                                        <button type="submit" class="rbt-btn btn-gradient icon-hover radius-round btn-md" href="#">
+                                        <button type="submit"
+                                                class="rbt-btn btn-gradient icon-hover radius-round btn-md">
                                             <span class="btn-text">Đăng bình luận</span>
                                             <span class="btn-icon">
                                                 <i class="feather-arrow-right"></i>
@@ -161,7 +157,7 @@
                     </div>
 
                     <div class="rbt-comment-area">
-                            <h4 class="title">{{ $comments->count() }} bình luận</h4>
+                        <h4 class="title">{{ $comments->count() }} bình luận</h4>
                         <ul class="comment-list">
                             @if($comments->count() === 0)
                                 <li class="comment">
@@ -201,7 +197,8 @@
                                                             class="time-spent">{{ date_format(date_create($comment->created_at), 'd/m/Y') }}</div>
                                                         <div class="reply-edit">
                                                             <div class="reply">
-                                                                <a data-id="{{ $comment->id }}" class="comment-reply-link" href="#">Trả lời</a>
+                                                                <a data-id="{{ $comment->id }}"
+                                                                   class="comment-reply-link" href="#">Trả lời</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -231,10 +228,13 @@
                                                             $isReviewed = true;
                                                         @endphp
                                                         <div class="position-absolute" style="top: 10px; right: 10px">
-                                                            <form id="deleteForm" action="{{ route('client.comment.destroy', [$comment->id]) }}" method="POST">
+                                                            <form id="deleteForm"
+                                                                  action="{{ route('client.comment.destroy', [$comment->id]) }}"
+                                                                  method="POST">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <a class="deleteButton" href="#" ><i class="fa-solid fa-trash"></i></a>
+                                                                <a class="deleteButton" href="#"><i
+                                                                        class="fa-solid fa-trash"></i></a>
                                                             </form>
                                                         </div>
                                                     @endif
@@ -261,14 +261,17 @@
                                                                 </div>
                                                                 <div class="comment-inner">
                                                                     <h6 class="commenter">{!! $reply->author->id === $blog->user_id ? '<i class="fa-solid fa-user-pen"></i>' : '' !!}
-                                                                        <a  href="#" class="author_name">{{ $reply->author->name }}</a>
+                                                                        <a href="#"
+                                                                           class="author_name">{{ $reply->author->name }}</a>
                                                                     </h6>
                                                                     <div class="comment-meta">
                                                                         <div
                                                                             class="time-spent">{{ date_format(date_create($reply->created_at), 'd/m/Y') }}</div>
                                                                         <div class="reply-edit">
                                                                             <div class="reply">
-                                                                                <a data-id="{{ $comment->id }}" class="comment-reply-link" href="#">Trả lời</a>
+                                                                                <a data-id="{{ $comment->id }}"
+                                                                                   class="comment-reply-link" href="#">Trả
+                                                                                    lời</a>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -276,7 +279,8 @@
                                                                         <p class="b2">{{ $reply->content }}</p>
                                                                         <ul class="social-icon social-default transparent-with-border justify-content-start">
                                                                             <li>
-                                                                                <a data-url="{{ route('client.like', [$reply->id, 'comment']) }}" class="like_btn {{ $reply->is_liked ? 'active' : '' }}">
+                                                                                <a data-url="{{ route('client.like', [$reply->id, 'comment']) }}"
+                                                                                   class="like_btn {{ $reply->is_liked ? 'active' : '' }}">
                                                                                     <i class="feather-thumbs-up"></i>
                                                                                 </a>
                                                                                 <span
@@ -310,93 +314,93 @@
     </div>
 @endsection
 @section('cus_js')
-<script>
-    $(document).ready(function () {
-        let msg = "{{ session('msg') }}";
-        let i = "{{ session('i') }}";
-        if (msg) {
-            Swal.fire({
-                position: "top-end",
-                icon: i,
-                title: msg,
-                showConfirmButton: false,
-                timer: 1000
-            });
-        }
-    });
-    $('.comment-reply-link').click(function (e) {
-        e.preventDefault();
-        let id = $(this).data('id');
-        let name = $(this).closest('.comment-inner').find('.author_name').text();
-        let url = '{{ route('client.comment') }}' + '/' + id + '/comment';
-        $('#commentForm').attr('action', url);
-        $('#message').val(`@${name} `);
-    });
-    $('.like_btn').click(function (event) {
-        event.preventDefault();
-        let $likeBtn = $(this);
-        let likeUrl = $likeBtn.data('url');
-        $.ajax({
-            url: likeUrl,
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}'
-            },
-            success: function (response) {
-                if (response.success) {
-                    let $likeQty = $likeBtn.next('.like_qty');
-                    let $dislikeQty = $likeBtn.parent().siblings().find('.dislike_qty');
-                    let $dislikeBtn = $likeBtn.parent().siblings('.dislike_btn');
-
-                    if ($dislikeBtn.hasClass('active')) {
-                        $dislikeBtn.removeClass('active');
-                    }
-
-                    $likeQty.text(response.like_amount);
-                    $dislikeQty.text(response.dislike_amount);
-                    $likeBtn.toggleClass('active');
-                }
-            },
-        })
-    })
-    // Xử lý sự kiện khi bấm vào nút 'dislike'
-    $('.dislike_btn').click(function (event) {
-        event.preventDefault();
-        let $dislikeBtn = $(this);
-        let dislikeUrl = $dislikeBtn.data('url');
-        $.ajax({
-            url: dislikeUrl,
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}'
-            },
-            success: function (response) {
-                if (response.success) {
-                    let $dislikeQty = $dislikeBtn.next('.dislike_qty');
-                    let $likeQty = $dislikeBtn.parent().siblings().find('.like_qty');
-                    let $likeBtn = $dislikeBtn.parent().find('.like_btn');
-                    if($likeBtn.hasClass('active')) {
-                        $likeBtn.removeClass('active');
-                    }
-                    $dislikeQty.text(response.dislike_amount);
-                    $likeQty.text(response.like_amount);
-                    $dislikeBtn.toggleClass('active');
-                }
-            },
-        })
-    });
-    $('.deleteButton').on('click', function(e) {
-        e.preventDefault();
-        Swal.fire({
-            title: 'Bạn có chắc chắn muốn xóa không?',
-            showDenyButton: true,
-            confirmButtonText: 'Xóa',
-            denyButtonText: 'Hủy',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $('#deleteForm').submit();
+    <script>
+        $(document).ready(function () {
+            let msg = "{{ session('msg') }}";
+            let i = "{{ session('i') }}";
+            if (msg) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: i,
+                    title: msg,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
             }
         });
-    });
-</script>
+        $('.comment-reply-link').click(function (e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            let name = $(this).closest('.comment-inner').find('.author_name').text();
+            let url = '{{ route('client.comment') }}' + '/' + id + '/comment';
+            $('#commentForm').attr('action', url);
+            $('#message').val(`@${name} `);
+        });
+        $('.like_btn').click(function (event) {
+            event.preventDefault();
+            let $likeBtn = $(this);
+            let likeUrl = $likeBtn.data('url');
+            $.ajax({
+                url: likeUrl,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function (response) {
+                    if (response.success) {
+                        let $likeQty = $likeBtn.next('.like_qty');
+                        let $dislikeQty = $likeBtn.parent().siblings().find('.dislike_qty');
+                        let $dislikeBtn = $likeBtn.parent().siblings('.dislike_btn');
+
+                        if ($dislikeBtn.hasClass('active')) {
+                            $dislikeBtn.removeClass('active');
+                        }
+
+                        $likeQty.text(response.like_amount);
+                        $dislikeQty.text(response.dislike_amount);
+                        $likeBtn.toggleClass('active');
+                    }
+                },
+            })
+        })
+        // Xử lý sự kiện khi bấm vào nút 'dislike'
+        $('.dislike_btn').click(function (event) {
+            event.preventDefault();
+            let $dislikeBtn = $(this);
+            let dislikeUrl = $dislikeBtn.data('url');
+            $.ajax({
+                url: dislikeUrl,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function (response) {
+                    if (response.success) {
+                        let $dislikeQty = $dislikeBtn.next('.dislike_qty');
+                        let $likeQty = $dislikeBtn.parent().siblings().find('.like_qty');
+                        let $likeBtn = $dislikeBtn.parent().find('.like_btn');
+                        if ($likeBtn.hasClass('active')) {
+                            $likeBtn.removeClass('active');
+                        }
+                        $dislikeQty.text(response.dislike_amount);
+                        $likeQty.text(response.like_amount);
+                        $dislikeBtn.toggleClass('active');
+                    }
+                },
+            })
+        });
+        $('.deleteButton').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn xóa không?',
+                showDenyButton: true,
+                confirmButtonText: 'Xóa',
+                denyButtonText: 'Hủy',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#deleteForm').submit();
+                }
+            });
+        });
+    </script>
 @endsection

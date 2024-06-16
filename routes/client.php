@@ -20,7 +20,7 @@
         Route::get('/about-us', [ViewController::class, 'about'])->name('client.about');
         Route::get('/all-courses/{category?}', [CourseController::class, 'index'])->name('client.courses');
         Route::get('/course-detail/{slug}', [CourseController::class, 'show'])->name('client.course_detail');
-        Route::get('/all-instructors', [ViewController::class, 'showInstructors'])->name('client.instructors');
+        Route::get('/all-instructors', [InstructorController::class, 'index'])->name('client.instructors');
         Route::get('/register-instructor', [InstructorController::class, 'create'])->name('client.become_instructor');
         Route::get('/all-blogs', [BlogController::class, 'index'])->name('client.blogs');
         Route::get('/blog-detail/{slug}', [BlogController::class, 'show'])->name('client.blog_detail');
@@ -49,6 +49,7 @@
             Route::post('/upload_blog_thumbnail', [BlogController::class, 'storeImage'])->name('upload.blog_thumbnail');
             Route::post('/create-blog', [BlogController::class, 'store'])->name('blog.store');
             Route::post('/create-course', [CourseController::class, 'store'])->name('course.store');
+            Route::delete('delete-course/{id}', [CourseController::class, 'destroy'])->name('course.destroy');
         });
         Route::resources(['/student' => StudentController::class], ['as' => 'client']);
         Route::prefix('/students/')->group(function () {

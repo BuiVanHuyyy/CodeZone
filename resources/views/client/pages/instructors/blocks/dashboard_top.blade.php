@@ -6,7 +6,7 @@
     <div class="rbt-tutor-information">
         <div class="rbt-tutor-information-left">
             <div class="thumbnail rbt-avatars size-lg">
-                <img src="{{ !is_null(Auth::user()->avatar) || file_exists(Auth::user()->avatar) ? Auth::user()->avatar : asset('client_assets/images/avatar/default-avatar.png') }}" alt="Instructor"/>
+                <img src="{{ Auth::user()->avatarPath() }}" alt="Instructor"/>
             </div>
             <div class="tutor-content">
                 <h5 class="title">{{ Auth::user()->name }}</h5>

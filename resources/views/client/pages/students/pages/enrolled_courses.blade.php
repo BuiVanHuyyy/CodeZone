@@ -1,9 +1,7 @@
-@extends('client.layout.dashboard')
+@extends('client.pages.students.layout.master')
 
-@section('content')
-    <div class="col-lg-9">
-        <!-- Start Enrole Course  -->
-        <div class="rbt-dashboard-content bg-color-white rbt-shadow-box">
+@section('dashboard-main-content')
+    <div class="rbt-dashboard-content bg-color-white rbt-shadow-box">
             <div class="content">
                 <div class="section-title">
                     <h4 class="rbt-title-style-3">Các khóa học đã đăng ký</h4>
@@ -23,7 +21,7 @@
                         <div class="rbt-card variation-01 rbt-hover">
                             <div class="rbt-card-img">
                                 <a href="">
-                                    <img src="{{ $item->course->thumbnail }}" alt="{{ $item->title }} thumbnail">
+                                    <img src="{{ $item->course->thumbnailPath() }}" alt="{{ $item->title }} thumbnail">
                                 </a>
                             </div>
                             <div class="rbt-card-body">

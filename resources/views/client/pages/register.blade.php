@@ -60,7 +60,7 @@
         </div>
         </div>
         <div class="col-lg-6">
-            <img style="border-radius: 20px; width: 100%" src="{{ asset('client_assets/images/huy/sign_up.jpg') }}" alt=""/>
+            <img style="border-radius: 20px; width: 100%" src="{{ asset('client_assets/images/bg/sign_up.jpg') }}" alt=""/>
         </div>
     </div>
 @endsection

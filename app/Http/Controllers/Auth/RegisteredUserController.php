@@ -37,7 +37,11 @@
                 $user = new User();
                 $user->id = $id->toString();
                 $user->name = $request->name;
-                $user->slug = Str::slug($request->name);
+                $slug = Str::slug($request->name);
+                while (User::find('slug', $slug) !== null) {
+                    $slug = $slug . '-' . Str::random(5);
+                }
+                $user->slug = $slug;
                 $user->email = $request->email;
                 $user->password = Hash::make($request->password);
                 $user->role = 'student';

@@ -2,10 +2,9 @@
 
 @section('content')
     <div class="rbt-page-banner-wrapper">
-        <!-- Start Banner BG Image  -->
         <div class="rbt-banner-image"></div>
-        <!-- End Banner BG Image  -->
     </div>
+
     <div class="rbt-dashboard-area rbt-section-overlayping-top rbt-section-gapBottom">
         <div class="container">
             <div class="row">
@@ -18,6 +17,7 @@
                         <div class="col-lg-9">
                             @yield('dashboard-main-content')
                         </div>
+                    </div>
                 </div>
             </div>
         </div>

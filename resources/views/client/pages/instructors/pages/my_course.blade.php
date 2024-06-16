@@ -46,7 +46,7 @@
                                     <div class="rbt-card variation-01 rbt-hover">
                                         <div class="rbt-card-img">
                                             <a href="">
-                                                <img src="{{ !is_null($course->thumbnail) || file_exists(public_path($course->thumbnail)) ? $course->thumbnail : asset('client_assets/images/avatar/default_course_thumbnail.png') }}" alt="Card image">
+                                                <img src="{{ $course->thumbnailPath() }}" alt="Card image">
                                             </a>
                                         </div>
                                         <div class="rbt-card-body">
@@ -67,9 +67,6 @@
                                             </h4>
                                             <ul class="rbt-meta">
                                                 <li><i class="feather-book"></i>{{ $course->subjects->count() }} bài học
-                                                </li>
-                                                <li><i class="feather-users"></i>{{ $course->students->count() }}
-                                                    học viên
                                                 </li>
                                             </ul>
 
@@ -98,7 +95,7 @@
                                     <div class="rbt-card variation-01 rbt-hover">
                                         <div class="rbt-card-img">
                                             <a href="">
-                                                <img src="{{ isset($course->thumbnail) || file_exists(public_path($course->thumbnail)) ? $course->thumbnail : asset('client_assets/images/avatar/default_course_thumbnail.png') }}" alt="Card image">
+                                                <img src="{{ $course->thumbnailPath() }}" alt="Card image">
                                             </a>
                                         </div>
                                         <div class="rbt-card-body">
@@ -114,8 +111,11 @@
                                                     <span class="current-price">₫ {{ $course->price }}</span>
 {{--                                                    <span class="off-price">$120</span>--}}
                                                 </div>
-                                                <a class="rbt-btn-link left-icon" href="#"><i class="feather-edit"></i>
-                                                    Edit</a>
+                                                <form action="{{ route('course.destroy', ['id' => Crypt::encrypt($course->id)]) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="rbt-btn-link left-icon border-0 bg-transparent" type="submit"><i class="feather-trash"></i>Xóa</button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -135,7 +135,7 @@
                                     <div class="rbt-card variation-01 rbt-hover">
                                         <div class="rbt-card-img">
                                             <a href="">
-                                                <img src="{{ isset($course->thumbnail) || file_exists(public_path($course->thumbnail)) ? $course->thumbnail : asset('client_assets/images/avatar/default_course_thumbnail.png')}}" alt="Card image">
+                                                <img src="{{ $course->thumbnailPath() }}" alt="Card image">
                                             </a>
                                         </div>
                                         <div class="rbt-card-body">
@@ -144,7 +144,6 @@
                                                 <li><i class="feather-book"></i>{{ $course->subjects->count() }} bài học
                                                 </li>
                                             </ul>
-
                                             <div class="rbt-card-bottom">
                                                 <div class="rbt-price">
                                                     <span class="current-price">₫ {{ $course->price }}</span>
@@ -169,7 +168,7 @@
                                     <div class="rbt-card variation-01 rbt-hover">
                                         <div class="rbt-card-img">
                                             <a href="">
-                                                <img src="{{ !is_null($course->thumbnail) || file_exists(public_path($course->thumbnail)) ? $course->thumbnail : asset('client_assets/images/avatar/default_course_thumbnail.png') }}" alt="Card image">
+                                                <img src="{{ $course->thumbnailPath()  }}" alt="Card image">
                                             </a>
                                         </div>
                                         <div class="rbt-card-body">
@@ -201,7 +200,6 @@
                                                     <span class="current-price">₫ {{ number_format($course->price, 0) }}</span>
                                                     {{--                                                    <span class="off-price">$120</span>--}}
                                                 </div>
-                                                <a class="rbt-btn-link left-icon" href="#"><i class="feather-edit"></i>Edit</a>
                                             </div>
                                         </div>
                                     </div>

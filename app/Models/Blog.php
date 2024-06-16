@@ -15,7 +15,7 @@ class Blog extends Model
      protected $keyType = 'string';
     public function author(): BelongsTo
     {
-       return $this->belongsTo(User::class, 'user_id');
+       return $this->belongsTo(Instructor::class, 'instructor_id');
     }
     public function likes(): MorphMany
     {
@@ -28,5 +28,13 @@ class Blog extends Model
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+    public function thumbnailPath(): string
+    {
+        $thumbnailPath = env('BLOG_FOLDER_PATH') . $this->thumbnail;
+        if (!is_null($this->thumbnail) && file_exists(public_path($thumbnailPath))) {
+            return asset($thumbnailPath);
+        }
+        return asset('client_assets/images/blog/default_blog_thumbnail.png');
     }
 }

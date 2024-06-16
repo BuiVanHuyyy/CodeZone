@@ -79,4 +79,14 @@ class User extends Authenticatable
     {
         return $this->morphMany(Dislike::class, 'dislikeable');
     }
+    public function avatarPath(): string
+    {
+        $avatarPath = env('AVATAR_FOLDER_PATH') . $this->avatar;
+
+        if (!is_null($this->avatar) && file_exists(public_path($avatarPath))) {
+            return asset($avatarPath);
+        }
+
+        return asset('client_assets/images/avatar/default-avatar.png');
+    }
 }

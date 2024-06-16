@@ -19,17 +19,17 @@
                             <div class="rbt-tutor-information-left">
                                 <div class="thumbnail rbt-avatars size-lg">
                                     <img
-                                        src="{{ !is_null($instructor->avatar) || file_exists($instructor->avatar) ? $instructor->avatar : asset('client_assets/images/avatar/default-avatar.png') }}"
+                                        src="{{ $instructor->avatarPath() }}"
                                         alt="Instructor">
                                 </div>
                                 <div class="tutor-content">
                                     <h5 class="title">{{ $instructor->name }}</h5>
                                     <div class="rbt-review">
                                         <div class="rating">
-                                            @for($i = 1; $i <= ceil($instructorRating); $i++)
+                                            @for($i = 1; $i <= ceil($instructor->instructor->reviews->avg('rating')); $i++)
                                                 <i class="fas fa-star"></i>
                                             @endfor
-                                            @for($i = 1; $i <= 5 - ceil($instructorRating); $i++)
+                                            @for($i = 1; $i <= 5 - ceil($instructor->instructor->reviews->avg('rating')); $i++)
                                                 <i class="far fa-star" style="color: #1a1e21;"></i>
                                             @endfor
                                         </div>
@@ -40,13 +40,7 @@
                                             <i class="feather-book"></i>{{ $instructor->instructor->courses->where('status', 'approved')->count() }}
                                             khóa học
                                         </li>
-                                        @php
-                                            $students = 0;
-                                            foreach($instructor->instructor->courses()->with('students') as $course) {
-                                                $students += $course->students->where('status', 'paid')->count();
-                                            }
-                                        @endphp
-                                        <li><i class="feather-users"></i>{{ $students }} học viên</li>
+                                        <li><i class="feather-users"></i>{{ $instructor->instructor->studentsAmount() }} học viên</li>
                                         <li>
                                             <i class="fa-solid fa-blog"></i>{{ $instructor->instructor->blogs->where('status', 'approved')->count() }}
                                             bài blog
@@ -125,9 +119,9 @@
                                             <div class="col-lg-3">
                                                 <div class="rating-box">
                                                     <div
-                                                        class="rating-number">{{ number_format($instructorRating, 1) }}</div>
+                                                        class="rating-number">{{ number_format($instructor->instructor->reviews->avg('rating'), 1) }}</div>
                                                     <div class="rating">
-                                                        @for($i = 1; $i <= ceil($instructorRating); $i++)
+                                                        @for($i = 1; $i <= ceil($instructor->instructor->reviews->avg('rating')); $i++)
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16"
                                                                  height="16" fill="currentColor" class="bi bi-star-fill"
                                                                  viewBox="0 0 16 16">
@@ -135,7 +129,7 @@
                                                                     d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                                             </svg>
                                                         @endfor
-                                                        @for($i = 1; $i <= 5 - ceil($instructorRating); $i++)
+                                                        @for($i = 1; $i <= 5 - ceil($instructor->instructor->reviews->avg('rating')); $i++)
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16"
                                                                  height="16" fill="currentColor" class="bi bi-star"
                                                                  viewBox="0 0 16 16">
@@ -388,20 +382,18 @@
                                         @php
                                             $isReviewed = false;
                                         @endphp
-                                        @foreach($instructor->instructor->reviews as $review)
+                                        @foreach($instructor->instructor->reviews()->with(['user', 'author'])->get() as $review)
                                             <div class="rbt-course-review about-author">
                                                 <div class="media">
                                                     <div class="thumbnail">
                                                         <img
-                                                            src="{{ $review->user->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
+                                                            src="{{ $review->author->user->avatarPath() }}"
                                                             alt="Author Images">
                                                     </div>
                                                     <div class="media-body">
                                                         <div class="author-info">
                                                             <h5 class="title">
-                                                                <a class="hover-flip-item-wrapper" href="#">
-                                                                    {{ $review->user->name }}
-                                                                </a>
+                                                                <p class="hover-flip-item-wrapper">{{ $review->author->user->name }}</p>
                                                             </h5>
                                                             <div class="rating">
                                                                 @for($i = 0; $i < $review->rating; $i++)
@@ -457,7 +449,7 @@
                                                                         class="dislike_qty">{{ $review->dislike_amount }}</span>
                                                                 </li>
                                                             </ul>
-                                                            @if(Auth::check() && Auth::id() == $review->user->id)
+                                                            @if(Auth::check() && Auth::user()->student->id == $review->author->id)
                                                                 @php
                                                                     $isReviewed = true;
                                                                 @endphp
@@ -479,12 +471,14 @@
                                             </div>
                                         @endforeach
                                     </div>
-                                    <div class="rbt-show-more-btn">Xem thêm</div>
+                                    @if($instructor->instructor->reviews->count() >= 3)
+                                        <div class="rbt-show-more-btn">Xem thêm</div>
+                                    @endif
                                     @if(Auth::check() && $isStudent && !$isReviewed && Auth::user()->role != 'instructor')
                                         <div id="review-respond" class="review-respond">
                                             <h4 class="title">Thêm đánh giá của bạn về giảng viên</h4>
                                             <form id="reviewForm" method="post"
-                                                  action="{{ route('client.review.store', ['instructor', $instructor->id]) }}">
+                                                  action="{{ route('client.review.store', ['instructor', Crypt::encrypt($instructor->instructor->id)]) }}">
                                                 @csrf
                                                 <div class="star_count">
                                                     @for($i = 1; $i <= 5; $i++)
@@ -548,7 +542,7 @@
                                                         <div class="thumbnail">
                                                             <a href="{{ route('client.course_detail', [$course->slug]) }}">
                                                                 <img
-                                                                    src="{{ !is_null($course->thumbnail) || file_exists($course->thumbnail) ? $course->thumbnail : asset('client_assets/images/avatar/default_course_thumbnail.png') }}"
+                                                                    src="{{ $course->thumbnailPath() }}"
                                                                     alt="Course thumbnail">
                                                             </a>
                                                         </div>
@@ -627,9 +621,7 @@
                                                     class="rbt-card card-list-2 event-list-card variation-01 rbt-hover">
                                                     <div class="rbt-card-img">
                                                         <a href="{{ route('client.blog_detail', [$blog->slug]) }}">
-                                                            <img
-                                                                src="{{ '/client_assets/images/blog/' . $blog->thumbnail }}"
-                                                                alt="Card image">
+                                                            <img src="{{ $blog->thumbnailPath() }}" alt="Card image">
                                                         </a>
                                                     </div>
                                                     <div class="rbt-card-body">
@@ -646,8 +638,10 @@
                                                                href="{{ route('client.blog_detail', [$blog->slug]) }}">
                                                                 <span class="icon-reverse-wrapper">
                                                                     <span class="btn-text">Xem bài blog</span>
-                                                                <span class="btn-icon"><i class="feather-arrow-right"></i></span>
-                                                                <span class="btn-icon"><i class="feather-arrow-right"></i></span>
+                                                                <span class="btn-icon"><i
+                                                                        class="feather-arrow-right"></i></span>
+                                                                <span class="btn-icon"><i
+                                                                        class="feather-arrow-right"></i></span>
                                                                 </span>
                                                             </a>
                                                         </div>

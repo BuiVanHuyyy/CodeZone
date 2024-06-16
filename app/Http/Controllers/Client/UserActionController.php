@@ -17,7 +17,7 @@
                 $fileName = $this->uniqueImagePath($file);
                 //Delete old avatar
                 if (!is_null(Auth::user()->avatar)) {
-                    $oldAvatarPath = public_path(Auth::user()->avatar);
+                    $oldAvatarPath = public_path( env('AVATAR_FOLDER_PATH') . Auth::user()->avatar);
                     if (file_exists($oldAvatarPath)) {
                         unlink($oldAvatarPath);
                     }
@@ -30,10 +30,8 @@
                     }
                 }
                 //Save new avatar
-                $file->move(public_path('client_assets/images/avatar/'), $fileName);
-                $url = '/client_assets/images/avatar/' . $fileName;
-
-                Auth::user()->avatar = $url;
+                $file->move(public_path(env('avatar_folder_path')), $fileName);
+                Auth::user()->avatar = $fileName;
                 Auth::user()->save();
                 return redirect()->back();
             }
@@ -43,9 +41,9 @@
             if ($request->hasFile('avatar')) {
                 $file = $request->file('avatar');
                 $fileName = $this->uniqueImagePath($file);
-                $url = 'client_assets/images/tmp/' . $fileName;
+                $url = env('TMP_FOLDER') . $fileName;
                 session()->put('tmp_avatar', $url);
-                $file->move(public_path('client_assets/images/tmp/'), $fileName);
+                $file->move(public_path(env('TMP_FOLDER')), $fileName);
                 return response()->json(['path'  => $url]);
             }
         }

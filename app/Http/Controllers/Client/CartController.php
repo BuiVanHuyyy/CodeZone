@@ -28,7 +28,7 @@ class CartController extends Controller
         $cart[$course->id] = [
             'name' => $course->title,
             'price' => $course->price,
-            'image' => $course->thumbnail,
+            'image' => $course->thumbnailPath(),
         ];
         session()->put('cart', $cart);
         return response()->json(['message' => 'Khóa học đã được thêm vào giỏ hành thành công!', 'cart' => $cart, 'type' => 'success']);

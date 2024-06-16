@@ -32,11 +32,12 @@ class ReviewController extends Controller
             // Decrypt the reviewable_id from the request
             $review->reviewable_id = Crypt::decrypt($reviewable_id);
             $review->reviewable_type = $reviewable_type;
-            $review->user_id = Auth::id();
+            $review->student_id = Auth::user()->student->id;
             $review->save();
             return redirect()->back()->with('message', 'Thêm review thành công')->with('icon', 'success');
         }
         catch (\Exception $e) {
+            dd($e->getMessage());
             return redirect()->back()->with('message', 'Đã có lỗi xảy ra, vui lòng thử lại')->with('icon', 'error');
         }
     }

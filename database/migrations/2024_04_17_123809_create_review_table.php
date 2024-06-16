@@ -20,8 +20,8 @@
                 $table->softDeletes();
                 $table->timestamps();
 
-                $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
-                $table->index(['reviewable_id', 'reviewable_type', 'user_id', 'rating']);
+                $table->foreignUuid('student_id')->constrained('students')->onDelete('cascade');
+                $table->index(['reviewable_id', 'reviewable_type', 'student_id', 'rating']);
             });
         }
 

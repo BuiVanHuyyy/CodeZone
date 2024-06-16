@@ -15,6 +15,7 @@
     use Illuminate\Http\Request;
     use Illuminate\Http\UploadedFile;
     use Illuminate\Support\Facades\Auth;
+    use Illuminate\Support\Facades\Crypt;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Str;
 
@@ -25,22 +26,8 @@
          */
         public function index(): Application|Factory|View|\Illuminate\Foundation\Application
         {
-            $courses = Course::where('status', 'approved')->get();
-            foreach ($courses as $course) {
-                $reviews = Review::where('reviewable_id', $course->id)->where('reviewable_type', 'course')->get();
-                $totalStars = 0;
-                foreach ($reviews as $review) {
-                    $totalStars += $review->rating;
-                }
-                if (count($reviews) > 0) {
-                    $rating = $totalStars / count($reviews);
-                } else {
-                    $rating = 0;
-                }
-                $course->setAttribute('review_amount', $reviews->count());
-                $course->setAttribute('rating', $rating);
-            }
-            $categories = CourseCategory::all();
+            $courses = Course::with(['reviews', 'category', 'students', 'subjects', 'author'])->where('status', 'approved')->get();
+            $categories = CourseCategory::with(['courses'])->get();
             return view('client.pages.all_courses', compact('courses', 'categories'));
         }
 
@@ -69,13 +56,19 @@
             DB::beginTransaction();
             try {
                 $course = new Course();
+                $course->id = Str::uuid();
                 $course->title = $request->course_title;
-                $course->slug = Str::slug($request->course_title);
+                $slug = Str::slug($request->course_title);
+                //check if slug exists
+                if (Course::where('slug', $slug)->exists()) {
+                    $slug = $slug . '-' . Str::random(4);
+                }
+                $course->slug = $slug;
                 $course->price = $request->price;
                 $course->description = $request->description;
                 $course->course_category_id = $request->category;
                 $course->status = 'pending';
-                $course->instructor_id = Auth::user()->instructors->id;
+                $course->instructor_id = Auth::user()->instructor->id;
                 if ($request->hasFile('thumbnail')) {
                     $file = $request->file('thumbnail');
                     $fileName = $this->saveImageToSystem($file);
@@ -86,13 +79,15 @@
                 $course->save();
                 foreach ($request->subjects as $key => $item) {
                     $subject = new Subject();
+                    $subject->id = Str::uuid();
                     $subject->title = $item['name'];
                     $subject->slug = Str::slug($item['name']);
                     $subject->order = $key;
                     $subject->course_id = $course->id;
                     $subject->save();
                     foreach ($item['lessons'] as $k => $value) {
-                        $lesson = new Lesion();
+                        $lesson = new Lesson();
+                        $lesson->id = Str::uuid();
                         $lesson->title = $value['name'];
                         $lesson->slug = Str::slug($value['name']);
                         $lesson->content = $value['content'];
@@ -113,6 +108,7 @@
                 return redirect()->back()->with('msg', 'Khóa học của bạn đã được gửi đi, vui lòng chờ xác nhận')->with('i', 'success');
             } catch (\Exception $e) {
                 DB::rollBack();
+                dd($e->getMessage());
                 return redirect()->back()->with('msg', 'Tạo khóa học thất bại')->with('i', 'error');
             }
         }
@@ -131,5 +127,29 @@
         public function create(): Factory|\Illuminate\Foundation\Application|View|Application
         {
             return view('client.pages.instructors.pages.create_course');
+        }
+
+        /**
+         * Remove the specified resource from storage.
+         */
+        public function destroy(int|string $id): RedirectResponse
+        {
+            try {
+                $course = Course::with('subjects')->where('id',  Crypt::decrypt($id))->first();
+
+                foreach ($course->subjects as $subject) {
+                    foreach ($subject->lessons as $lesson) {
+                        $lesson->forceDelete();
+                    }
+                    $subject->forceDelete();
+                }
+                if ($course->thumbnail || file_exists(public_path($course->thumbnail))) {
+                    unlink(public_path($course->thumbnail));
+                }
+                $course->forceDelete();
+                return redirect()->back()->with('message', 'Xóa khóa học thành công')->with('icon', 'success');
+            } catch (\Exception $e) {
+                return redirect()->back()->with('message', 'Xóa khóa học thất bại')->with('icon', 'error');
+            }
         }
     }

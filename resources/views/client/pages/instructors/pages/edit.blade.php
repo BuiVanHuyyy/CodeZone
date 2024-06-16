@@ -39,7 +39,7 @@
                             <div class="rbt-tutor-information-left">
                                 <div class="thumbnail rbt-avatars size-lg position-relative">
                                     <img id="previewImage"
-                                         src="{{ Auth::user()->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
+                                         src="{{ Auth::user()->avatarPath() }}"
                                          alt="Students"/>
                                     <div class="rbt-edit-photo-inner">
                                         <form id="uploadAvatar" method="POST" action="{{ route('upload.avatar') }}" enctype="multipart/form-data">
@@ -231,21 +231,22 @@
 
                 <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
                     <!-- Start Profile Row  -->
-                    <form method="POST" action="{{ route('instructor.reset_password') }}" class="rbt-profile-row rbt-default-form row row--15">
+                    <form method="POST" action="{{ route('password.update') }}" class="rbt-profile-row rbt-default-form row row--15">
+                        @method('PUT')
                         @csrf
                         <div class="col-12">
                             <div class="rbt-form-group">
-                                <label for="currentpassword">Mật khẩu hiện tại</label>
-                                <input id="currentpassword" name="old_password" type="password">
-                                @error('old_password')
+                                <label for="update_password_current_password">Mật khẩu hiện tại</label>
+                                <input id="update_password_current_password" name="current_password" type="password">
+                                @error('current_password')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="rbt-form-group">
-                                <label for="newpassword">Mật khẩu mới</label>
-                                <input id="newpassword" name="password" type="password">
+                                <label for="update_password_password">Mật khẩu mới</label>
+                                <input id="update_password_password" name="password" type="password">
                                 @error('password')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -253,8 +254,8 @@
                         </div>
                         <div class="col-12">
                             <div class="rbt-form-group">
-                                <label for="retypenewpassword">Nhập lại mật khẩu</label>
-                                <input id="retypenewpassword" name="password_confirmation" type="password">
+                                <label for="update_password_password_confirmation">Nhập lại mật khẩu</label>
+                                <input id="update_password_password_confirmation" name="password_confirmation" type="password">
                                 @error('password_confirmation')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -262,18 +263,12 @@
                         </div>
                         <div class="col-12 mt--10">
                             <div class="rbt-form-group">
-                                <button type="submit" class="rbt-btn btn-gradient" href="#">Cập nhật mật khẩu</button>
+                                <button type="submit" class="rbt-btn btn-gradient">Cập nhật mật khẩu</button>
                             </div>
                         </div>
                     </form>
-                    <!-- End Profile Row  -->
                 </div>
             </div>
-
-
-
-
-
         </div>
     </div>
 @endsection
@@ -317,7 +312,7 @@
                                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                                 },
                             }).done(function () {
-                                $(".rbt-avatars img").attr("src", "{{ Auth::user()->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}");
+                                $(".rbt-avatars img").attr("src", "{{ Auth::user()->avatarPath() }}");
                                 $('#submit-avatar').css('display', 'none');
                             });
                         });

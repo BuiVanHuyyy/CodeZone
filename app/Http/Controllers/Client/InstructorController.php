@@ -25,7 +25,8 @@
          */
         public function index(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
         {
-            return view('client.pages.all_instructors');
+            $instructors = User::with(['instructor', 'instructor.courses', 'instructor.courses.reviews', 'instructor.courses.students', 'instructor.reviews'])->where('status', 'active')->where('role', 'instructor')->get();
+            return view('client.pages.all_instructors', compact('instructors'));
         }
 
         /**
@@ -129,7 +130,6 @@
             if (!$instructor) {
                 return view('client.pages.404');
             }
-            $instructorRating = $instructor->instructor->reviews->avg('rating');
             //Check if the current instructor is a student of the instructor
             $isStudent = false;
             if(Auth::user()->student) {
@@ -140,7 +140,8 @@
                     }
                 }
             }
-            return view('client.pages.profile', compact('instructor', 'isStudent', 'instructorRating'));
+
+            return view('client.pages.profile', compact('instructor', 'isStudent'));
         }
 
         /**
@@ -196,7 +197,7 @@
 
         public function resetPassword(UpdatePasswordRequest $request): RedirectResponse
         {
-            if (!Hash::check($request->old_password, Auth::user()->password)) {
+            if (!Hash::check($request->current_password, Auth::user()->password)) {
                 session()->flash('msg', 'Mật khẩu cũ không chính xác!');
                 session()->flash('i', 'error');
                 return back();

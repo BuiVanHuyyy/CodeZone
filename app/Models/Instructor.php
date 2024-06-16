@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,9 +15,9 @@ class Instructor extends Model
     public $incrementing = false;
      protected $keyType = 'string';
     public $guarded = [];
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function courses(): HasMany
     {
@@ -29,5 +30,14 @@ class Instructor extends Model
     public function reviews(): MorphMany
     {
         return $this->morphMany(Review::class, 'reviewable');
+    }
+    public function studentsAmount(): int
+    {
+        $studentsAmount = 0;
+        foreach ($this->courses as $course) {
+            $studentsAmount += $course->studentsAmount();
+
+        }
+        return $studentsAmount;
     }
 }

@@ -35,4 +35,17 @@ class Course extends Model
     {
         return $this->morphMany(Review::class, 'reviewable');
     }
+    public function thumbnailPath(): string
+    {
+        $thumbnailPath = env('COURSE_FOLDER_PATH') . $this->thumbnail;
+        if (!is_null($this->thumbnail) && file_exists(public_path($thumbnailPath))) {
+            return asset($thumbnailPath);
+        }
+        return asset('client_assets/images/course/default_course_thumbnail.png');
+    }
+
+    public function studentsAmount(): int
+    {
+        return $this->students()->with('course')->where('status', 'paid')->count();
+    }
 }

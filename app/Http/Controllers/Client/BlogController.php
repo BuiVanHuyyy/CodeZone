@@ -88,7 +88,6 @@ class BlogController extends Controller
             return redirect()->route('instructor.dashboard')->with('message', 'Blog của bạn đã được gửi đên admin và đang chờ phê duyệt')->with('icon', 'success');
         }
         catch (\Exception $e) {
-            dd($e->getMessage());
             return redirect()->back()->with('message', 'Something went wrong')->with('icon', 'error');
         }
     }
