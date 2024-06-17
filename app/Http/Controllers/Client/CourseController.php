@@ -6,7 +6,6 @@
     use App\Models\Course;
     use App\Models\CourseCategory;
     use App\Models\Lesson;
-    use App\Models\Review;
     use App\Models\Subject;
     use Illuminate\Contracts\Foundation\Application;
     use Illuminate\Contracts\View\Factory;

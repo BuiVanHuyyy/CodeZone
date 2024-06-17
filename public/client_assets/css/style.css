@@ -18897,15 +18897,14 @@ span.transparent-button:hover i {
   display: flex;
   flex-wrap: wrap;
   padding: 0;
-  margin: 0;
-  list-style: none;
+    list-style: none;
   justify-content: center;
   margin: -5px;
 }
 .social-default li {
   margin: 5px;
 }
-.social-default li a {
+.social-default li a, .social-default li button {
   width: 48px;
   background-color: var(--color-gray-light);
   height: 48px;
@@ -18918,7 +18917,7 @@ span.transparent-button:hover i {
   z-index: 2;
   position: relative;
 }
-.social-default li a::after {
+.social-default li a::after, .social-default li button::after {
   position: absolute;
   content: "";
   left: 0;
@@ -18932,36 +18931,33 @@ span.transparent-button:hover i {
   transition: 0.3s;
   border-radius: 100%;
 }
-.social-default li a:hover {
+.social-default li a:hover, .social-default li button:hover {
   color: var(--color-white);
 }
-.social-default li a:hover::after {
+.social-default li a:hover::after, .social-default li button:hover::after {
   transform: scale(1);
   opacity: 1;
 }
 .social-default li a i {
   vertical-align: middle;
 }
-.social-default.transparent-with-border li a {
+.social-default.transparent-with-border li a, .social-default.transparent-with-border li button {
   line-height: 41px;
   background: transparent;
   border: 2px solid var(--color-border);
     cursor: pointer;
 }
-.social-default.transparent-with-border li a:hover {
+.social-default.transparent-with-border li a:hover, .social-default.transparent-with-border li button:hover {
   border-color: transparent !important;
 }
-.social-default.transparent-with-border li a.dislike_btn:hover, .social-default.transparent-with-border li a.dislike_btn:after, #blog_dislike:after {
+.social-default.transparent-with-border li a.dislike_btn:hover, .social-default.transparent-with-border li a.dislike_btn:after, #blog_dislike:after, .social-default.transparent-with-border li button.dislike_btn:hover, .social-default.transparent-with-border li button.dislike_btn:after {
     background-color: var(--color-danger) !important;
 }
-.social-default.transparent-with-border li a::after {
-  border: 1px solid var(--color-primary);
-}
-.social-default.transparent-with-border li a.like_btn.active, #blog_like:after {
+.social-default.transparent-with-border li a.like_btn.active, #blog_like:after, .social-default.transparent-with-border li button.like_btn.active {
     background-color: var(--color-primary);
     color: white;
 }
-.social-default.transparent-with-border li a.dislike_btn.active, #blog_dislike.active {
+.social-default.transparent-with-border li a.dislike_btn.active, #blog_dislike.active, .social-default.transparent-with-border li button.dislike_btn.active {
     background-color: var(--color-danger) !important;
     color: white;
 }

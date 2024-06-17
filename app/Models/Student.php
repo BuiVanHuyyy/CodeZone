@@ -22,4 +22,8 @@ class Student extends Model
     {
         return $this->hasMany(Enrollment::class, 'student_id');
     }
+    public function checkStudentIsEnrolled(string $id): bool
+    {
+        return $this->courses->contains('course_id', $id);
+    }
 }

@@ -61,8 +61,7 @@
                                 <div class="inner">
                                     <div class="content-item-content">
                                         <div class="rbt-widget-details">
-                                            <h4 class="rbt-title-style-3 mb-0 pb-0" style="border-bottom: none">Giới
-                                                thiệu</h4>
+                                            <h4 class="rbt-title-style-3 mb-0 pb-0" style="border-bottom: none">Giới thiệu</h4>
                                             <ul class="rbt-course-details-list-wrapper">
                                                 <li>
                                                     <p class="mt--10 mb--20 text-center">{{ $instructor->instructor->bio }}</p>
@@ -384,11 +383,9 @@
                                         @endphp
                                         @foreach($instructor->instructor->reviews()->with(['user', 'author'])->get() as $review)
                                             <div class="rbt-course-review about-author">
-                                                <div class="media">
+                                                <div class="media position-relative">
                                                     <div class="thumbnail">
-                                                        <img
-                                                            src="{{ $review->author->user->avatarPath() }}"
-                                                            alt="Author Images">
+                                                        <img src="{{ $review->author->user->avatarPath() }}" alt="Author Images">
                                                     </div>
                                                     <div class="media-body">
                                                         <div class="author-info">
@@ -411,8 +408,8 @@
                                                                 <li>
                                                                     @php
                                                                         $is_active = false;
-                                                                        if (\Illuminate\Support\Facades\Auth::check()) {
-                                                                            foreach (\Illuminate\Support\Facades\Auth::user()->likes as $like) {
+                                                                        if (Auth::check()) {
+                                                                            foreach ($review->likes as $like) {
                                                                                 if ($like['likeable_id'] == $review->id) {
                                                                                     $is_active = true;
                                                                                     break;
@@ -420,19 +417,16 @@
                                                                             }
                                                                         }
                                                                     @endphp
-                                                                    <a class="like_btn {{ $is_active ? 'active' : '' }}"
-                                                                       data-url="{{ route('client.like', [$review->id, 'review']) }}"
-                                                                       href="#">
+                                                                    <button class="like_btn {{ $is_active ? 'active' : '' }}" data-url="{{ route('client.like', [Crypt::encrypt($review->id), 'review']) }}" href="#">
                                                                         <i class="feather-thumbs-up"></i>
-                                                                    </a>
-                                                                    <span
-                                                                        class="like_qty">{{ $review->like_amount }}</span>
+                                                                    </button>
+                                                                    <span class="like_qty">{{ $review->likes->count() }}</span>
                                                                 </li>
                                                                 <li>
                                                                     @php
                                                                         $is_active = false;
-                                                                        if (\Illuminate\Support\Facades\Auth::check()) {
-                                                                            foreach (\Illuminate\Support\Facades\Auth::user()->dislikes as $dislike) {
+                                                                        if (Auth::check()) {
+                                                                            foreach ($review->dislikes as $dislike) {
                                                                                 if ($dislike['dislikeable_id'] == $review->id) {
                                                                                     $is_active = true;
                                                                                     break;
@@ -440,13 +434,10 @@
                                                                             }
                                                                         }
                                                                     @endphp
-                                                                    <a class="dislike_btn {{ $is_active ? 'active' : '' }}"
-                                                                       data-url="{{ route('client.dislike', [$review->id, 'review']) }}"
-                                                                       href="#">
+                                                                    <button class="dislike_btn {{ $is_active ? 'active' : '' }}" data-url="{{ route('client.dislike', [Crypt::encrypt($review->id), 'review']) }}" href="#">
                                                                         <i class="feather-thumbs-down"></i>
-                                                                    </a>
-                                                                    <span
-                                                                        class="dislike_qty">{{ $review->dislike_amount }}</span>
+                                                                    </button>
+                                                                    <span class="dislike_qty">{{ $review->dislikes->count() }}</span>
                                                                 </li>
                                                             </ul>
                                                             @if(Auth::check() && Auth::user()->student->id == $review->author->id)
@@ -456,12 +447,10 @@
                                                                 <div class="position-absolute"
                                                                      style="top: 10px; right: 10px">
                                                                     <form id="deleteForm"
-                                                                          action="{{ route('client.review.destroy', [$review->id]) }}"
-                                                                          method="POST">
+                                                                          action="{{ route('client.review.destroy', [Crypt::encrypt($review->id)]) }}" method="POST">
                                                                         @csrf
                                                                         @method('DELETE')
-                                                                        <a id="deleteButton" href=""><i
-                                                                                class="fa-solid fa-trash"></i></a>
+                                                                        <a id="deleteButton" href=""><i class="fa-solid fa-trash"></i></a>
                                                                     </form>
                                                                 </div>
                                                             @endif
@@ -679,9 +668,8 @@
     @endsection
     @section('cus_js')
         <script>
-            // Xử lý sự kiện khi bấm vào nút 'like'
-            $('.like_btn').click(function (event) {
-                event.preventDefault();
+            // Handle when use click 'like' button
+            $('.like_btn').on('click', function () {
                 let $likeBtn = $(this);
                 let likeUrl = $likeBtn.data('url');
                 $.ajax({
@@ -694,7 +682,7 @@
                         if (response.success) {
                             let $likeQty = $likeBtn.next('.like_qty');
                             let $dislikeQty = $likeBtn.parent().siblings().find('.dislike_qty');
-                            let $dislikeBtn = $likeBtn.parent().siblings('.dislike_btn');
+                            let $dislikeBtn = $likeBtn.parent().siblings().find('.dislike_btn');
 
                             if ($dislikeBtn.hasClass('active')) {
                                 $dislikeBtn.removeClass('active');
@@ -707,9 +695,8 @@
                     },
                 })
             })
-            // Xử lý sự kiện khi bấm vào nút 'dislike'
-            $('.dislike_btn').click(function (event) {
-                event.preventDefault();
+            // Handle when user click 'dislike' button
+            $('.dislike_btn').on('click', function () {
                 let $dislikeBtn = $(this);
                 let dislikeUrl = $dislikeBtn.data('url');
                 $.ajax({
@@ -722,7 +709,7 @@
                         if (response.success) {
                             let $dislikeQty = $dislikeBtn.next('.dislike_qty');
                             let $likeQty = $dislikeBtn.parent().siblings().find('.like_qty');
-                            let $likeBtn = $dislikeBtn.parent().find('.like_btn');
+                            let $likeBtn = $dislikeBtn.parent().siblings().find('.like_btn');
                             if ($likeBtn.hasClass('active')) {
                                 $likeBtn.removeClass('active');
                             }
@@ -737,7 +724,7 @@
                 var rating = $(this).data('rating');
                 $('#rating').val(rating);
 
-// Highlight the stars
+                // Highlight the stars
                 $('.fa-star').each(function () {
                     if ($(this).data('rating') <= rating) {
                         $(this).addClass('checked');

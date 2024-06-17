@@ -1,5 +1,5 @@
-@extends('client.pages.students.layout.master')
-@section('dashboard-main-content')
+@extends('client.layout.master')
+@section('content')
     <div class="rbt-lesson-area bg-color-white">
         <div class="rbt-lesson-content-wrapper">
             @include('client.pages.students.blocks.workspace_sidebar')
@@ -12,11 +12,11 @@
                         </div>
                         <h5>{{ $lesson->title }}</h5>
                     </div>
-                    <div class="lesson-top-right">
-                        <div class="rbt-btn-close">
-                            <a href="" title="Go Back to Course" class="rbt-round-btn"><i class="feather-x"></i></a>
-                        </div>
-                    </div>
+{{--                    <div class="lesson-top-right">--}}
+{{--                        <div class="rbt-btn-close">--}}
+{{--                            <a href="" title="Go Back to Course" class="rbt-round-btn"><i class="feather-x"></i></a>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
                 </div>
                 <div class="inner">
                     @if($lesson->video != null)
@@ -77,10 +77,10 @@
                             <div class="tab-pane fade" id="profile-4" role="tabpanel" aria-labelledby="profile-tab-4">
                                 <div class="row g-5">
                                     <div class="rbt-comment-area">
-                                        <h4 class="title">{{ $lesson->commentable->count() }} bình luận</h4>
+                                        <h4 class="title">{{ $lesson->comments->count() }} bình luận</h4>
                                         <div id="comment-respond" class="comment-respond">
                                             <h4 class="title">Thêm bình luận của bạn</h4>
-                                            <form id="commentForm" method="post" action="{{ route('client.comment', [$lesson->id, 'lesson']) }}">
+                                            <form id="commentForm" method="post" action="{{ route('client.comment', [Crypt::encrypt($lesson->id), 'lesson']) }}">
                                                 @csrf
                                                 <div class="row row--10">
                                                     <div class="col-12">
@@ -101,19 +101,22 @@
                                             </form>
                                         </div>
                                         <ul class="comment-list">
-                                            @forelse($lesson->commentable->sortByDesc('created_at')->load('author') as $comment)
-                                                <li class="comment">
+                                            @forelse($lesson->comments->sortByDesc('created_at') as $comment)
+                                                <li class="comment position-relative">
+                                                    @if(Auth::id() == $comment->author->id)
+                                                        <div class="position-absolute"
+                                                             style="top: 10px; right: 10px">
+                                                            <form id="deleteForm" action="{{ route('client.comment.destroy', [Crypt::encrypt($comment->id)]) }}" method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a id="deleteButton" href=""><i class="fa-solid fa-trash"></i></a>
+                                                            </form>
+                                                        </div>
+                                                    @endif
                                                     <div class="comment-body">
                                                         <div class="single-comment">
                                                             <div class="comment-img">
-                                                                @php
-                                                                    if (($comment->author->role) === 'instructor') {
-                                                                        $avatar = $comment->author->instructor->avatar;
-                                                                    } else {
-                                                                        $avatar = $comment->author->student->avatar;
-                                                                    }
-                                                                @endphp
-                                                                <img src="{{ $avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images">
+                                                                <img src="{{ $comment->author->avatarPath() }}" alt="Author Images">
                                                             </div>
                                                             <div class="comment-inner">
                                                                 <h6 class="commenter">{!! $comment->author->role === 'instructor' ? '<i class="fa-solid fa-chalkboard-user"></i>' : '' !!}
@@ -134,7 +137,7 @@
                                                                         @php
                                                                             $is_active = false;
                                                                             if (Auth::check()) {
-                                                                                foreach (Auth::user()->likes as $like) {
+                                                                                foreach ($comment->likes as $like) {
                                                                                     if ($like['likeable_id'] == $comment->id) {
                                                                                         $is_active = true;
                                                                                         break;
@@ -143,15 +146,15 @@
                                                                             }
                                                                         @endphp
                                                                         <li>
-                                                                            <a data-url="{{ route('client.like', [$comment->id, 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
+                                                                            <button data-url="{{ route('client.like', [Crypt::encrypt($comment->id), 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
                                                                                 <i class="feather-thumbs-up"></i>
-                                                                            </a>
-                                                                            <span class="like_qty">{{ $comment->like_amount }}</span>
+                                                                            </button>
+                                                                            <span class="like_qty">{{ $comment->likes->count() }}</span>
                                                                         </li>
                                                                         @php
                                                                             $is_active = false;
                                                                             if (Auth::check()) {
-                                                                                foreach (Auth::user()->dislikes as $dislike) {
+                                                                                foreach ($comment->dislikes as $dislike) {
                                                                                     if ($dislike['dislikeable_id'] == $comment->id) {
                                                                                         $is_active = true;
                                                                                         break;
@@ -160,10 +163,10 @@
                                                                             }
                                                                         @endphp
                                                                         <li>
-                                                                            <a class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('client.dislike', [$comment->id, 'comment']) }}">
+                                                                            <button class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('client.dislike', [Crypt::encrypt($comment->id), 'comment']) }}">
                                                                                 <i class="feather-thumbs-down"></i>
-                                                                            </a>
-                                                                            <span class="dislike_qty">{{ $comment->dislike_amount }}</span>
+                                                                            </button>
+                                                                            <span class="dislike_qty">{{ $comment->dislikes->count() }}</span>
                                                                         </li>
                                                                     </ul>
                                                                 </div>
@@ -220,9 +223,9 @@
                                                                                             }
                                                                                         @endphp
                                                                                         <li>
-                                                                                            <a data-url="{{ route('client.like', [$reply->id, 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
+                                                                                            <button data-url="{{ route('client.like', [$reply->id, 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
                                                                                                 <i class="feather-thumbs-up"></i>
-                                                                                            </a>
+                                                                                            </button>
                                                                                             <span class="like_qty">{{ $reply->like_amount }}</span>
                                                                                         </li>
                                                                                         @php
@@ -237,9 +240,9 @@
                                                                                             }
                                                                                         @endphp
                                                                                         <li>
-                                                                                            <a class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('client.dislike', [$reply->id, 'comment']) }}">
+                                                                                            <button class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('client.dislike', [$reply->id, 'comment']) }}">
                                                                                                 <i class="feather-thumbs-down"></i>
-                                                                                            </a>
+                                                                                            </button>
                                                                                             <span class="dislike_qty">{{$reply->dislike_amount}}</span>
                                                                                         </li>
                                                                                     </ul>
@@ -278,19 +281,6 @@
 @endsection
 @section('cus_js')
     <script>
-        $(document).ready(function () {
-            let msg = "{{ session('msg') }}";
-            let i = "{{ session('i') }}";
-            if (msg) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: i,
-                    title: msg,
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-            }
-        });
         $('.comment-reply-link').click(function (e) {
             e.preventDefault();
             let id = $(this).data('id');
@@ -299,9 +289,8 @@
             $('#commentForm').attr('action', url);
             $('#message').val(`@${name} `);
         });
-        // Xử lý sự kiện khi bấm vào nút 'like'
-        $('.like_btn').click(function (event) {
-            event.preventDefault();
+        // Handle when use click 'like' button
+        $('.like_btn').on('click', function () {
             let $likeBtn = $(this);
             let likeUrl = $likeBtn.data('url');
             $.ajax({
@@ -314,7 +303,7 @@
                     if (response.success) {
                         let $likeQty = $likeBtn.next('.like_qty');
                         let $dislikeQty = $likeBtn.parent().siblings().find('.dislike_qty');
-                        let $dislikeBtn = $likeBtn.parent().siblings('.dislike_btn');
+                        let $dislikeBtn = $likeBtn.parent().siblings().find('.dislike_btn');
 
                         if ($dislikeBtn.hasClass('active')) {
                             $dislikeBtn.removeClass('active');
@@ -327,9 +316,8 @@
                 },
             })
         })
-        // Xử lý sự kiện khi bấm vào nút 'dislike'
-        $('.dislike_btn').click(function (event) {
-            event.preventDefault();
+        // Handle when user click 'dislike' button
+        $('.dislike_btn').on('click', function () {
             let $dislikeBtn = $(this);
             let dislikeUrl = $dislikeBtn.data('url');
             $.ajax({
@@ -342,8 +330,8 @@
                     if (response.success) {
                         let $dislikeQty = $dislikeBtn.next('.dislike_qty');
                         let $likeQty = $dislikeBtn.parent().siblings().find('.like_qty');
-                        let $likeBtn = $dislikeBtn.parent().find('.like_btn');
-                        if($likeBtn.hasClass('active')) {
+                        let $likeBtn = $dislikeBtn.parent().siblings().find('.like_btn');
+                        if ($likeBtn.hasClass('active')) {
                             $likeBtn.removeClass('active');
                         }
                         $dislikeQty.text(response.dislike_amount);
@@ -353,5 +341,19 @@
                 },
             })
         })
+
+        $('#deleteButton').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn xóa không?',
+                showDenyButton: true,
+                confirmButtonText: 'Xóa',
+                denyButtonText: 'Hủy',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#deleteForm').submit();
+                }
+            });
+        });
     </script>
 @endsection

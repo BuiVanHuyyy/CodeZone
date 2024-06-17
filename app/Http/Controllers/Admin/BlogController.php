@@ -26,9 +26,9 @@ class BlogController extends Controller
     {
         $status = $request->status ?? null;
         if (!is_null($status)) {
-            $blogs = Blog::where('status', $status)->get();
+            $blogs = Blog::with('author')->where('status', $status)->get();
         } else {
-            $blogs = Blog::withTrashed()->get();
+            $blogs = Blog::with('author')->withTrashed()->get();
         }
         return view('admin.pages.blog_list', compact('blogs', 'status'));
     }

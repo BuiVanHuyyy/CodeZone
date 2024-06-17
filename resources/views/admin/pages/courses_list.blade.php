@@ -24,7 +24,7 @@
                                 <table id="dataTable" class="display" style="min-width: 1200px">
                                     <thead>
                                     <tr class="text-center">
-                                        <th>Id</th>
+                                        <th>#</th>
                                         <th>Tên</th>
                                         <th>Giá</th>
                                         <th>Học viên</th>
@@ -38,7 +38,7 @@
                                     <tbody>
                                     @foreach($courses->sortByDesc('created_at') as $course)
                                         <tr id="tr-{{ $course->id }}" class="text-center">
-                                            <td>#{{ $course->id }}</td>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>
                                                 <a href="{{ route('admin.course.show', ['course' => $course]) }}"><strong>{{ $course->title }}</strong></a>
                                             </td>
@@ -49,7 +49,7 @@
                                             </td>
                                             <td>
                                                 <form>
-                                                    <select data-url="{{route('admin.update-course-status', [$course->id])}}" class="statusSelect form-select" aria-label="Status select">
+                                                    <select data-url="{{route('admin.update-course-status', [$course->id])}}" class="form-select p-0 statusSelect" aria-label="Status select">
                                                         <option
                                                             {{ $course->status === 'pending' ? 'selected' : '' }} value="pending">Chờ phê duyệt
                                                         </option>

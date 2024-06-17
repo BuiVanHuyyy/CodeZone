@@ -40,8 +40,8 @@
                                         @foreach($instructors->sortByDesc('created_at') as $instructor)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td><a href="{{ route('admin.instructor.show', ['instructor' => $instructor]) }}">{{ $instructor->name }}</a></td>
-                                                <td><img class="rounded-circle" width="35" src="{{ $instructor->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt=""></td>
+                                                <td><a href="{{ route('admin.instructor.show', ['instructor' => $instructor]) }}">{{ $instructor->user->name }}</a></td>
+                                                <td><img class="rounded-circle" width="35" src="{{ $instructor->user->avatarPath() ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt=""></td>
                                                 <td>{{ $instructor->gender == 0 ? 'Nữ' : 'Nam' }}</td>
                                                 <td>{{ $instructor->courses->where('status', 'approved')->count() }}</td>
                                                 <td>{{ $instructor->phone_number }}</td>

@@ -16,7 +16,7 @@ class Lesson extends Model
     {
         return $this->belongsTo(Subject::class, 'subject_id');
     }
-    public function commentable(): MorphMany
+    public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
     }

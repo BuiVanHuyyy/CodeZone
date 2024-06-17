@@ -658,7 +658,7 @@
                                                     </h5>
                                                     <div class="rating">
                                                         @for($i = 1; $i <= ceil($review->rating); $i++)
-                                                            <i class="fa-solid fa-star"></i>
+                                                            <i class="fas fa-star" style="color: #FF9747"></i>
                                                         @endfor
                                                         @for($i = 1; $i <= 5 - $review->rating; $i++)
                                                             <i class="fa-solid fa-star" style="color: #0F0F0F;"></i>
@@ -674,27 +674,24 @@
                                                             @php
                                                                 $is_active = false;
                                                                 if (Auth::check()) {
-                                                                    foreach (Auth::user()->likes as $like) {
-                                                                        if ($like['dislikeable_id'] == $review->id) {
+                                                                    foreach ($review->likes as $like) {
+                                                                        if ($like['likeable_id'] == $review->id) {
                                                                             $is_active = true;
                                                                             break;
                                                                         }
                                                                     }
                                                                 }
                                                             @endphp
-                                                            <a data-url="{{ route('client.like', [ $review->id, 'review']) }}"
-                                                               class="{{ $is_active ? 'active' : '' }} like_btn">
+                                                            <button class="like_btn {{ $is_active ? 'active' : '' }}" data-url="{{ route('client.like', [Crypt::encrypt($review->id), 'review']) }}" href="#">
                                                                 <i class="feather-thumbs-up"></i>
-                                                            </a>
-                                                            <span class="like_amount">
-                                                                {{ $review->like_amount }}
-                                                            </span>
+                                                            </button>
+                                                            <span class="like_qty">{{ $review->likes->count() }}</span>
                                                         </li>
                                                         <li>
                                                             @php
                                                                 $is_active = false;
                                                                 if (Auth::check()) {
-                                                                    foreach (Auth::user()->dislikes as $dislike) {
+                                                                    foreach ($review->dislikes as $dislike) {
                                                                         if ($dislike['dislikeable_id'] == $review->id) {
                                                                             $is_active = true;
                                                                             break;
@@ -702,13 +699,10 @@
                                                                     }
                                                                 }
                                                             @endphp
-                                                            <a class="dislike_btn {{ $is_active ? 'active' : '' }}"
-                                                               data-url="{{ route('client.dislike', [$review->id, 'review']) }}">
+                                                            <button class="dislike_btn {{ $is_active ? 'active' : '' }}" data-url="{{ route('client.dislike', [Crypt::encrypt($review->id), 'review']) }}" href="#">
                                                                 <i class="feather-thumbs-down"></i>
-                                                            </a>
-                                                            <span class="dislike_amount">
-                                                                {{ $review->dislike_amount }}
-                                                            </span>
+                                                            </button>
+                                                            <span class="dislike_qty">{{ $review->dislikes->count() }}</span>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -730,7 +724,9 @@
                                     </div>
                                 @endforeach
                             </div>
-                            <div class="rbt-show-more-btn mb-5">Xem thêm</div>
+                            @if($course->reviews->count() >= 3)
+                                <div class="rbt-show-more-btn mb-5">Xem thêm</div>
+                            @endif
                             @if(Auth::check() && $isBought)
                                 <div id="review-respond" class="review-respond">
                                     <h4 class="title">Thêm đánh giá của bạn về khóa học</h4>
@@ -803,9 +799,7 @@
                                         <div class="rbt-card variation-01 rbt-hover">
                                             <div class="rbt-card-img">
                                                 <a href="{{ route('client.course_detail', [$item->slug]) }}">
-                                                    <img
-                                                        src="{{ $item->thumbnailPath() }}"
-                                                        alt="Card image"/>
+                                                    <img src="{{ $item->thumbnailPath() }}" alt="Course image"/>
                                                     {{--                                                    <div class="rbt-badge-3 bg-white">--}}
                                                     {{--                                                        <span>-40%</span>--}}
                                                     {{--                                                        <span>Off</span>--}}
@@ -814,15 +808,7 @@
                                             </div>
                                             <div class="rbt-card-body">
                                                 <div class="rbt-card-top">
-                                                    <div class="rating">
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                        <i class="fas fa-star"></i>
-                                                    </div>
-                                                    <span
-                                                        class="rating-count">({{ $item->students->count() }} Reviews)</span>
+                                                    <span class="rating-count">{{ number_format($item->reviews->avg('rating'), 1) }} <i class="fas fa-star" style="color: #FF9747;"></i> xếp hạng - {{ $item->students->count() }} đánh giá</span>
                                                 </div>
 
                                                 <h4 class="rbt-card-title">
@@ -853,7 +839,7 @@
                                                     </div>
                                                     <div class="rbt-author-info">
                                                         Bỡi <a
-                                                            href="{{ route('instructor.profile', [$course->author]) }}"> {{ $item->author->name }}</a>
+                                                            href="{{ route('instructor.profile', [$course->author->user->slug]) }}"> {{ $item->author->user->name }}</a>
                                                         In
                                                         <a href="#">{{$item->category->title }}</a>
                                                     </div>
@@ -987,13 +973,10 @@
     @section('cus_js')
         <script>
             $(document).ready(function () {
-                // Xử lý sự kiện khi bấm vào nút 'like'
-                $('.like_btn').click(function (event) {
-                    // event.preventDefault();
+                // Handle when use click 'like' button
+                $('.like_btn').on('click', function () {
                     let $likeBtn = $(this);
-
                     let likeUrl = $likeBtn.data('url');
-
                     $.ajax({
                         url: likeUrl,
                         type: 'POST',
@@ -1002,25 +985,22 @@
                         },
                         success: function (response) {
                             if (response.success) {
-                                let $likeAmount = $likeBtn.siblings('.like_amount');
+                                let $likeQty = $likeBtn.next('.like_qty');
+                                let $dislikeQty = $likeBtn.parent().siblings().find('.dislike_qty');
+                                let $dislikeBtn = $likeBtn.parent().siblings().find('.dislike_btn');
 
-                                let likeAmount = parseInt($likeAmount.text(), 10);
-
-                                $likeBtn.toggleClass('active');
-                                if ($likeBtn.hasClass('active')) {
-                                    likeAmount++;
-                                } else {
-                                    likeAmount--;
+                                if ($dislikeBtn.hasClass('active')) {
+                                    $dislikeBtn.removeClass('active');
                                 }
-                                $likeAmount.text(likeAmount);
-                                location.reload();
+                                $likeQty.text(response.like_amount);
+                                $dislikeQty.text(response.dislike_amount);
+                                $likeBtn.toggleClass('active');
                             }
                         },
                     })
                 })
-                // Xử lý sự kiện khi bấm vào nút 'dislike'
-                $('.dislike_btn').click(function (event) {
-                    // event.preventDefault();
+                // Handle when user click 'dislike' button
+                $('.dislike_btn').on('click', function () {
                     let $dislikeBtn = $(this);
                     let dislikeUrl = $dislikeBtn.data('url');
                     $.ajax({
@@ -1031,22 +1011,19 @@
                         },
                         success: function (response) {
                             if (response.success) {
-                                let $dislikeAmount = $dislikeBtn.siblings('.dislike_amount');
-
-                                let dislikeAmount = parseInt($dislikeAmount.text(), 10);
-
-                                $dislikeBtn.toggleClass('active');
-                                if ($dislikeBtn.hasClass('active')) {
-                                    dislikeAmount++;
-                                } else {
-                                    dislikeAmount--;
+                                let $dislikeQty = $dislikeBtn.next('.dislike_qty');
+                                let $likeQty = $dislikeBtn.parent().siblings().find('.like_qty');
+                                let $likeBtn = $dislikeBtn.parent().siblings().find('.like_btn');
+                                if ($likeBtn.hasClass('active')) {
+                                    $likeBtn.removeClass('active');
                                 }
-                                $dislikeAmount.text(dislikeAmount);
-                                location.reload();
+                                $dislikeQty.text(response.dislike_amount);
+                                $likeQty.text(response.like_amount);
+                                $dislikeBtn.toggleClass('active');
                             }
                         },
-                    });
-                });
+                    })
+                })
                 $('.fa-star').on('click', function () {
                     var rating = $(this).data('rating');
                     $('#rating').val(rating);

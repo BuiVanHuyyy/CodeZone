@@ -132,8 +132,8 @@
                     <div class="rbt-comment-area">
                         <div class="comment-respond">
                             <h4 class="title">Thêm một bình luận</h4>
-                            <form id="commentForm" action="{{ route('client.comment', [$blog->id, 'blog']) }}"
-                                  method="post">
+                            <form id="commentForm" action="{{ route('client.comment', [Crypt::encrypt($blog->id), 'blog']) }}"
+                                      method="POST">
                                 @csrf
                                 <div class="row row--10">
                                     <div class="col-12">
@@ -176,16 +176,8 @@
                                     <li class="comment position-relative">
                                         <div class="comment-body">
                                             <div class="single-comment">
-                                                @php
-                                                    if (($comment->author->role) === 'instructor') {
-                                                        $avatar = $comment->author->instructor->avatar;
-                                                    } else {
-                                                        $avatar = $comment->author->student->avatar;
-                                                    }
-                                                @endphp
                                                 <div class="comment-img">
-                                                    <img
-                                                        src="{{ $avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}"
+                                                    <img src="{{ $comment->authorAvatar() }}"
                                                         alt="Author Images"/>
                                                 </div>
                                                 <div class="comment-inner">
@@ -315,19 +307,6 @@
 @endsection
 @section('cus_js')
     <script>
-        $(document).ready(function () {
-            let msg = "{{ session('msg') }}";
-            let i = "{{ session('i') }}";
-            if (msg) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: i,
-                    title: msg,
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-            }
-        });
         $('.comment-reply-link').click(function (e) {
             e.preventDefault();
             let id = $(this).data('id');
@@ -363,7 +342,7 @@
                 },
             })
         })
-        // Xử lý sự kiện khi bấm vào nút 'dislike'
+        // Handle when user hit 'dislike' button
         $('.dislike_btn').click(function (event) {
             event.preventDefault();
             let $dislikeBtn = $(this);

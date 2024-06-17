@@ -37,20 +37,16 @@ class ReviewController extends Controller
             return redirect()->back()->with('message', 'Thêm review thành công')->with('icon', 'success');
         }
         catch (\Exception $e) {
-            dd($e->getMessage());
             return redirect()->back()->with('message', 'Đã có lỗi xảy ra, vui lòng thử lại')->with('icon', 'error');
         }
     }
     public function destroy(int|string $id): RedirectResponse
     {
         $review = Review::find(Crypt::decrypt($id));
-        if (!$review) {
-            return redirect()->route('client.404');
-        }
-        if (Auth::id() != $review->user_id) {
+        if (!$review || Auth::user()->student->id != $review->student_id) {
             return redirect()->back()->with('message', 'Đã có lỗi xảy ra, vui lòng thử lại')->with('icon', 'error');
         }
         $review->forceDelete();
-        return redirect()->back()->with('message', 'Xóa review thành công')->with('i', 'success');
+        return redirect()->back()->with('message', 'Xóa review thành công')->with('icon', 'success');
     }
 }

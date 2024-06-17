@@ -40,4 +40,8 @@ class Instructor extends Model
         }
         return $studentsAmount;
     }
+    public function checkInstructorIsAuthor(string $course_id): bool
+    {
+        return $this->courses->contains('id', $course_id);
+    }
 }

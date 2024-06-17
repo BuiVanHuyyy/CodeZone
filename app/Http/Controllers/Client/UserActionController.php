@@ -3,10 +3,14 @@
     namespace App\Http\Controllers\Client;
 
     use App\Http\Controllers\Controller;
+    use App\Models\Dislike;
+    use App\Models\Like;
     use Illuminate\Http\JsonResponse;
+    use Illuminate\Http\RedirectResponse;
     use Illuminate\Http\Request;
     use Illuminate\Http\UploadedFile;
     use Illuminate\Support\Facades\Auth;
+    use Illuminate\Support\Facades\Crypt;
 
     class UserActionController extends Controller
     {
@@ -65,4 +69,60 @@
             $extension = $file->getClientOriginalExtension();
             return $fileName . '_' . uniqid() . '.' . $extension;
         }
+        public function handleLikeAction(int|string $id, string $type): JsonResponse|RedirectResponse
+        {
+            $id = Crypt::decrypt($id);
+            if ($type == 'review') {
+                $type = 'App\Models\Review';
+            } else {
+                $type = 'App\Models\Comment';
+            }
+            $like = Like::where('user_id', Auth::id())->where('likeable_id', $id)->where('likeable_type', $type)->first();
+            $dislike = Dislike::where('user_id', Auth::id())->where('dislikeable_id', $id)->where('dislikeable_type', $type)->first();
+            if ($like) {
+                $like->forceDelete();
+            } else {
+                if ($dislike) {
+                    $dislike->forceDelete();
+                    return redirect()->back();
+                }
+                $like = new Like();
+                $like->user_id = Auth::id();
+                $like->likeable_id = $id;
+                $like->likeable_type = $type;
+                $like->save();
+            }
+            $like_amount = Like::where('likeable_id', $id)->where('likeable_type', $type)->count();
+            $dislike_amount = Dislike::where('dislikeable_id', $id)->where('dislikeable_type', $type)->count();
+            return response()->json(['success' => true, 'like_amount' => $like_amount, 'dislike_amount' => $dislike_amount]);
+        }
+        public function handleDislikeAction(int|string $id, string $type): JsonResponse|RedirectResponse
+        {
+            $id = Crypt::decrypt($id);
+            if ($type == 'review') {
+                $type = 'App\Models\Review';
+            } else {
+                $type = 'App\Models\Comment';
+            }
+            $dislike = Dislike::where('user_id', Auth::id())->where('dislikeable_id', $id)->where('dislikeable_type', $type)->first();
+            $like = Like::where('user_id', Auth::id())->where('likeable_id', $id)->where('likeable_type', $type)->first();
+
+            if ($dislike) {
+                $dislike->forceDelete();
+            } else {
+                if ($like) {
+                    $like->forceDelete();
+                    return redirect()->back();
+                }
+                $dislike = new Dislike();
+                $dislike->user_id = Auth::id();
+                $dislike->dislikeable_id = $id;
+                $dislike->dislikeable_type = $type;
+                $dislike->save();
+            }
+            $like_amount = Like::where('likeable_id', $id)->where('likeable_type', $type)->count();
+            $dislike_amount = Dislike::where('dislikeable_id', $id)->where('dislikeable_type', $type)->count();
+            return response()->json(['success' => true, 'like_amount' => $like_amount, 'dislike_amount' => $dislike_amount]);
+        }
+
     }

@@ -89,4 +89,16 @@ class User extends Authenticatable
 
         return asset('client_assets/images/avatar/default-avatar.png');
     }
+    public function isStudent(): bool
+    {
+        return $this->role === 'student';
+    }
+    public function isInstructor(): bool
+    {
+        return $this->role === 'instructor';
+    }
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }

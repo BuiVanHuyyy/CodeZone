@@ -32,7 +32,7 @@ class BlogController extends Controller
      */
     public function show(string $slug): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $blog = Blog::where('slug', $slug)->first();
+        $blog = Blog::with(['author', 'comments'])->where('slug', $slug)->first();
         if (!$blog) {
             return view('client.pages.404');
         }

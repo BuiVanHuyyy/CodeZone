@@ -24,7 +24,7 @@
                                 <table id="dataTable" class="display" style="min-width: 1200px">
                                     <thead>
                                     <tr class="text-center">
-                                        <th>Id</th>
+                                        <th>#</th>
                                         <th>Tiêu đề</th>
                                         <th>Tác giả</th>
                                         <th>Trạng thái</th>
@@ -35,14 +35,14 @@
                                     <tbody>
                                     @foreach($blogs->sortByDesc('created_at') as $blog)
                                         <tr id="tr-{{ $blog->id }}" class="text-center">
-                                            <td>#{{ $blog->id }}</td>
+                                            <td>#{{ $loop->iteration }}</td>
                                             <td>
                                                 <a href="{{ route('admin.blog.show', ['blog' => $blog]) }}"><strong>{{ $blog->title }}</strong></a>
                                             </td>
-                                            <td><a href="{{ route('admin.instructor.show', ['instructor' => $blog->author]) }}">{{ $blog->author->name }}</a></td>
+                                            <td><a href="{{ route('admin.instructor.show', ['instructor' => $blog->author]) }}">{{ $blog->author->user->name }}</a></td>
                                             <td>
                                                 <form>
-                                                    <select data-url="{{route('admin.update-blog-status', [$blog->id])}}" class="statusSelect form-select" aria-label="Status select">
+                                                    <select data-url="{{route('admin.update-blog-status', [$blog->id])}}" class="form-select p-0 statusSelect" aria-label="Status select">
                                                         <option
                                                             {{ $blog->status === 'pending' ? 'selected' : '' }} value="pending">Chờ phê duyệt
                                                         </option>

@@ -11,8 +11,6 @@
     use \App\Http\Controllers\Client\InstructorController;
     use \App\Http\Controllers\Client\BlogController;
     use \App\Http\Controllers\Client\LessonController;
-    use \App\Http\Controllers\Client\LikeController;
-    use \App\Http\Controllers\Client\DislikeController;
     use \App\Http\Controllers\Client\UserActionController;
 
     Route::prefix('/')->group(function () {
@@ -54,9 +52,9 @@
         Route::resources(['/student' => StudentController::class], ['as' => 'client']);
         Route::prefix('/students/')->group(function () {
             Route::get('/edit-profile', [StudentController::class, 'edit'])->name('student.edit');
-            Route::post('like/{id}/{type}', [LikeController::class, 'store'])->name('client.like');
-            Route::post('dislike/{id}/{type}', [DislikeController::class, 'store'])->name('client.dislike');
         });
+        Route::post('like/{id}/{type}', [UserActionController::class, 'handleLikeAction'])->name('client.like');
+        Route::post('dislike/{id}/{type}', [UserActionController::class, 'handleDislikeAction'])->name('client.dislike');
         Route::post('/upload-avatar', [UserActionController::class, 'handleUploadAvatar'])->name('upload.avatar');
         Route::post('/upload-tmp-avatar', [UserActionController::class, 'uploadTmpAvatar'])->name('upload.tmp.avatar');
         Route::delete('/delete-tmp-avatar', [UserActionController::class, 'deleteTmpAvatar'])->name('delete.tmp.avatar');

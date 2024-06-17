@@ -19,7 +19,6 @@
                                             <th>Tên</th>
                                             <th>Avatar</th>
                                             <th>Giới tính</th>
-                                            <th>Số điện thoai</th>
                                             <th>Email</th>
                                             <th>Trạng thái</th>
                                             <th>Action</th>
@@ -29,10 +28,9 @@
                                         @foreach($students as $student)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td><a href="{{ route('admin.student.show', ['student' => $student]) }}">{{ $student->name }}</a></td>
-                                                <td><img class="rounded-circle" width="35" src="{{ $student->avatar ?? asset('client_assets/images/avatar/default_avatar.png') }}" alt=""></td>
-                                                <td>{{ $student->gender === 0 ? 'Nữ' : 'Nam' }}</td>
-                                                <td>{{ $student->phone_number }}</td>
+                                                <td><a href="{{ route('admin.student.show', ['student' => $student]) }}">{{ $student->user->name }}</a></td>
+                                                <td><img class="rounded-circle" width="35" src="{{ $student->user->avatarPath() ?? asset('client_assets/images/avatar/default_avatar.png') }}" alt=""></td>
+                                                <td>{{ $student->user->gender === 'male' ? 'Nam' : 'Nữ' }}</td>
                                                 <td>{{ $student->user->email }}</td>
                                                 <td>
                                                     <form>
