@@ -43,23 +43,7 @@ class BlogController extends Controller
             $blog->setAttribute('is_liked', Like::where('likeable_type', 'blog')->where('likeable_id', $blog->id)->where('user_id', Auth::id())->count() > 0);
             $blog->setAttribute('is_disliked', Dislike::where('dislikeable_type', 'blog')->where('dislikeable_id', $blog->id)->where('user_id', Auth::id())->count() > 0);
         }
-        $comments = $blog->comments;
-        foreach ($comments  as $comment) {
-            $comment->setAttribute('replies', \App\Models\Comment::where('commentable_id', $comment->id)->where('commentable_type', 'App\Models\Comment')->get());
-            if (Auth::check()) {
-                $comment->setAttribute('is_liked', Like::where('likeable_type', 'comment')->where('likeable_id', $comment->id)->where('user_id', Auth::id())->count() > 0);
-                $comment->setAttribute('is_disliked', Dislike::where('dislikeable_type', 'comment')->where('dislikeable_id', $comment->id)->where('user_id', Auth::id())->count() > 0);
-            }
-            if ($comment->replies->count() > 0) {
-                foreach ($comment->replies as $reply) {
-
-                    if (Auth::check()) {
-                        $reply->setAttribute('is_liked', Like::where('likeable_type', 'comment')->where('likeable_id', $reply->id)->where('user_id', Auth::id())->count() > 0);
-                        $reply->setAttribute('is_disliked', Dislike::where('dislikeable_type', 'comment')->where('dislikeable_id', $reply->id)->where('user_id', Auth::id())->count() > 0);
-                    }
-                }
-            }
-        }
+        $comments = $blog->comments->sortByDesc('created_at');
         return view('client.pages.blog_detail', compact('blog','comments', 'shareComponent'));
     }
 

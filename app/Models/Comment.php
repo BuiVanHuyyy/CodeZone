@@ -30,6 +30,10 @@ class Comment extends Model
     {
         return $this->morphTo();
     }
+    public function replies(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
     public function authorAvatar(): string
     {
         return $this->author->avatarPath();

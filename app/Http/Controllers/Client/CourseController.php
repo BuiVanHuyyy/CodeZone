@@ -25,7 +25,7 @@
          */
         public function index(): Application|Factory|View|\Illuminate\Foundation\Application
         {
-            $courses = Course::with(['reviews', 'category', 'students', 'subjects', 'author'])->where('status', 'approved')->get();
+            $courses = Course::with(['reviews', 'category', 'students', 'subjects', 'author', 'author.user'])->where('status', 'approved')->get();
             $categories = CourseCategory::with(['courses'])->get();
             return view('client.pages.all_courses', compact('courses', 'categories'));
         }
@@ -40,13 +40,13 @@
                 return view('client.pages.404');
             }
             //Check if the course is bought by the student
-            $isBought = false;
-            if (Auth::check() && Auth::user()->role == 'student') {
-                $isBought = $course->students->where('status', 'paid')->contains('student_id', Auth::user()->student->id);
-            }
+            $isBought = Auth::check() && (
+                    Auth::user()->isInstructor() && $course->author->id === Auth::user()->instructor->id ||
+                    Auth::user()->isAdmin() ||
+                    $course->students->where('status', 'paid')->contains('student_id', Auth::user()->student->id)
+                );
             return view('client.pages.course_detail', compact('course', 'isBought'));
         }
-
         /**
          * Store a newly created resource in storage.
          */
@@ -134,7 +134,7 @@
         public function destroy(int|string $id): RedirectResponse
         {
             try {
-                $course = Course::with('subjects')->where('id',  Crypt::decrypt($id))->first();
+                $course = Course::with('subjects')->where('id', Crypt::decrypt($id))->first();
 
                 foreach ($course->subjects as $subject) {
                     foreach ($subject->lessons as $lesson) {

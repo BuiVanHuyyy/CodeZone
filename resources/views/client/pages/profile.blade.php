@@ -26,18 +26,18 @@
                                     <h5 class="title">{{ $instructor->name }}</h5>
                                     <div class="rbt-review">
                                         <div class="rating">
-                                            @for($i = 1; $i <= ceil($instructor->instructor->reviews->avg('rating')); $i++)
+                                            @for($i = 1; $i <= ceil($instructorReviews->avg('rating')); $i++)
                                                 <i class="fas fa-star"></i>
                                             @endfor
-                                            @for($i = 1; $i <= 5 - ceil($instructor->instructor->reviews->avg('rating')); $i++)
+                                            @for($i = 1; $i <= 5 - ceil($instructorReviews->avg('rating')); $i++)
                                                 <i class="far fa-star" style="color: #1a1e21;"></i>
                                             @endfor
                                         </div>
-                                        <span class="rating-count"> ({{ $instructor->instructor->reviews->count() }} đánh giá)</span>
+                                        <span class="rating-count"> ({{ $instructorReviews->count() }} đánh giá)</span>
                                     </div>
                                     <ul class="rbt-meta rbt-meta-white mt--5">
                                         <li>
-                                            <i class="feather-book"></i>{{ $instructor->instructor->courses->where('status', 'approved')->count() }}
+                                            <i class="feather-book"></i>{{ $instructorCourses->count() }}
                                             khóa học
                                         </li>
                                         <li><i class="feather-users"></i>{{ $instructor->instructor->studentsAmount() }} học viên</li>
@@ -118,9 +118,9 @@
                                             <div class="col-lg-3">
                                                 <div class="rating-box">
                                                     <div
-                                                        class="rating-number">{{ number_format($instructor->instructor->reviews->avg('rating'), 1) }}</div>
+                                                        class="rating-number">{{ number_format($instructorReviews->avg('rating'), 1) }}</div>
                                                     <div class="rating">
-                                                        @for($i = 1; $i <= ceil($instructor->instructor->reviews->avg('rating')); $i++)
+                                                        @for($i = 1; $i <= ceil($instructorReviews->avg('rating')); $i++)
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16"
                                                                  height="16" fill="currentColor" class="bi bi-star-fill"
                                                                  viewBox="0 0 16 16">
@@ -128,7 +128,7 @@
                                                                     d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                                             </svg>
                                                         @endfor
-                                                        @for($i = 1; $i <= 5 - ceil($instructor->instructor->reviews->avg('rating')); $i++)
+                                                        @for($i = 1; $i <= 5 - ceil($instructorReviews->avg('rating')); $i++)
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16"
                                                                  height="16" fill="currentColor" class="bi bi-star"
                                                                  viewBox="0 0 16 16">
@@ -142,11 +142,11 @@
                                             </div>
                                             <div class="col-lg-9">
                                                 @php
-                                                    $five_star = $instructor->instructor->reviews->where('rating', 5)->count();
-                                                    $four_star = $instructor->instructor->reviews->where('rating', 4)->count();
-                                                    $three_star = $instructor->instructor->reviews->where('rating', 3)->count();
-                                                    $two_star = $instructor->instructor->reviews->where('rating', 2)->count();
-                                                    $one_star = $instructor->instructor->reviews->where('rating', 1)->count();
+                                                    $five_star = $instructorReviews->where('rating', 5)->count();
+                                                    $four_star = $instructorReviews->where('rating', 4)->count();
+                                                    $three_star = $instructorReviews->where('rating', 3)->count();
+                                                    $two_star = $instructorReviews->where('rating', 2)->count();
+                                                    $one_star = $instructorReviews->where('rating', 1)->count();
                                                     $total = $five_star + $four_star + $three_star + $two_star + $one_star;
                                                     if ($total > 0) {
                                                         $one_star = ($one_star / $total) * 100;
@@ -381,7 +381,7 @@
                                         @php
                                             $isReviewed = false;
                                         @endphp
-                                        @foreach($instructor->instructor->reviews()->with(['user', 'author'])->get() as $review)
+                                        @foreach($instructorReviews as $review)
                                             <div class="rbt-course-review about-author">
                                                 <div class="media position-relative">
                                                     <div class="thumbnail">
@@ -440,7 +440,7 @@
                                                                     <span class="dislike_qty">{{ $review->dislikes->count() }}</span>
                                                                 </li>
                                                             </ul>
-                                                            @if(Auth::check() && Auth::user()->student->id == $review->author->id)
+                                                            @if(Auth::check() && Auth::user()->isStudent() && Auth::user()->student->id == $review->author->id)
                                                                 @php
                                                                     $isReviewed = true;
                                                                 @endphp
@@ -460,7 +460,7 @@
                                             </div>
                                         @endforeach
                                     </div>
-                                    @if($instructor->instructor->reviews->count() >= 3)
+                                    @if($instructorReviews->count() >= 3)
                                         <div class="rbt-show-more-btn">Xem thêm</div>
                                     @endif
                                     @if(Auth::check() && $isStudent && !$isReviewed && Auth::user()->role != 'instructor')
@@ -523,7 +523,7 @@
                             <div
                                 class="swiper category-activation-three rbt-arrow-between icon-bg-gray gutter-swiper-30 ptb--20">
                                 <div class="swiper-wrapper">
-                                    @foreach($instructor->instructor->courses()->with(['category', 'subjects', 'students', 'reviews'])->where('status', 'approved')->orderBy('created_at')->get() as $course)
+                                    @foreach($instructorCourses as $course)
                                         <div class="swiper-slide">
                                             <div class="single-slide">
                                                 <div class="rbt-cat-box rbt-cat-box-1 variation-2 text-center">
@@ -734,17 +734,7 @@
                 });
                 $('input[name="rating"]').val(rating);
             });
-            let msg = "{{ session('msg') }}";
-            let i = "{{ session('i') }}";
-            if (msg) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: i,
-                    title: msg,
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-            }
+
             $('#deleteButton').on('click', function (e) {
                 e.preventDefault();
                 Swal.fire({

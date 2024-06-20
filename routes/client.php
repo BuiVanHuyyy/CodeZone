@@ -1,17 +1,18 @@
 <?php
-    use \Illuminate\Support\Facades\Route;
-    use \App\Http\Controllers\Client\ViewController;
-    use \App\Http\Controllers\Client\GoogleLoginController;
-    use \App\Http\Controllers\Client\StudentController;
-    use \App\Http\Controllers\Client\FacebookController;
-    use \App\Http\Controllers\Client\CartController;
-    use \App\Http\Controllers\Client\CourseController;
-    use \App\Http\Controllers\Client\CommentController;
-    use \App\Http\Controllers\Client\ReviewController;
-    use \App\Http\Controllers\Client\InstructorController;
-    use \App\Http\Controllers\Client\BlogController;
-    use \App\Http\Controllers\Client\LessonController;
-    use \App\Http\Controllers\Client\UserActionController;
+
+    use App\Http\Controllers\Client\BlogController;
+    use App\Http\Controllers\Client\CartController;
+    use App\Http\Controllers\Client\CommentController;
+    use App\Http\Controllers\Client\CourseController;
+    use App\Http\Controllers\Client\FacebookController;
+    use App\Http\Controllers\Client\GoogleLoginController;
+    use App\Http\Controllers\Client\InstructorController;
+    use App\Http\Controllers\Client\LessonController;
+    use App\Http\Controllers\Client\ReviewController;
+    use App\Http\Controllers\Client\StudentController;
+    use App\Http\Controllers\Client\UserActionController;
+    use App\Http\Controllers\Client\ViewController;
+    use Illuminate\Support\Facades\Route;
 
     Route::prefix('/')->group(function () {
         Route::get('/', [ViewController::class, 'index'])->name('client.home');
@@ -27,12 +28,13 @@
     });
     Route::middleware('check.user.is.login')->group(function () {
         Route::prefix('/student')->group(function () {
-           Route::get('/profile', [StudentController::class, 'dashboard'])->name('student.dashboard');
-           Route::get('/info', [StudentController::class, 'info'])->name('student.show');
-           Route::get('/enrolled-courses', [StudentController::class, 'myCourses'])->name('student.enrolled_courses');
-            Route::prefix('/course')->group(function () {
-                Route::get('/{course_slug}/{subject_slug?}/{lesson_slug?}',[LessonController::class, 'index'])->name('course.index');
-            });
+            Route::get('/profile', [StudentController::class, 'dashboard'])->name('student.dashboard');
+            Route::get('/info', [StudentController::class, 'info'])->name('student.show');
+            Route::get('/edit-profile', [StudentController::class, 'edit'])->name('student.edit');
+            Route::get('/enrolled-courses', [StudentController::class, 'myCourses'])->name('student.enrolled_courses');
+        });
+        Route::prefix('/course')->group(function () {
+            Route::get('/{course_slug}/{subject_slug?}/{lesson_slug?}', [LessonController::class, 'index'])->name('course.index');
         });
         Route::prefix('/instructor')->middleware('check.user.is.instructor')->group(function () {
             Route::get('/my-profile', [InstructorController::class, 'dashboard'])->name('instructor.dashboard');
@@ -50,9 +52,6 @@
             Route::delete('delete-course/{id}', [CourseController::class, 'destroy'])->name('course.destroy');
         });
         Route::resources(['/student' => StudentController::class], ['as' => 'client']);
-        Route::prefix('/students/')->group(function () {
-            Route::get('/edit-profile', [StudentController::class, 'edit'])->name('student.edit');
-        });
         Route::post('like/{id}/{type}', [UserActionController::class, 'handleLikeAction'])->name('client.like');
         Route::post('dislike/{id}/{type}', [UserActionController::class, 'handleDislikeAction'])->name('client.dislike');
         Route::post('/upload-avatar', [UserActionController::class, 'handleUploadAvatar'])->name('upload.avatar');

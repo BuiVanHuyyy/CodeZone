@@ -6,8 +6,6 @@ use App\Events\SendMailNoticeToInstructorEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInstructorRequest;
 use App\Http\Requests\UpdateInstructorRequest;
-use App\Mail\NoticeInstructorAboutStatusAccount;
-use App\Models\Course;
 use App\Models\Dislike;
 use App\Models\Instructor;
 use App\Models\Like;
@@ -15,6 +13,7 @@ use App\Models\Review;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -28,9 +27,7 @@ class InstructorController extends Controller
     {
         $status = $request->status ?? null;
         if (!is_null($status)) {
-            $instructors = Instructor::whereHas('user', function ($query) use ($status) {
-                $query->where('status', $status);
-            })->get();
+            $instructors = Instructor::where('status', $status)->with(['user', 'courses'])->get();
         } else {
             $instructors = Instructor::with(['user', 'courses'])->get();
         }
@@ -108,7 +105,7 @@ class InstructorController extends Controller
         //
     }
 
-    public function updateStatus(int|string $id, \Illuminate\Http\Request $request ): \Illuminate\Http\JsonResponse
+    public function updateStatus(int|string $id, Request $request ): JsonResponse
     {
         DB::beginTransaction();
         try{

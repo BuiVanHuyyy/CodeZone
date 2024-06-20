@@ -10,6 +10,7 @@ use App\Models\Student;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +37,7 @@ class StudentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreStudentRequest $request, Student $student): \Illuminate\Http\RedirectResponse
+    public function update(StoreStudentRequest $request, Student $student): RedirectResponse
     {
         try {
             $user = Auth::user();

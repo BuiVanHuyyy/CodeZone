@@ -40,9 +40,10 @@
 <script src="{{ asset('admin_assets/vendor/morris/morris.min.js') }}"></script>
 <script src="{{ asset('admin_assets/vendor/peity/jquery.peity.min.js') }} "></script>
 
-<script src="{{ asset('admin_assets/js/dashboard/dashboard-2.js') }} "></script>
+<script src="{{ asset('admin_assets/vendor/chart.js/Chart.bundle.min.js')}}"></script>
+
+<!-- <script src="{{ asset('admin_assets/js/dashboard/dashboard-2.js') }} "></script> -->
 <script src="https://cdn.datatables.net/2.0.4/js/dataTables.js"></script>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <script src="{{ asset('admin_assets/vendor/svganimation/vivus.min.js') }}"></script>
 <script src="{{ asset('admin_assets/vendor/svganimation/svg.animation.js') }}"></script>

@@ -132,16 +132,36 @@
             }
             //Check if the current instructor is a student of the instructor
             $isStudent = false;
-            if(Auth::user()->student) {
-                foreach ($instructor->instructor->courses as $course) {
+            $instructorCourses = $instructor->instructor->courses()->with(['category', 'subjects', 'students', 'reviews'])->where('status', 'approved')->orderBy('created_at')->get();
+            if (Auth::check() && Auth::user()->isStudent()) {
+                foreach ($instructorCourses as $course) {
                     if ($course->students->where('status', 'paid')->where('student_id', Auth::id())) {
                         $isStudent = true;
                         break;
                     }
                 }
             }
+            $instructorReviews = $instructor->instructor->reviews()->with(['author', 'author.user', 'likes', 'dislikes'])->get();
+            return view('client.pages.profile', compact('instructor', 'isStudent', 'instructorReviews', 'instructorCourses'));
+        }
 
-            return view('client.pages.profile', compact('instructor', 'isStudent'));
+        /**
+         * Show instructor courses.
+         */
+        public function courses(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
+        {
+            $instructorCourses = Auth::user()->instructor->courses()->with(['reviews', 'subjects', 'students'])->get();
+            return view('client.pages.instructors.pages.my_course', compact('instructorCourses'));
+        }
+
+        /**
+         * Show instructor reviews.
+         */
+        public function reviews(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
+        {
+            $instructorCourses = Auth::user()->instructor->courses()->with('reviews')->where('status', 'approved')->withCount('reviews')->orderByDesc('reviews_count')->get();
+            $instructorReviews = Auth::user()->instructor->reviews()->with('user')->orderByDesc('created_at')->get();
+            return view('client.pages.instructors.pages.my_review', compact('instructorCourses', 'instructorReviews'));
         }
 
         /**
@@ -166,33 +186,6 @@
             }
 
             return view('client.pages.instructors.pages.index', compact('totalStudents', 'totalMoney', 'instructorCourses'));
-        }
-
-        /**
-         * Show instructor courses.
-         */
-        public function courses(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
-        {
-            $instructorCourses = Auth::user()->instructor->courses()->with(['reviews', 'subjects', 'students'])->get();
-            return view('client.pages.instructors.pages.my_course', compact('instructorCourses'));
-        }
-
-        /**
-         * Show instructor info.
-         */
-        public function show(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
-        {
-            return view('client.pages.instructors.pages.profile');
-        }
-
-        /**
-         * Show instructor reviews.
-         */
-        public function reviews(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
-        {
-            $instructorCourses = Auth::user()->instructor->courses()->with('reviews')->where('status', 'approved')->withCount('reviews')->orderByDesc('reviews_count')->get();
-            $instructorReviews = Auth::user()->instructor->reviews()->with('user')->orderByDesc('created_at')->get();
-            return view('client.pages.instructors.pages.my_review', compact('instructorCourses', 'instructorReviews'));
         }
 
         public function resetPassword(UpdatePasswordRequest $request): RedirectResponse

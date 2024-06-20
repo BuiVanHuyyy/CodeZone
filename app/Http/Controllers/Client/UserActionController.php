@@ -21,7 +21,7 @@
                 $fileName = $this->uniqueImagePath($file);
                 //Delete old avatar
                 if (!is_null(Auth::user()->avatar)) {
-                    $oldAvatarPath = public_path( env('AVATAR_FOLDER_PATH') . Auth::user()->avatar);
+                    $oldAvatarPath = public_path(env('AVATAR_FOLDER_PATH') . Auth::user()->avatar);
                     if (file_exists($oldAvatarPath)) {
                         unlink($oldAvatarPath);
                     }
@@ -40,6 +40,15 @@
                 return redirect()->back();
             }
         }
+
+        private function uniqueImagePath(UploadedFile $file): string
+        {
+            $originName = $file->getClientOriginalName();
+            $fileName = pathinfo($originName, PATHINFO_FILENAME);
+            $extension = $file->getClientOriginalExtension();
+            return $fileName . '_' . uniqid() . '.' . $extension;
+        }
+
         public function uploadTmpAvatar(Request $request)
         {
             if ($request->hasFile('avatar')) {
@@ -48,9 +57,10 @@
                 $url = env('TMP_FOLDER') . $fileName;
                 session()->put('tmp_avatar', $url);
                 $file->move(public_path(env('TMP_FOLDER')), $fileName);
-                return response()->json(['path'  => $url]);
+                return response()->json(['path' => $url]);
             }
         }
+
         public function deleteTmpAvatar(Request $request): JsonResponse
         {
             if ($request->has('path')) {
@@ -62,19 +72,19 @@
             }
             return response()->json(['success' => false]);
         }
-        private function uniqueImagePath(UploadedFile $file): string
-        {
-            $originName = $file->getClientOriginalName();
-            $fileName = pathinfo($originName, PATHINFO_FILENAME);
-            $extension = $file->getClientOriginalExtension();
-            return $fileName . '_' . uniqid() . '.' . $extension;
-        }
+
         public function handleLikeAction(int|string $id, string $type): JsonResponse|RedirectResponse
         {
+            if (!Auth::check()) {
+                return response()->json(['success' => true, 'message' => 'Bạn cần đăng nhập trước']);
+            }
             $id = Crypt::decrypt($id);
             if ($type == 'review') {
                 $type = 'App\Models\Review';
-            } else {
+            }elseif ($type == 'blog') {
+                $type = 'App\Models\Blog';
+            }
+            else {
                 $type = 'App\Models\Comment';
             }
             $like = Like::where('user_id', Auth::id())->where('likeable_id', $id)->where('likeable_type', $type)->first();
@@ -84,7 +94,6 @@
             } else {
                 if ($dislike) {
                     $dislike->forceDelete();
-                    return redirect()->back();
                 }
                 $like = new Like();
                 $like->user_id = Auth::id();
@@ -96,11 +105,14 @@
             $dislike_amount = Dislike::where('dislikeable_id', $id)->where('dislikeable_type', $type)->count();
             return response()->json(['success' => true, 'like_amount' => $like_amount, 'dislike_amount' => $dislike_amount]);
         }
+
         public function handleDislikeAction(int|string $id, string $type): JsonResponse|RedirectResponse
         {
             $id = Crypt::decrypt($id);
             if ($type == 'review') {
                 $type = 'App\Models\Review';
+            }elseif ($type == 'blog') {
+                $type = 'App\Models\Blog';
             } else {
                 $type = 'App\Models\Comment';
             }
@@ -112,7 +124,6 @@
             } else {
                 if ($like) {
                     $like->forceDelete();
-                    return redirect()->back();
                 }
                 $dislike = new Dislike();
                 $dislike->user_id = Auth::id();

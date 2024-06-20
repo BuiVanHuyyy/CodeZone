@@ -29595,3 +29595,11 @@ Course Sidebar
 .error-input li {
     color: red !important;
 }
+.delete-button {
+    border: none;
+    background-color: transparent;
+}
+.delete-button:hover {
+    transition: 0.3s;
+    color: var(--color-danger);
+}

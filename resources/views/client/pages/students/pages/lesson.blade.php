@@ -109,7 +109,7 @@
                                                             <form id="deleteForm" action="{{ route('client.comment.destroy', [Crypt::encrypt($comment->id)]) }}" method="POST">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <a id="deleteButton" href=""><i class="fa-solid fa-trash"></i></a>
+                                                                <button class="delete-button" type="submit"><i class="fa-solid fa-trash"></i></button>
                                                             </form>
                                                         </div>
                                                     @endif
@@ -120,14 +120,14 @@
                                                             </div>
                                                             <div class="comment-inner">
                                                                 <h6 class="commenter">{!! $comment->author->role === 'instructor' ? '<i class="fa-solid fa-chalkboard-user"></i>' : '' !!}
-                                                                    <a class="author_name" href="#">{{ $comment->author->name }}</a>
+                                                                    <span class="author_name">{{ $comment->author->name }}</span>
                                                                 </h6>
                                                                 <div class="comment-meta">
                                                                     <div
                                                                         class="time-spent">{{ date_format(date_create($comment->created_at) , 'd/m/Y') }}</div>
                                                                     <div class="reply-edit">
                                                                         <div class="reply">
-                                                                            <a class="comment-reply-link" data-id="{{ $comment->id }}" href="#">Trả lời</a>
+                                                                            <a class="comment-reply-link" data-id="{{ Crypt::encrypt($comment->id) }}" href="#">Trả lời</a>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -138,7 +138,7 @@
                                                                             $is_active = false;
                                                                             if (Auth::check()) {
                                                                                 foreach ($comment->likes as $like) {
-                                                                                    if ($like['likeable_id'] == $comment->id) {
+                                                                                    if ($like['user_id'] == Auth::id()) {
                                                                                         $is_active = true;
                                                                                         break;
                                                                                     }
@@ -155,7 +155,7 @@
                                                                             $is_active = false;
                                                                             if (Auth::check()) {
                                                                                 foreach ($comment->dislikes as $dislike) {
-                                                                                    if ($dislike['dislikeable_id'] == $comment->id) {
+                                                                                    if ($dislike['user_id'] == Auth::id()) {
                                                                                         $is_active = true;
                                                                                         break;
                                                                                     }
@@ -173,38 +173,37 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    @php
-                                                        //get all replies of comment
-                                                        $replies = \App\Models\Comment::where('commentable_id', $comment->id)->where('commentable_type', 'comment')->get() ?? [];
-                                                    @endphp
-                                                    @if($replies->count() > 0)
+                                                    @if($comment->replies->count() > 0)
                                                         <ul class="children">
-                                                            @foreach($comment->replies as $reply)
-                                                                <li class="comment">
+                                                            @foreach($comment->replies->sortBy('created_at') as $reply)
+                                                                <li class="comment position-relative">
+                                                                    @if(Auth::id() == $reply->author->id)
+                                                                        <div class="position-absolute"
+                                                                             style="top: 10px; right: 10px">
+                                                                            <form id="deleteForm" action="{{ route('client.comment.destroy', [Crypt::encrypt($reply->id)]) }}" method="POST">
+                                                                                @csrf
+                                                                                @method('DELETE')
+                                                                                <button class="delete-button" type="submit"><i class="fa-solid fa-trash"></i></button>
+                                                                            </form>
+                                                                        </div>
+                                                                    @endif
                                                                     <div class="comment-body">
                                                                         <div class="single-comment">
                                                                             <div class="comment-img">
-                                                                                @php
-                                                                                    if (($reply->author->role) === 'instructor') {
-                                                                                        $avatar = $reply->author->instructors->avatar;
-                                                                                    } else {
-                                                                                        $avatar = $reply->author->students->avatar;
-                                                                                    }
-                                                                                @endphp
-                                                                                <img src="{{ $avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="Author Images">
+                                                                                <img src="{{ $reply->author->avatarPath() }}" alt="Author Images">
                                                                             </div>
                                                                             <div class="comment-inner">
-                                                                                <h6 class="commenter"> {!! $reply->author->role === 'instructor' ? '<i class="fa-solid fa-chalkboard-user"></i>' : '' !!}
-                                                                                    <a class="author_name" href="#">{{ $reply->author->name }}</a>
+                                                                                <h6 class="commenter">{!! $reply->author->isInstructor() && $reply->author->instructor->id === $course->instructor_id ? '<i class="fa-solid fa-chalkboard-user"></i>' : '' !!}
+                                                                                    <span class="author_name">{{ $reply->author->name }}</span>
                                                                                 </h6>
                                                                                 <div class="comment-meta">
                                                                                     <div
                                                                                         class="time-spent">{{ date_format(date_create($reply->created_at), 'd/m/Y') }}</div>
                                                                                     <div class="reply-edit">
                                                                                         <div class="reply">
-                                                                                            <a class="comment-reply-link"
-                                                                                               data-id="{{ $reply->id }}"
-                                                                                               href="#comment-respond">Trả lời</a>
+                                                                                            <a data-id="{{ Crypt::encrypt($comment->id) }}"
+                                                                                               class="comment-reply-link" href="#">Trả
+                                                                                                lời</a>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -214,8 +213,8 @@
                                                                                         @php
                                                                                             $is_active = false;
                                                                                             if (Auth::check()) {
-                                                                                                foreach (Auth::user()->likes as $like) {
-                                                                                                    if ($like['likeable_id'] == $reply->id) {
+                                                                                                foreach ($reply->likes as $ike) {
+                                                                                                    if ($ike['user_id'] == Auth::id()) {
                                                                                                         $is_active = true;
                                                                                                         break;
                                                                                                     }
@@ -223,16 +222,16 @@
                                                                                             }
                                                                                         @endphp
                                                                                         <li>
-                                                                                            <button data-url="{{ route('client.like', [$reply->id, 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
+                                                                                            <button data-url="{{ route('client.like', [Crypt::encrypt($reply->id), 'comment']) }}" class="{{ $is_active ? 'active' : '' }} like_btn">
                                                                                                 <i class="feather-thumbs-up"></i>
                                                                                             </button>
-                                                                                            <span class="like_qty">{{ $reply->like_amount }}</span>
+                                                                                            <span class="like_qty">{{ number_format($reply->likes->count(), 0) }}</span>
                                                                                         </li>
                                                                                         @php
                                                                                             $is_active = false;
                                                                                             if (Auth::check()) {
-                                                                                                foreach (Auth::user()->dislikes as $dislike) {
-                                                                                                    if ($dislike['dislikeable_id'] == $reply->id) {
+                                                                                                foreach ($reply->dislikes as $dislike) {
+                                                                                                    if ($dislike['user_id'] == Auth::id()) {
                                                                                                         $is_active = true;
                                                                                                         break;
                                                                                                     }
@@ -240,10 +239,10 @@
                                                                                             }
                                                                                         @endphp
                                                                                         <li>
-                                                                                            <button class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('client.dislike', [$reply->id, 'comment']) }}">
+                                                                                            <button class="{{ $is_active ? 'active' : '' }} dislike_btn" data-url="{{ route('client.dislike', [Crypt::encrypt($reply->id), 'comment']) }}">
                                                                                                 <i class="feather-thumbs-down"></i>
                                                                                             </button>
-                                                                                            <span class="dislike_qty">{{$reply->dislike_amount}}</span>
+                                                                                            <span class="dislike_qty">{{ number_format($reply->dislikes->count(), 0) }}</span>
                                                                                         </li>
                                                                                     </ul>
                                                                                 </div>
@@ -342,8 +341,9 @@
             })
         })
 
-        $('#deleteButton').on('click', function (e) {
+        $('.deleteButton').on('click', function (e) {
             e.preventDefault();
+            let delBtn = $(this);
             Swal.fire({
                 title: 'Bạn có chắc chắn muốn xóa không?',
                 showDenyButton: true,

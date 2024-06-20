@@ -42,7 +42,8 @@
                     <div class="rbt-header-content">
                         <div class="logo">
                             <a href="{{ route('client.home') }}">
-                                <img src="{{ asset('client_assets/images/logo/logo.png') }}" alt="CodeZone Logo Images"/>
+                                <img src="{{ asset('client_assets/images/logo/logo.png') }}"
+                                     alt="CodeZone Logo Images"/>
                             </a>
                         </div>
                     </div>
@@ -84,7 +85,16 @@
                                         </li>
                                     @endif
                                     <li class="account-access rbt-user-wrapper right-align-dropdown d-none d-xl-block">
-                                        <a href="{{ Auth::user()->role == 'admin' ? route('admin.dashboard') : '#' }}">
+                                        @php
+                                            if(Auth::user()->role == 'admin') {
+                                                $dashboard = route('admin.dashboard');
+                                            }elseif (Auth::user()->role == 'student') {
+                                                $dashboard = route('student.dashboard');
+                                            }else {
+                                            $dashboard = route('instructor.dashboard');
+                                            }
+                                        @endphp
+                                        <a href="{{ $dashboard }}">
                                             <i class="feather-user"></i>{{ Auth::user()->name }}
                                         </a>
                                         @if(Auth::user()->role != 'admin')
@@ -92,59 +102,63 @@
                                                 <div class="inner">
                                                     <div class="rbt-admin-profile">
                                                         <div class="admin-thumbnail">
-                                                            <img src="{{ Auth::user()->avatarPath() }}" alt="User Images"/>
+                                                            <img src="{{ Auth::user()->avatarPath() }}"
+                                                                 alt="User Images"/>
                                                         </div>
                                                         <div class="admin-info">
                                                             <span class="name">{{ Auth::user()->name }}</span>
                                                         </div>
                                                     </div>
-                                                        <ul class="user-list-wrapper">
+                                                    <ul class="user-list-wrapper">
+                                                        <li>
+                                                            <a href="{{ Auth::user()->role == 'student' ? route('student.dashboard') : route('instructor.dashboard') }}">
+                                                                <i class="feather-home"></i>
+                                                                <span>Dashboard</span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.profile', [Auth::user()->slug]) }}">
+                                                                <i class="feather-bookmark"></i>
+                                                                <span>Trang cá nhân</span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="{{ Auth::user()->role == 'student' ? route('student.enrolled_courses') : route('instructor.my_courses') }}">
+                                                                <i class="feather-shopping-bag"></i>
+                                                                <span>{{ Auth::user()->role == 'student' ? 'Các khóa học đăng ký' : 'Các khóa học của tôi' }}</span>
+                                                            </a>
+                                                        </li>
+                                                        @if(Auth::user()->role == 'instructor')
                                                             <li>
-                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.dashboard') : route('instructor.dashboard') }}">
-                                                                    <i class="feather-home"></i>
-                                                                    <span>Dashboard</span>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.profile', [Auth::user()->slug]) }}">
-                                                                    <i class="feather-bookmark"></i>
-                                                                    <span>Trang cá nhân</span>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.enrolled_courses') : route('instructor.my_courses') }}">
-                                                                    <i class="feather-shopping-bag"></i>
-                                                                    <span>{{ Auth::user()->role == 'student' ? 'Các khóa học đăng ký' : 'Các khóa học của tôi' }}</span>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="{{ Auth::user()->role == 'student' ? route('student.show') : route('instructor.my_reviews') }}">
+                                                                <a href="{{ route('instructor.my_reviews') }}">
                                                                     <i class="feather-heart"></i>
                                                                     <span>Đánh giá</span>
                                                                 </a>
                                                             </li>
-                                                            <li>
-                                                                <a href="{{ Auth::user()->role == 'student' ? route('client.student.edit', [Auth::user()->student]) : route('instructor.edit') }}">
-                                                                    <i class="feather-star"></i>
-                                                                    <span>Chỉnh sửa thông tin</span>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <form method="post" action="{{ route('logout') }}">
-                                                                    @csrf
-                                                                    <a onclick="event.preventDefault();
+                                                        @endif
+                                                        <li>
+                                                            <a href="{{ Auth::user()->role == 'student' ? route('student.edit') : route('instructor.edit') }}">
+                                                                <i class="feather-star"></i>
+                                                                <span>Chỉnh sửa thông tin</span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <form method="post" action="{{ route('logout') }}">
+                                                                @csrf
+                                                                <a onclick="event.preventDefault();
                                                                         this.closest('form').submit();"
-                                                                       href="{{ route('logout') }}"><i
+                                                                   href="{{ route('logout') }}"><i
                                                                             class="feather-log-out"></i><span>Đăng xuất</span></a>
-                                                                </form>
-                                                            </li>
-                                                        </ul>
+                                                            </form>
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                             </div>
                                         @endif
                                     </li>
                                     <li class="access-icon rbt-user-wrapper right-align-dropdown d-block d-xl-none">
-                                        <a class="rbt-round-btn" href="{{ Auth::user()->role == 'student' ? route('student.dashboard') : route('instructor.dashboard') }}">
+                                        <a class="rbt-round-btn"
+                                           href="{{ Auth::user()->role == 'student' ? route('student.dashboard') : route('instructor.dashboard') }}">
                                             <i class="feather-user"></i>
                                         </a>
                                         <div class="rbt-user-menu-list-wrapper">
@@ -195,7 +209,7 @@
                                                             <a onclick="event.preventDefault();
                                                                         this.closest('form').submit();"
                                                                href="{{ route('logout') }}"><i
-                                                                    class="feather-log-out"></i><span>Đăng xuất</span></a>
+                                                                        class="feather-log-out"></i><span>Đăng xuất</span></a>
                                                         </form>
                                                     </li>
                                                 </ul>
@@ -215,7 +229,7 @@
     <div class="rbt-header-wrapper header-not-transparent header-sticky">
         <div class="container">
             <div
-                class="mainbar-row rbt-navigation-end align-items-center"
+                    class="mainbar-row rbt-navigation-end align-items-center"
             >
                 <div class="rbt-main-navigation d-none d-xl-block">
                     <nav class="mainmenu-nav">
@@ -352,79 +366,81 @@
     </div>
 </div>
 @if(Auth::check() && Auth::user()->role == 'student')
-<div class="rbt-cart-side-menu">
-    <div class="inner-wrapper">
-        <div class="inner-top">
-            <div class="content">
-                <div class="title">
-                    <h4 class="title mb--0">Giỏ hàng của bạn</h4>
+    <div class="rbt-cart-side-menu">
+        <div class="inner-wrapper">
+            <div class="inner-top">
+                <div class="content">
+                    <div class="title">
+                        <h4 class="title mb--0">Giỏ hàng của bạn</h4>
+                    </div>
+                    <div class="rbt-btn-close" id="btn_sideNavClose">
+                        <button class="minicart-close-button rbt-round-btn"><i class="feather-x"></i></button>
+                    </div>
                 </div>
-                <div class="rbt-btn-close" id="btn_sideNavClose">
-                    <button class="minicart-close-button rbt-round-btn"><i class="feather-x"></i></button>
+            </div>
+            <nav class="side-nav w-100">
+                <ul class="rbt-minicart-wrapper">
+                    @if(session('cart') == [] || is_null(session('cart')))
+                        <p>Giỏ hàng của bạn đang trống</p>
+                    @else
+                        @foreach(session('cart', []) as $id => $item)
+                            <li id="li-{{ $id }}" class="minicart-item">
+                                <div class="thumbnail">
+                                    <a href="#">
+                                        <img src="{{ $item['image'] }}" alt="Course Images">
+                                    </a>
+                                </div>
+                                <div class="product-content">
+                                    <h6 class="title"><a href="">{{ $item['name'] }}</a></h6>
+                                    <span class="price">₫ {{ number_format($item['price']) }}</span>
+                                </div>
+                                <div class="close-btn">
+                                    <button data-id="{{ $id }}" data-url="{{ route('cart.remove', ['id' => $id]) }}"
+                                            class="rbt-round-btn remove-item-cart">
+                                        <i class="feather-x"></i>
+                                    </button>
+                                </div>
+                            </li>
+                        @endforeach
+                    @endif
+                </ul>
+            </nav>
+
+            <div class="rbt-minicart-footer">
+                <hr class="mb--0">
+                <div class="rbt-cart-subttotal">
+                    <p class="subtotal"><strong>Tổng cộng:</strong></p>
+                    <p class="price">₫ {{ number_format($totalMoney, 0) }}</p>
+                </div>
+                <hr class="mb--0">
+                <div class="rbt-minicart-bottom mt--20">
+                    <form action="{{ route('cart.placeholder') }}" method="post">
+                        @csrf
+                        <div class="form-check">
+                            <input checked class="form-check-input" value="VNBANK" type="radio" name="payment_method"
+                                   id="VNBANK">
+                            <label class="form-check-label" for="VNBANK">
+                                Thanh toán qua thẻ ATM/Tài khoản nội địa
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" value="INTCARD" type="radio" name="payment_method"
+                                   id="INTCARD">
+                            <label class="form-check-label" for="INTCARD">
+                                Thanh toán qua thẻ quốc tế
+                            </label>
+                        </div>
+                        <div class="checkout-btn mt--20">
+                            <button type="submit" class="rbt-btn btn-gradient icon-hover w-100 text-center">
+                                <span class="btn-text">Thanh toán qua VNPAY</span>
+                                <span class="btn-icon"><i class="feather-arrow-right"></i></span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
-        <nav class="side-nav w-100">
-            <ul class="rbt-minicart-wrapper">
-                @if(session('cart') == [] || is_null(session('cart')))
-                    <p>Giỏ hàng của bạn đang trống</p>
-                @else
-                    @foreach(session('cart', []) as $id => $item)
-                        <li id="li-{{ $id }}" class="minicart-item">
-                            <div class="thumbnail">
-                                <a href="#">
-                                    <img src="{{ $item['image'] }}" alt="Course Images">
-                                </a>
-                            </div>
-                            <div class="product-content">
-                                <h6 class="title"><a href="">{{ $item['name'] }}</a></h6>
-                                <span class="price">₫ {{ number_format($item['price']) }}</span>
-                            </div>
-                            <div class="close-btn">
-                                <button data-id="{{ $id }}" data-url="{{ route('cart.remove', ['id' => $id]) }}"
-                                        class="rbt-round-btn remove-item-cart">
-                                    <i class="feather-x"></i>
-                                </button>
-                            </div>
-                        </li>
-                    @endforeach
-                @endif
-            </ul>
-        </nav>
 
-        <div class="rbt-minicart-footer">
-            <hr class="mb--0">
-            <div class="rbt-cart-subttotal">
-                <p class="subtotal"><strong>Tổng cộng:</strong></p>
-                <p class="price">₫ {{ number_format($totalMoney, 0) }}</p>
-            </div>
-            <hr class="mb--0">
-            <div class="rbt-minicart-bottom mt--20">
-                <form action="{{ route('cart.placeholder') }}" method="post">
-                    @csrf
-                    <div class="form-check">
-                        <input checked class="form-check-input" value="VNBANK" type="radio" name="payment_method" id="VNBANK">
-                        <label class="form-check-label" for="VNBANK">
-                            Thanh toán qua thẻ ATM/Tài khoản nội địa
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" value="INTCARD" type="radio" name="payment_method" id="INTCARD">
-                        <label class="form-check-label" for="INTCARD">
-                            Thanh toán qua thẻ quốc tế
-                        </label>
-                    </div>
-                    <div class="checkout-btn mt--20">
-                        <button type="submit" class="rbt-btn btn-gradient icon-hover w-100 text-center">
-                            <span class="btn-text">Thanh toán qua VNPAY</span>
-                            <span class="btn-icon"><i class="feather-arrow-right"></i></span>
-                        </button>
-                    </div>
-                </form>
-            </div>
         </div>
-
     </div>
-</div>
 @endif
 <a class="close_side_menu" href="javascript:void(0);"></a>

@@ -34,7 +34,7 @@ class Instructor extends Model
     public function studentsAmount(): int
     {
         $studentsAmount = 0;
-        foreach ($this->courses as $course) {
+        foreach ($this->courses()->with('students') as $course) {
             $studentsAmount += $course->studentsAmount();
 
         }

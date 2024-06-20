@@ -127,8 +127,8 @@ body {
     font-size: 0.937rem;
     font-weight: 400;
     line-height: 1.5;
-    color: #444;
-    background-color: #F7F8FA;
+    color: #f0f3f6 !important;
+    background-color: #191d33;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
@@ -150,7 +150,6 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
     margin-bottom: 0.5rem;
     font-weight: 500;
     line-height: 1.2;
-    color: #3d4465;
 }
 
 h1, .h1 {
@@ -11511,7 +11510,7 @@ li {
 }
 
 a {
-    color: #444;
+    color: #f0f3f6;
 }
 
 a:hover, a:focus, a.active {
@@ -11805,7 +11804,6 @@ a:hover, a:focus, a.active {
 
 .footer {
     padding-left: 17.1875rem;
-    background-color: #F7F8FA;
 }
 
 .footer .copyright {
@@ -12077,6 +12075,7 @@ a:hover, a:focus, a.active {
     padding-right: 1.875rem;
     align-items: center;
     display: flex;
+    background: #191d33;
 }
 
 @media only screen and (max-width: 575px) {
@@ -12265,132 +12264,9 @@ svg.pulse-svg .third-circle {
     padding-left: 30px;
 }
 
-.header-left {
-    height: 100%;
-    display: flex;
-    align-items: center;
-}
-
-.header-left input {
-    background: #fff !important;
-    min-width: 300px;
-    min-height: 44px;
-    border-color: transparent;
-    color: #454545 !important;
-    border-top-right-radius: 5rem;
-    border-bottom-right-radius: 5rem;
-    box-shadow: none;
-}
-
-[direction="rtl"] .header-left input {
-    border-top-right-radius: .25rem;
-    border-bottom-right-radius: .25rem;
-}
-
-.header-left input:focus, .header-left input:active, .header-left input.active {
-    border-color: transparent;
-    box-shadow: none;
-}
-
-.header-left input::-webkit-input-placeholder {
-    /* Edge */
-    color: #454545;
-}
-
-.header-left input:-ms-input-placeholder {
-    /* Internet Explorer */
-    color: #454545;
-}
-
-.header-left input::placeholder {
-    color: #454545;
-}
-
-.header-left .search_bar {
-    display: flex;
-    align-items: center;
-    height: 100%;
-}
-
-.header-left .search_bar .dropdown-menu {
-    box-shadow: none;
-}
-
-.header-left .search_bar .search_icon {
-    background: #fff !important;
-    height: 44px;
-    padding: 5px 15px !important;
-    border-top-left-radius: 5rem;
-    border-bottom-left-radius: 5rem;
-}
-
-.header-left .search_bar .search_icon i {
-    font-size: 24px;
-    color: #454545;
-}
-
-@media only screen and (max-width: 767px) {
-    .header-left .search_bar .search_icon {
-        border-radius: 4px;
-        padding: 5px 10px !important;
-    }
-}
-
-@media only screen and (max-width: 767px) {
-    .header-left .search_bar {
-        position: static;
-    }
-
-    .header-left .search_bar .dropdown-menu {
-        width: 300px;
-        left: -15vw;
-        box-shadow: 0px 5px 10px 0 rgba(0, 0, 0, 0.1);
-        border-radius: 4px !important;
-    }
-}
-
-@media only screen and (max-width: 767px) and (max-width: 575px) {
-    .header-left .search_bar .dropdown-menu {
-        width: 250px;
-        left: -25vw;
-    }
-}
-
-@media only screen and (max-width: 767px) {
-    .header-left .search_bar .dropdown-menu .form-control {
-        border-radius: 4px !important;
-        width: 100%;
-    }
-
-    [direction="rtl"] .header-left .search_bar .dropdown-menu {
-        right: -98px;
-    }
-}
-
-.header-left .search_bar .dropdown-menu,
-.header-left .search_bar .dropdown-menu.show {
-    border: 0px;
-    background-color: transparent;
-    border-top-right-radius: 5rem;
-    border-bottom-right-radius: 5rem;
-}
-
-@media only screen and (min-width: 768px) {
-    .header-left .search_bar .dropdown-menu,
-    .header-left .search_bar .dropdown-menu.show {
-        left: 40px;
-        top: -4px;
-        transform: translateY(50%);
-        display: block;
-    }
-}
-
-[data-sidebar-style="compact"] .header-left {
-    margin-left: 0;
-}
-
 .header-right {
     height: 100%;
+    margin-left: auto;
 }
 
 .header-right .nav-item {
@@ -16001,9 +15877,6 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
     background-color: #24252f;
 }
 
-[data-sibebarbg="color_2"][data-layout="horizontal"] .deznav .metismenu > li.mega-menu:hover > ul::after {
-    background-color: #0c223a;
-}
 
 [data-sibebarbg="color_3"][data-layout="horizontal"] .deznav .metismenu > li.mega-menu:hover > ul::after {
     background-color: #4c27ed;
@@ -16129,7 +16002,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 }
 
 [data-sidebar-style="full"][data-layout="vertical"] .menu-toggle .nav-header .nav-control .hamburger .line {
-    background-color: #ff8f16 !important;
+    background-color: #fff !important;
 }
 
 [data-sidebar-style="full"][data-layout="vertical"] .menu-toggle .header {
@@ -17963,12 +17836,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 
 [data-nav-headerbg="color_10"][data-theme-version="dark"] .nav-header,
 [data-nav-headerbg="color_10"] .nav-header {
-    background-color: #ff8f16;
-}
-
-[data-nav-headerbg="color_10"][data-theme-version="dark"] .nav-header .brand-logo,
-[data-nav-headerbg="color_10"] .nav-header .brand-logo {
-    color: #fff;
+    background-color: #293146 !important;
 }
 
 [data-nav-headerbg="color_10"][data-theme-version="dark"] .nav-header .brand-logo:hover,
@@ -18111,19 +17979,6 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
     background: #fff;
 }
 
-[data-headerbg="color_2"][data-theme-version="dark"] .header,
-[data-headerbg="color_2"] .header {
-    background-color: #143b64;
-    color: #fff;
-}
-
-[data-headerbg="color_2"][data-theme-version="dark"] .header-left input,
-[data-headerbg="color_2"] .header-left input {
-    border-color: #1d548f;
-    background-color: #1d548f !important;
-    color: #fff;
-}
-
 [data-headerbg="color_2"][data-theme-version="dark"] .header-left input::placeholder,
 [data-headerbg="color_2"] .header-left input::placeholder {
     color: #fff;
@@ -18134,14 +17989,9 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
     border-color: #0c223a;
 }
 
-[data-headerbg="color_2"][data-theme-version="dark"] .header-left .search_icon,
-[data-headerbg="color_2"] .header-left .search_icon {
-    background-color: #1d548f !important;
-}
-
 [data-headerbg="color_2"][data-theme-version="dark"] .header-left .search_icon i,
 [data-headerbg="color_2"] .header-left .search_icon i {
-    color: #fff;
+    color: #000;
 }
 
 [data-headerbg="color_2"][data-theme-version="dark"] .header-left .btn,
@@ -18172,12 +18022,6 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 [data-headerbg="color_2"] .header-right .pulse-css:after,
 [data-headerbg="color_2"] .header-right .pulse-css:before {
     background-color: inherit;
-}
-
-[data-headerbg="color_2"][data-theme-version="dark"] .nav-control,
-[data-headerbg="color_2"] .nav-control {
-    background-color: #0c223a;
-    color: #fff;
 }
 
 [data-headerbg="color_3"][data-theme-version="dark"] .header,
@@ -19079,7 +18923,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 
 [data-sibebarbg="color_2"][data-theme-version="dark"] .deznav,
 [data-sibebarbg="color_2"] .deznav {
-    background-color: #143b64;
+    background-color: #293146 !important;
 }
 
 [data-sibebarbg="color_2"][data-theme-version="dark"] .deznav .metismenu .nav-label,
@@ -31823,10 +31667,6 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
     margin-bottom: 0;
 }
 
-.bootstrap-select {
-    margin-bottom: 1rem;
-}
-
 .bootstrap-select .btn {
     border: 1px solid #eaeaea !important;
     background-color: #f8f9fa !important;
@@ -33606,7 +33446,7 @@ button:focus {
 
 .card {
     margin-bottom: 1.875rem;
-    background-color: #fff;
+    background-color: #3c3d54;
     transition: all .5s ease-in-out;
     position: relative;
     border: 0px solid transparent;
@@ -33629,7 +33469,6 @@ button:focus {
 .card-title {
     font-size: 16px;
     font-weight: 500;
-    color: #454545;
     text-transform: capitalize;
     letter-spacing: 0.05em;
 }
@@ -35616,7 +35455,6 @@ table.dataTable tbody tr, table.dataTable tbody td {
 }
 
 table.dataTable thead th {
-    color: #454545;
     font-weight: 600;
 }
 
