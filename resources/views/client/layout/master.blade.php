@@ -79,20 +79,6 @@
 <script src="{{ asset('client_assets/js/vendor/countdown.js') }}"></script>
 <script src="{{ asset('client_assets/js/vendor/plyr.js') }}"></script>
 <script src="{{ asset('client_assets/js/main.js') }}"></script>
-<script>
-    window.onload = function() {
-        let message = "{{ session('message') }}";
-        let icon = "{{ session('icon') }}";
-        if (message !== "") {
-            Swal.fire({
-                position: "center",
-                icon: icon,
-                title: message,
-                showConfirmButton: true
-            });
-        }
-    }
-</script>
 @if(Auth::check())
     <script>
         $('.add-to-cart-btn').on( "click", function() {

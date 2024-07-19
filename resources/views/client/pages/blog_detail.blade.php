@@ -52,7 +52,7 @@
                 <div class="content">
                     <div class="post-thumbnail mb--30 position-relative wp-block-image alignwide">
                         <figure>
-                            <img src="{{ '/client_assets/images/blog/' . $blog->thumbnail }}" alt="Blog Images"/>
+                            <img src="{{ $blog->thumbnailPath() }}" alt="Blog thumbnail"/>
                         </figure>
                     </div>
                     {!! $blog->content !!}
@@ -372,92 +372,94 @@
         </div>
     </div>
 @endsection
-@section('cus_js')
-    <script>
-        $('.comment-reply-link').click(function (e) {
-            e.preventDefault();
-            let id = $(this).data('id');
-            let name = $(this).closest('.comment-inner').find('.author_name').text();
-            let url = '{{ route('client.comment') }}' + '/' + id + '/comment';
-            $('#commentForm').attr('action', url);
-            $('#message').val(`@${name} `);
-        });
-        // Handle when use click 'like' button
-        $('.like_btn').on('click', function () {
-            let $likeBtn = $(this);
-            let likeUrl = $likeBtn.data('url');
-            $.ajax({
-                url: likeUrl,
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function (response) {
-                    console.log(response.message)
-                    if (response.success) {
-                        let $likeQty = $likeBtn.next('.like_qty');
-                        let $dislikeQty = $likeBtn.parent().siblings().find('.dislike_qty');
-                        let $dislikeBtn = $likeBtn.parent().siblings().find('.dislike_btn');
-
-                        if ($dislikeBtn.hasClass('active')) {
-                            $dislikeBtn.removeClass('active');
-                        }
-
-                        if (response.message != null) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: response.message,
-                            });
-                        }
-
-                        $likeQty.text(response.like_amount);
-                        $dislikeQty.text(response.dislike_amount);
-                        $likeBtn.toggleClass('active');
-                    }
-                },
-            })
-        })
-        // Handle when user click 'dislike' button
-        $('.dislike_btn').on('click', function () {
-            let $dislikeBtn = $(this);
-            let dislikeUrl = $dislikeBtn.data('url');
-            console.log(dislikeUrl);
-            $.ajax({
-                url: dislikeUrl,
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function (response) {
-                    if (response.success) {
-                        let $dislikeQty = $dislikeBtn.next('.dislike_qty');
-                        let $likeQty = $dislikeBtn.parent().siblings().find('.like_qty');
-                        let $likeBtn = $dislikeBtn.parent().siblings().find('.like_btn');
-                        if ($likeBtn.hasClass('active')) {
-                            $likeBtn.removeClass('active');
-                        }
-                        $dislikeQty.text(response.dislike_amount);
-                        console.log(response.like_amount, response.dislike_amount)
-                        $likeQty.text(response.like_amount);
-                        $dislikeBtn.toggleClass('active');
-                    }
-                },
-            })
-        })
-
-        $('#deleteButton').on('click', function (e) {
-            e.preventDefault();
-            Swal.fire({
-                title: 'Bạn có chắc chắn muốn xóa không?',
-                showDenyButton: true,
-                confirmButtonText: 'Xóa',
-                denyButtonText: 'Hủy',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $('#deleteForm').submit();
-                }
+@if(Auth::check())
+    @section('cus_js')
+        <script>
+            $('.comment-reply-link').click(function (e) {
+                e.preventDefault();
+                let id = $(this).data('id');
+                let name = $(this).closest('.comment-inner').find('.author_name').text();
+                let url = '{{ route('client.comment') }}' + '/' + id + '/comment';
+                $('#commentForm').attr('action', url);
+                $('#message').val(`@${name} `);
             });
-        });
-    </script>
-@endsection
+            // Handle when use click 'like' button
+            $('.like_btn').on('click', function () {
+                let $likeBtn = $(this);
+                let likeUrl = $likeBtn.data('url');
+                $.ajax({
+                    url: likeUrl,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        console.log(response.message)
+                        if (response.success) {
+                            let $likeQty = $likeBtn.next('.like_qty');
+                            let $dislikeQty = $likeBtn.parent().siblings().find('.dislike_qty');
+                            let $dislikeBtn = $likeBtn.parent().siblings().find('.dislike_btn');
+
+                            if ($dislikeBtn.hasClass('active')) {
+                                $dislikeBtn.removeClass('active');
+                            }
+
+                            if (response.message != null) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: response.message,
+                                });
+                            }
+
+                            $likeQty.text(response.like_amount);
+                            $dislikeQty.text(response.dislike_amount);
+                            $likeBtn.toggleClass('active');
+                        }
+                    },
+                })
+            })
+            // Handle when user click 'dislike' button
+            $('.dislike_btn').on('click', function () {
+                let $dislikeBtn = $(this);
+                let dislikeUrl = $dislikeBtn.data('url');
+                console.log(dislikeUrl);
+                $.ajax({
+                    url: dislikeUrl,
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            let $dislikeQty = $dislikeBtn.next('.dislike_qty');
+                            let $likeQty = $dislikeBtn.parent().siblings().find('.like_qty');
+                            let $likeBtn = $dislikeBtn.parent().siblings().find('.like_btn');
+                            if ($likeBtn.hasClass('active')) {
+                                $likeBtn.removeClass('active');
+                            }
+                            $dislikeQty.text(response.dislike_amount);
+                            console.log(response.like_amount, response.dislike_amount)
+                            $likeQty.text(response.like_amount);
+                            $dislikeBtn.toggleClass('active');
+                        }
+                    },
+                })
+            })
+
+            $('#deleteButton').on('click', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa không?',
+                    showDenyButton: true,
+                    confirmButtonText: 'Xóa',
+                    denyButtonText: 'Hủy',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#deleteForm').submit();
+                    }
+                });
+            });
+        </script>
+    @endsection
+@endif

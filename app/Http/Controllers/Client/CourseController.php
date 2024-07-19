@@ -36,7 +36,7 @@
         public function show(string $slug): View|\Illuminate\Foundation\Application|Factory|Application
         {
             $course = Course::with('reviews')->where('slug', $slug)->first();
-            if (!$course) {
+            if (!$course || $course->status !== 'approved') {
                 return view('client.pages.404');
             }
             //Check if the course is bought by the student
@@ -71,9 +71,8 @@
                 if ($request->hasFile('thumbnail')) {
                     $file = $request->file('thumbnail');
                     $fileName = $this->saveImageToSystem($file);
-                    $url = '/client_assets/images/tmp/' . $fileName;
-                    $file->move(public_path('client_assets/images/tmp/'), $fileName);
-                    $course->thumbnail = $url;
+                    $file->move(public_path(env('TMP_FOLDER')), $fileName);
+                    $course->thumbnail = $fileName;
                 }
                 $course->save();
                 foreach ($request->subjects as $key => $item) {
@@ -104,11 +103,10 @@
                     }
                 }
                 DB::commit();
-                return redirect()->back()->with('msg', 'Khóa học của bạn đã được gửi đi, vui lòng chờ xác nhận')->with('i', 'success');
+                return redirect()->back()->with('message', 'Khóa học của bạn đã được gửi đi, vui lòng chờ xác nhận')->with('icon', 'success');
             } catch (\Exception $e) {
                 DB::rollBack();
-                dd($e->getMessage());
-                return redirect()->back()->with('msg', 'Tạo khóa học thất bại')->with('i', 'error');
+                return redirect()->back()->with('message', 'Tạo khóa học thất bại')->with('icon', 'error');
             }
         }
 

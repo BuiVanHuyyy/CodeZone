@@ -2,21 +2,12 @@
 
 @section('content')
     <div class="container-fluid">
-
-        <div class="row page-titles mx-0">
-            <div class="col-sm-6 p-md-0">
-                <div class="welcome-text">
-                    <h4>Chi tiết khóa học</h4>
-                </div>
-            </div>
-        </div>
-
         <div class="row">
             <div class="col-xl-3 col-xxl-4 col-lg-4">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="card">
-                            <img class="img-fluid" src="{{ $course->thumbnail ?? asset('client_assets/images/avatar/default_course_thumbnail.png') }}" alt="Course thumbnail">
+                        <div class="card overflow-hidden">
+                            <img class="img-fluid" src="{{ $course->thumbnailPath() }}" alt="Course thumbnail">
                             <div class="card-body">
                                 <h4 class="mb-0 text-center">{{ $course->title }}</h4>
                             </div>
@@ -25,7 +16,7 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="card-title">Tổng quan</h2>
+                                <h2 class="card-title text-primary">Tổng quan</h2>
                             </div>
                             <div class="card-body pb-0">
                                 <ul class="list-group list-group-flush">
@@ -35,11 +26,13 @@
                                     </li>
                                     <li class="list-group-item d-flex px-0 justify-content-between">
                                         <strong>Giảng viên</strong>
-                                        <span class="mb-0"><a href="{{ route('admin.instructor.show', ['instructor' => $course->author]) }}">{{ $course->author->name }}</a></span>
+                                        <span class="mb-0"><a
+                                                href="{{ route('admin.instructor.show', [$course->author->user->slug]) }}">{{ $course->author->user->name }}</a></span>
                                     </li>
                                     <li class="list-group-item d-flex px-0 justify-content-between">
                                         <strong>Xếp hạng</strong>
-                                        <span class="mb-0">{{ number_format($rating, 1) }} <i class="fa-solid fa-star" style="color: #FFD43B;"></i></span>
+                                        <span class="mb-0">{{ number_format($course->reviews->avg('rating'), 1) }} <i
+                                                class="fa-solid fa-star" style="color: #FFD43B;"></i></span>
                                     </li>
                                     <li class="list-group-item d-flex px-0 justify-content-between">
                                         <strong>Giá</strong>
@@ -47,15 +40,17 @@
                                     </li>
                                     <li class="list-group-item d-flex px-0 justify-content-between">
                                         <strong>Số lượng học viên</strong>
-                                        <span class="mb-0">{{ number_format(count($course->enrollments)) }}</span>
+                                        <span class="mb-0">{{ number_format(count($course->students->where('status', 'paid'))) }}</span>
                                     </li>
                                     <li class="list-group-item d-flex px-0 justify-content-between">
                                         <strong>Doanh thu</strong>
-                                        <span class="mb-0">₫ {{ number_format(count($course->enrollments) * $course->price, 1) }}</span>
+                                        <span
+                                            class="mb-0">₫ {{ number_format($course->totalTuition()) }}</span>
                                     </li>
                                     <li class="list-group-item d-flex px-0 justify-content-between">
                                         <strong>Ngày tạo</strong>
-                                        <span class="mb-0">{{ date_format(date_create($course->created_at), 'd/m/Y') }}</span>
+                                        <span
+                                            class="mb-0">{{ date_format(date_create($course->created_at), 'd/m/Y') }}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -69,10 +64,11 @@
                         <h4 class="text-primary">Thông tin khóa học</h4>
                         <p>{{ $course->description }}</p>
                         <h4 class="text-primary">Nội dung khóa học</h4>
-                        <div class="course-detail-content">
+                        <div class="course-detail-content text-light">
                             <ul>
                                 @foreach($course->subjects->sortBy('order') as $subject)
-                                    <li {{ $subject->lessons->count() !== 0 ? 'class=has-submenu' : '' }}><span>{{ $subject->title }}</span>{!! $subject->lessons->count() !== 0 ? '<span><i class="fa-solid fa-caret-down"></i></span>' : '' !!}
+                                    <li {{ $subject->lessons->count() !== 0 ? 'class=has-submenu' : '' }}>
+                                        <span>{{ $subject->title }}</span>{!! $subject->lessons->count() !== 0 ? '<span><i class="fa-solid fa-caret-down"></i></span>' : '' !!}
                                         @if($subject->lessons->count() !== 0 && !is_null($subject->lessons))
                                             <ul>
                                                 @foreach($subject->lessons->sortBy('order') as $lesson)
@@ -87,19 +83,20 @@
                         <h4 class="text-primary">Review khóa học</h4>
                         <div class="reviews-list d-flex">
                             <div class="row">
-                                @if($reviews->count() === 0)
+                                @if($course->reviews->count() === 0)
                                     <p>Khóa học này chưa có reviews</p>
                                 @endif
-                                @foreach($reviews->sortByDesc('created_at') as $review)
+                                @foreach($course->reviews->sortByDesc('created_at') as $review)
                                     <div class="col-lg-6 review-item">
                                         <div class="top d-flex">
                                             <div class="thumbnail">
-                                                <a href="{{ route('admin.student.show', ['student' => $review->user->students->id]) }}">
-                                                    <img class="circle" src="{{ $review->user->students->avatar ?? asset('client_assets/images/avatar/default-avatar.png') }}" alt="">
+                                                <a href="">
+                                                    <img class="circle" src="{{ $review->author->user->avatarPath() }}"
+                                                         alt="">
                                                 </a>
                                             </div>
                                             <div class="author">
-                                                <h4><a href="{{ route('admin.student.show', ['student' => $review->user->students->id]) }}">{{ $review->user->students->name }}</a></h4>
+                                                <h4><a href="">{{ $review->author->user->name }}</a></h4>
                                                 <p>
                                                     @for($i = 1; $i <= $review->rating; $i++)
                                                         <i class="fa-solid fa-star" style="color: #FFD43B;"></i>
@@ -114,14 +111,14 @@
                                             <p>{{ $review->content }}</p>
                                         </div>
                                         <div class="bottom">
-                                            <button class="like-btn">
+                                            <span class="like-btn btn btn-success text-light">
                                                 <i class="fa-regular fa-thumbs-up"></i>
-                                                {{ $review->like_amount }}
-                                            </button>
-                                            <button class="dislike-btn">
+                                                {{ $review->likes->count() }}
+                                            </span>
+                                            <span class="dislike-btn btn btn-danger text-light">
                                                 <i class="fa-regular fa-thumbs-down"></i>
-                                                {{ $review->dislike_amount }}
-                                            </button>
+                                                {{ $review->dislikes->count() }}
+                                            </span>
                                         </div>
                                     </div>
                                 @endforeach
@@ -137,8 +134,8 @@
 @endsection
 @section('scripts')
     <script>
-        $(document).ready(function() {
-            $('.course-detail-content ul .has-submenu').on('click',function(e) {
+        $(document).ready(function () {
+            $('.course-detail-content ul .has-submenu').on('click', function (e) {
                 e.stopPropagation();
                 $(this).find('ul').slideToggle();
                 $(this).find('.fa-caret-down').toggleClass('rotated');

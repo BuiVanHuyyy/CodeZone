@@ -18,10 +18,6 @@ class Review extends Model
     {
         return $this->belongsTo(Student::class, 'student_id');
     }
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
     public function likes(): MorphMany
     {
         return $this->morphMany(Like::class, 'likeable');

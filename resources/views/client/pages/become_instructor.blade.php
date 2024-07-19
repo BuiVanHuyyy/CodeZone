@@ -34,7 +34,7 @@
             <div class="row pt--60 g-5">
                 <div class="col-lg-4">
                     <div class="thumbnail">
-                        <img class="radius-10 w-100" src="{{ asset('client_assets/images/tab/tabs-10.jpg') }}" alt="Corporate Template"/>
+                        <img class="radius-10 w-100" src="{{ asset('client_assets/images/others/tabs-10.jpg') }}" alt="Corporate Template"/>
                     </div>
                 </div>
 
@@ -130,7 +130,7 @@
                                     <a href="#">
                                         <img
                                             class="rbt-radius w-100"
-                                            src="{{ asset('client_assets/images/banner/gallery-banner-01.jpg') }}"
+                                            src="{{ asset('client_assets/images/others/gallery-banner-01.jpg') }}"
                                             alt="Banner Images"
                                         />
                                     </a>
@@ -143,7 +143,7 @@
                                     <a href="#">
                                         <img
                                             class="rbt-radius w-100"
-                                            src="{{ asset('client_assets/images/banner/gallery-banner-02.jpg') }}"
+                                            src="{{ asset('client_assets/images/others/gallery-banner-02.jpg') }}"
                                             alt="Banner Images"
                                         />
                                     </a>
@@ -156,7 +156,7 @@
                                     <a href="#">
                                         <img
                                             class="rbt-radius w-100"
-                                            src="{{ asset('client_assets/images/banner/gallery-banner-03.jpg') }}"
+                                            src="{{ asset('client_assets/images/others/gallery-banner-03.jpg') }}"
                                             alt="Banner Images"
                                         />
                                     </a>

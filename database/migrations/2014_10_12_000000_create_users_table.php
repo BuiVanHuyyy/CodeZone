@@ -19,14 +19,14 @@ return new class extends Migration
             $table->string('password');
             $table->string('name');
             $table->string('slug')->unique();
-            $table->enum('status',['active', 'suspended', 'pending'])->default('pending');
+            $table->enum('status',['active', 'suspended', 'pending', 'deleted'])->default('pending');
             $table->enum('role', ['admin', 'instructor', 'student']);
             $table->string('avatar')->nullable();
             $table->enum('gender', ['male', 'female'])->nullable();
             $table->date('dob')->nullable();
             $table->softDeletes();
             $table->timestamps();
-            
+
             $table->index(['name', 'email', 'status', 'role']);
         });
     }

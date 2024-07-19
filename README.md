@@ -1,5 +1,7 @@
 ### Đề tài: Trang Web Kết Nối Người Học và Giảng Viên Kết Hợp Thương Mại Điện Tử
 
+[![Watch the video](https://i.sstatic.net/Vp2cE.png)](https://youtu.be/vt5fpE0bzSY)
+
 ### Các tính năng chính
 
 #### 1. Quản lý học sinh

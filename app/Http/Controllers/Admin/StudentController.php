@@ -5,14 +5,21 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
+use App\Models\Course;
 use App\Models\Student;
+use App\Models\User;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function index(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
         $students = Student::with('user')->get();
         return view('admin.pages.student_list', compact('students'));
@@ -37,9 +44,13 @@ class StudentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int|string $id): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    public function show(string $slug): \Illuminate\Contracts\Foundation\Application|Factory|View|Application
     {
-        $student = Student::find($id);
+        $user = User::where('slug', $slug)->first();
+        if (!$user) {
+            return view('admin.404');
+        }
+        $student = $user->student;
         return view('admin.pages.student_detail', compact('student'));
     }
 
@@ -56,14 +67,31 @@ class StudentController extends Controller
      */
     public function update(UpdateStudentRequest $request, Student $student)
     {
-        dd($request->all());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Student $student)
+    public function destroy(string $id): JsonResponse
     {
-        //
+        $student = Student::where('id', decrypt($id))->first();
+        if (!$student ) {
+            return response()->json(['message' => 'Đã có lỗi, vui lòng thử lại'], 500);
+        }
+        $slug = $student->user->slug;
+        DB::beginTransaction();
+        try {
+            foreach ($student->courses as $course) {
+                $course->delete();
+            }
+            $student->delete();
+            $student->user->delete();
+            DB::commit();
+            return response()->json(['message' => 'Xóa thành công', 'row' => $slug], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Xóa thất bại'], 500);
+        }
+
     }
 }

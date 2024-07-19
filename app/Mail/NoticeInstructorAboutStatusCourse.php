@@ -28,11 +28,15 @@ class NoticeInstructorAboutStatusCourse extends Mailable
      */
     public function envelope(): Envelope
     {
-        if ($this->course->status == 'active') {
+        if ($this->course->status == 'approved') {
             return new Envelope(
                 subject: 'Chúc mừng khóa học của bạn đã được duyệt',
             );
-        } else {
+        } elseif ($this->course->status == 'rejected') {
+            return new Envelope(
+                subject: 'Thông báo Khóa học của bạn đã bị từ chối',
+            );
+        } else{
             return new Envelope(
                 subject: 'Thông báo Khóa học của bạn đã bị tạm khóa',
             );
@@ -47,6 +51,11 @@ class NoticeInstructorAboutStatusCourse extends Mailable
         if ($this->course->status == 'approved') {
             return new Content(
                 view: 'mail_template.email_notice_instructor_course_approved',
+                with: ['course' => $this->course],
+            );
+        } elseif ($this->course->status == 'rejected') {
+            return new Content(
+                view: 'mail_template.email_notice_instructor_course_rejected',
                 with: ['course' => $this->course],
             );
         } else {

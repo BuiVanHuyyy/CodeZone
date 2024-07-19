@@ -142,17 +142,6 @@
 @endsection
 @section('cus_js')
     <script>
-        let msg = "{{ session('msg') }}";
-        let i = "{{ session('i') }}";
-        if (msg !== "") {
-            Swal.fire({
-                position: "top-end",
-                icon: i,
-                title: msg,
-                showConfirmButton: false,
-                timer: 2000
-            });
-        }
         ClassicEditor
             .create( document.querySelector( '#blog_content' ), {
                 ckfinder: {
@@ -164,5 +153,4 @@
             } );
 
     </script>
-
 @endsection

@@ -2,6 +2,7 @@
 
     namespace App\Http\Controllers\Client;
 
+    use App\Helper\CustomHelper;
     use App\Http\Controllers\Controller;
     use App\Http\Requests\StoreInstructorRequest;
     use App\Http\Requests\UpdatePasswordRequest;
@@ -45,24 +46,27 @@
             DB::beginTransaction();
             try {
                 $user = new User();
+                $user->id = CustomHelper::generateUuid(User::class);
+                $user->slug = CustomHelper::generateUniqueSlug(User::class, $request->name);
                 $user->name = $request->name;
                 $user->email = $request->email;
                 $user->password = Hash::make('my-secret-password');
                 $user->role = 'instructor';
                 $user->save();
+
                 $instructor = new Instructor();
+                $instructor->id = CustomHelper::generateUuid(Instructor::class);
                 $instructor->user_id = $user->id;
-                $instructor->name = $request->name;
-                $instructor->slug = Str::slug($request->name);
                 $instructor->phone_number = $request->phone;
                 $instructor->bio = $request->bio;
                 $instructor->cv_upload = $this->saveCvToSystem($request->cv);
                 $instructor->save();
+
                 DB::commit();
                 return redirect()->back()->with('msg', 'Chúng tôi đã nhận được yều cầu của bạn chúng tôi sẽ phản hồi sớm nhất có thể')->with('i', 'success');
             } catch (\Exception $e) {
                 DB::rollBack();
-                return redirect()->back()->with('msg', 'Register failed')->with('i', 'error');
+                return redirect()->back()->with('msg', 'Đăng ký thất bại')->with('i', 'error');
             }
         }
 
@@ -72,8 +76,8 @@
             $fileName = pathinfo($originName, PATHINFO_FILENAME);
             $extension = $file->getClientOriginalExtension();
             $fileName = $fileName . '_' . uniqid() . '.' . $extension;
-            $file->move(public_path('client_assets/cv_instructor'), $fileName);
-            return '/client_assets/cv_instructor/' . $fileName;
+            $file->move(public_path(env('CV_FOLDER_PATH')), $fileName);
+            return $fileName;
         }
 
         /**

@@ -8,42 +8,37 @@
                     <div id="list-view" class="tab-pane fade active show col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Danh sách học viên  </h4>
+                                <h4 class="card-title">Danh sách học viên</h4>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="dataTable" class="display text-center" style="min-width: 1200px">
+                                    <table id="dataTable" class="display text-center" style="width: 100%">
                                         <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>Tên</th>
                                             <th>Avatar</th>
                                             <th>Giới tính</th>
+                                            <th>Khóa học</th>
                                             <th>Email</th>
-                                            <th>Trạng thái</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         @foreach($students as $student)
-                                            <tr>
+                                            <tr class="tr-{{ $student->user->slug }}">
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td><a href="{{ route('admin.student.show', ['student' => $student]) }}">{{ $student->user->name }}</a></td>
-                                                <td><img class="rounded-circle" width="35" src="{{ $student->user->avatarPath() ?? asset('client_assets/images/avatar/default_avatar.png') }}" alt=""></td>
+                                                <td>
+                                                    <a href="{{ route('admin.student.show', [$student->user->slug]) }}">{{ $student->user->name }}</a>
+                                                </td>
+                                                <td><img class="rounded-circle" width="35" src="{{ $student->user->avatarPath() }}" alt=""></td>
                                                 <td>{{ $student->user->gender === 'male' ? 'Nam' : 'Nữ' }}</td>
+                                                <td>{{ number_format($student->courses->where('status', 'paid')->count()) }}</td>
                                                 <td>{{ $student->user->email }}</td>
                                                 <td>
-                                                    <form>
-                                                        <select class="form-select p-0 statusSelect" aria-label="Status select">
-                                                            <option {{ $student->user->status === 'pending' ? 'selected' : '' }} value="pending">Chờ phê duyệt</option>
-                                                            <option {{ $student->user->status === 'active' ? 'selected' : '' }} value="active">Hoạt động</option>
-                                                            <option {{ $student->user->status === 'suspended' ? 'selected' : '' }} value="suspended">Khóa</option>
-                                                        </select>
-                                                    </form>
-                                                </td>
-                                                <td>
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-primary"><i class="la la-pencil"></i></a>
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger"><i class="la la-trash-o"></i></a>
+                                                    <button data-url="{{ route('admin.student.destroy', encrypt($student->id)) }}" class="delete-button btn btn-sm btn-danger"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Xóa học viên"><i class="la la-trash-o"></i></button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -60,8 +55,55 @@
 @endsection
 @section('scripts')
     <script>
-        let table = new DataTable('#dataTable', {
-            responsive: true
+        $(document).ready(function () {
+            let table = new DataTable('#dataTable', {
+                responsive: true,
+                layout: {
+                    topStart: {
+                        buttons: ['pageLength', {
+                            extend: 'spacer',
+                            style: 'bar',
+                            text: 'Xuất file:'
+                        }, 'excel', 'pdf', 'print'],
+                    }
+                },
+            });
+            $(document).on('click', '.delete-button', function () {
+                Swal.fire({
+                    title: "Bạn có chắc không?",
+                    text: "Bạn sẽ không thể hoàn tác lại được!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Xóa",
+                    cancelButtonText: "Hủy"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let url = $(this).data('url');
+                        $.ajax({
+                            url: url,
+                            type: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function (response) {
+                                Swal.fire({
+                                    title: response.message,
+                                    icon: "success"
+                                });
+                                $('.tr-' + response.row).remove();
+                            },
+                            error: function (response) {
+                                Swal.fire({
+                                    title: response.responseJSON.message,
+                                    icon: "warning"
+                                });
+                            }
+                        });
+                    }
+                });
+            })
         });
     </script>
 @endsection

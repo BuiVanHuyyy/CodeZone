@@ -14,6 +14,25 @@ class Student extends Model
     public $incrementing = false;
     protected $keyType = 'string';
     protected $guarded = [];
+    private array $badgeColor = [
+        'pending' => 'badge-warning',
+        'active' => 'badge-success',
+        'suspended' => 'badge-danger'
+    ];
+    private array $statusName = [
+        'pending' => 'Chờ phê duyệt',
+        'active' => 'Hoạt động',
+        'suspended' => 'Khóa',
+        'rejected' => 'Từ chối'
+    ];
+    public function getBadgeColor(): string
+    {
+        return $this->badgeColor[$this->user->status];
+    }
+    public function getStatusName(): string
+    {
+        return $this->statusName[$this->user->status];
+    }
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

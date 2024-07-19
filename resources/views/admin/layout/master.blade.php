@@ -11,15 +11,17 @@
     <meta name="description" content="EduZone - Bootstrap Admin Dashboard" />
     <meta property="og:title" content="EduZone - Bootstrap Admin Dashboard" />
     <meta property="og:description" content="EduZone - Bootstrap Admin Dashboard" />
-    <meta property="og:image" content="https://eduzone.dexignzone.com/xhtml/error-404.html" />
+    <meta property="og:image" content="" />
     <meta name="format-detection" content="telephone=no">
     <title>CodeZone - Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.4/css/dataTables.dataTables.css" />
+    <link rel="icon" type="image/png" href="{{ asset('client_assets/images/logo/logo-vector.png') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('admin_assets/vendor/dataTables/datatables.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('admin_assets/images/favicon.png') }}}">
     <link rel="stylesheet" href="{{ asset('admin_assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin_assets/css/style.css') }}">
+    @yield('styles')
 </head>
 <body>
 
@@ -42,9 +44,7 @@
 
 <script src="{{ asset('admin_assets/vendor/chart.js/Chart.bundle.min.js')}}"></script>
 
-<!-- <script src="{{ asset('admin_assets/js/dashboard/dashboard-2.js') }} "></script> -->
-<script src="https://cdn.datatables.net/2.0.4/js/dataTables.js"></script>
-
+<script src="{{ asset('admin_assets/vendor/dataTables/datatables.js') }}"></script>
 <script src="{{ asset('admin_assets/vendor/svganimation/vivus.min.js') }}"></script>
 <script src="{{ asset('admin_assets/vendor/svganimation/svg.animation.js') }}"></script>
 @yield('scripts')

@@ -13,6 +13,25 @@ class Blog extends Model
     use HasFactory, SoftDeletes;
     public $incrementing = false;
      protected $keyType = 'string';
+    protected $guarded = [];
+    private array $badgeColor = [
+        'pending' => 'badge-warning',
+        'approved' => 'badge-success',
+        'suspended' => 'badge-danger',
+    ];
+    private array $statusName = [
+        'pending' => 'Chờ phê duyệt',
+        'approved' => 'Đã phê duyệt',
+        'suspended' => 'Khóa'
+    ];
+    public function getBadgeColor(): string
+    {
+        return $this->badgeColor[$this->status];
+    }
+    public function getStatusName(): string
+    {
+        return $this->statusName[$this->status];
+    }
     public function author(): BelongsTo
     {
        return $this->belongsTo(Instructor::class, 'instructor_id');
@@ -31,9 +50,12 @@ class Blog extends Model
     }
     public function thumbnailPath(): string
     {
-        $thumbnailPath = env('BLOG_FOLDER_PATH') . $this->thumbnail;
-        if (!is_null($this->thumbnail) && file_exists(public_path($thumbnailPath))) {
-            return asset($thumbnailPath);
+        if (!is_null($this->thumbnail)) {
+            if (file_exists(public_path(env('BLOG_FOLDER_PATH') . $this->thumbnail))) {
+                return asset(env('BLOG_FOLDER_PATH') . $this->thumbnail);
+            }elseif (file_exists(public_path(env('TMP_FOLDER_PATH') . $this->thumbnail))) {
+                return asset(env('TMP_FOLDER_PATH') . $this->thumbnail);
+            }
         }
         return asset('client_assets/images/blog/default_blog_thumbnail.png');
     }

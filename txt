@@ -1,0 +1,42 @@
+Status của giảng viên (Pending, active, suspended)
+    Chờ phê duyệt
+        - Xác thực
+        - Từ chối (xóa hết dữ liệu ra khỏi hệ thống)
+    Xác thực
+        - Khóa (Giảng viên sẽ không thể vào được tài khoản của mình)
+        - Xóa nếu giảng viên đó chưa có khóa học nào trên hệ thống (Soft delete)
+    Khóa
+        - Mở khóa
+        - Xóa nếu giảng viên đó chưa có khóa học nào trên hệ thống (Xóa cứng)
+
+Status của khóa học
+    Chờ phê duyệt
+        - Xác thực
+        - Từ chối (Xóa hết dữ liệu ra khỏi hệ thống)
+    Xác thực
+        - Khóa (Khóa khóa học, học viên không thể đăng ký khóa học đó)
+        - Xóa nếu giảng viên đó chưa có khóa học nào (Xóa cứng)
+    Khóa
+        - Mở khóa
+        - Xóa nếu giảng viên đó chưa có khóa học nào (Xóa cứng)
+
+
+Status của học viên
+    Xác thực
+        - Khóa (học viên không thể vào được hệ thống xóa mền)
+        - Xóa nếu học viên đó chưa đăng ký khóa học nào (Xóa cứng)
+    Khóa
+        - Mở khóa
+        - Xóa nếu học viên đó chưa đăng ký khóa học nào (Xóa cứng)
+
+
+Status của bài blog
+    Chờ phê duyệt
+        - Xác thực
+        - Từ chối (Xóa hết dữ liệu ra khỏi hệ thống)
+    Xác thực
+        - Khóa (Xóa mền)
+        - Xóa (Xóa cứng)
+    Khóa
+        - Mở khóa
+        - Xóa (Xóa cứng)

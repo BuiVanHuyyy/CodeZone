@@ -15,6 +15,26 @@ class Course extends Model
     protected $guarded = ['status'];
     public $incrementing = false;
      protected $keyType = 'string';
+    public array $badgeColor = [
+        'pending' => 'badge-warning',
+        'approved' => 'badge-success',
+        'suspended' => 'badge-danger',
+        'rejected' => 'badge-danger'
+    ];
+    public array $statusName = [
+        'pending' => 'Chờ phê duyệt',
+        'approved' => 'Xác thực',
+        'suspended' => 'Khóa',
+        'rejected' => 'Từ chối'
+    ];
+    public function getBadgeColor(): string
+    {
+        return $this->badgeColor[$this->status];
+    }
+    public function getStatusName(): string
+    {
+        return $this->statusName[$this->status];
+    }
     public function students(): HasMany
     {
         return $this->hasMany(Enrollment::class, 'course_id');
@@ -41,11 +61,14 @@ class Course extends Model
         if (!is_null($this->thumbnail) && file_exists(public_path($thumbnailPath))) {
             return asset($thumbnailPath);
         }
-        return asset('client_assets/images/course/default_course_thumbnail.png');
+        return asset(env('COURSE_FOLDER_PATH') . 'default_course_thumbnail.png');
     }
-
+    public function totalTuition(): int|float
+    {
+        return $this->students()->with('course')->where('status', 'paid')->sum('price');
+    }
     public function studentsAmount(): int
     {
-        return $this->students()->with('course')->where('status', 'paid')->count();
+        return $this->students()->where('status', 'paid')->count();
     }
 }

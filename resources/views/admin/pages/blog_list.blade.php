@@ -10,18 +10,7 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <form method="get" action="{{ route('admin.blog.index') }}">
-                                    <div class="d-flex">
-                                        <select name="status" class="w-50" aria-label="Default select example">
-                                            <option selected>Lọc theo status</option>
-                                            <option {{ $status == 'pending' ? 'selected' : '' }} value="pending">Chờ xác thực</option>
-                                            <option {{ $status == 'approved' ? 'selected' : '' }} value="approved">Xác thực</option>
-                                            <option {{ $status == 'rejected' ? 'selected' : '' }} value="rejected">Từ chối</option>
-                                        </select>
-                                        <button class="w-25 btn btn-primary">Lọc</button>
-                                    </div>
-                                </form>
-                                <table id="dataTable" class="display" style="min-width: 1200px">
+                                <table id="dataTable" class="display">
                                     <thead>
                                     <tr class="text-center">
                                         <th>#</th>
@@ -34,33 +23,45 @@
                                     </thead>
                                     <tbody>
                                     @foreach($blogs->sortByDesc('created_at') as $blog)
-                                        <tr id="tr-{{ $blog->id }}" class="text-center">
-                                            <td>#{{ $loop->iteration }}</td>
+                                        @php
+                                            $idEncrypted = encrypt($blog->id);
+                                        @endphp
+                                        <tr id="tr-{{  $blog->slug }}" class="text-center">
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>
-                                                <a href="{{ route('admin.blog.show', ['blog' => $blog]) }}"><strong>{{ $blog->title }}</strong></a>
+                                                <a href="{{ route('admin.blog.show', $blog->slug) }}"><strong>{{ $blog->title }}</strong></a>
                                             </td>
-                                            <td><a href="{{ route('admin.instructor.show', ['instructor' => $blog->author]) }}">{{ $blog->author->user->name }}</a></td>
                                             <td>
-                                                <form>
-                                                    <select data-url="{{route('admin.update-blog-status', [$blog->id])}}" class="form-select p-0 statusSelect" aria-label="Status select">
+                                                <a href="{{ route('admin.instructor.show', $blog->author->user->slug) }}">{{ $blog->author->user->name }}</a>
+                                            </td>
+                                            <td>
+                                                <select
+                                                    data-url="{{route('admin.update-blog-status', $idEncrypted)}}"
+                                                    class="form-select p-0 statusSelect" aria-label="Status select">
+                                                    @if($blog->status === 'pending')
+                                                        <option selected value="pending">Chờ phê duyệt</option>
+                                                    @endif
+                                                    <option
+                                                        {{ $blog->status === 'rejected' ? 'selected' : '' }} value="rejected">
+                                                        Từ chối
+                                                    </option>
+                                                    <option
+                                                        {{ $blog->status === 'approved' ? 'selected' : '' }} value="approved">
+                                                        Xác thực
+                                                    </option>
+                                                    @if($blog->status !== 'pending')
                                                         <option
-                                                            {{ $blog->status === 'pending' ? 'selected' : '' }} value="pending">Chờ phê duyệt
+                                                            {{ $blog->status === 'suspended' ? 'selected' : '' }} value="suspended">
+                                                            Khoá
                                                         </option>
-                                                        <option
-                                                            {{ $blog->status === 'rejected' ? 'selected' : '' }} value="rejected">
-                                                            Từ chối
-                                                        </option>
-                                                        <option
-                                                            {{ $blog->status === 'approved' ? 'selected' : '' }} value="approved">
-                                                            Xác thực
-                                                        </option>
-                                                    </select>
-                                                </form>
+                                                    @endif
+                                                </select>
                                             </td>
                                             <td>{{ date_format(date_create($blog->created_at), 'd/m/Y') }}</td>
                                             <td>
-                                                <button data-id="{{ $blog->id }}" data-url="{{ route('admin.blog.destroy', [$blog->id]) }}" class="del-button btn btn-sm btn-danger"><i class="la la-trash-o"></i></button>
-                                                <button class="btn btn-sm btn-primary"><i class="la la-pencil"></i></button>
+                                                <button data-url="{{ route('admin.blog.destroy', $idEncrypted) }}"
+                                                        class="del-button btn btn-sm btn-danger"><i
+                                                        class="la la-trash-o"></i></button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -77,7 +78,7 @@
 @endsection
 @section('scripts')
     <script>
-        $('.statusSelect').change(function() {
+        $('.statusSelect').change(function () {
             let url = $(this).data('url');
             let status = $(this).val();
             $.ajax({
@@ -87,7 +88,7 @@
                     _token: '{{ csrf_token() }}',
                     status: status
                 },
-                success: function(response) {
+                success: function (response) {
                     if (response.status === 'success') {
                         Swal.fire({
                             position: "center",
@@ -108,13 +109,46 @@
                 }
             });
         });
-        let table = new DataTable('#dataTable', {
-            responsive: true
+
+        $('#dataTable').DataTable({
+            language: {
+                searchPanes: {
+                    showMessage: '',
+                    collapseMessage: '',
+                    clearMessage: '',
+                    title: 'Lọc theo status',
+                    collapse: {0: 'Lọc theo status',}
+                }
+            },
+            responsive: false,
+            layout: {
+                topStart: {
+                    buttons: ['pageLength', {
+                        extend: 'spacer',
+                        style: 'bar',
+                        text: 'Xuất file:'
+                    }, 'excel', 'pdf', 'print', 'searchPanes'],
+                }
+            },
+            columnDefs: [
+                {
+                    searchPanes: {
+                        show: false
+                    },
+                    targets: [0, 1, 2, 4]
+                }, {
+                    searchPanes: {
+                        show: true,
+                        collapse: false,
+                        controls: false
+                    },
+                    targets: [3]
+                }
+            ]
         });
-        $('.del-button').on('click', function (e) {
-            e.preventDefault();
+
+        $('.del-button').on('click', function () {
             let url = $(this).data('url');
-            let id = $(this).data('id');
             Swal.fire({
                 title: 'Bạn có chắc chắn muốn xóa?',
                 text: "Thao tác này không thể hoàn tác!",
@@ -122,7 +156,8 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Có, xóa nó!'
+                confirmButtonText: 'Có, xóa nó!',
+                cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
@@ -131,17 +166,24 @@
                         data: {
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function(response) {
-                            if (response.status === 'success') {
-                                Swal.fire({
-                                    position: "center",
-                                    icon: "success",
-                                    title: response.msg,
-                                    showConfirmButton: false,
-                                    timer: 1000
-                                });
-                                $('#tr-' + id).remove();
-                            }
+                        success: function (response) {
+                            Swal.fire({
+                                position: "center",
+                                icon: "success",
+                                title: response.msg,
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
+                            $('#tr-' + response.slug).remove();
+                        },
+                        fail: function (response) {
+                            Swal.fire({
+                                position: "center",
+                                icon: "error",
+                                title: response.msg,
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
                         }
                     });
                 }

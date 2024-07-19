@@ -1,90 +1,115 @@
 @extends('admin.layout.master')
+
 @section('content')
     <div class="container-fluid">
-        <div class="col-lg-12">
-            <div class="row tab-content">
-                <div id="list-view" class="tab-pane fade active show col-lg-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">Danh sách khóa học </h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <form method="get" action="{{ route('admin.course.index') }}">
-                                    <div class="d-flex">
-                                        <select name="status" class="w-50" aria-label="Default select example">
-                                            <option selected>Lọc theo status</option>
-                                            <option {{ $status == 'pending' ? 'selected' : '' }} value="pending">Chờ xác thực</option>
-                                            <option {{ $status == 'approved' ? 'selected' : '' }} value="approved">Xác thực</option>
-                                            <option {{ $status == 'rejected' ? 'selected' : '' }} value="rejected">Từ chối</option>
-                                        </select>
-                                        <button class="w-25 btn btn-primary">Lọc</button>
-                                    </div>
-                                </form>
-                                <table id="dataTable" class="display" style="min-width: 1200px">
-                                    <thead>
-                                    <tr class="text-center">
-                                        <th>#</th>
-                                        <th>Tên</th>
-                                        <th>Giá</th>
-                                        <th>Học viên</th>
-                                        <th>Tác giả</th>
-                                        <th>Trạng thái</th>
-                                        <th>Chuyên ngành</th>
-                                        <th>Thời gian tạo</th>
-                                        <th>Action</th>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Basic Datatable</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="dataTable" class="display nowrap" style="min-width: 845px">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Category</th>
+                                <th>Author</th>
+                                <th>Students Qty</th>
+                                <th>Status</th>
+                                <th>Created at</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @if(count($courses) > 0)
+                                @foreach($courses as $course)
+                                    <tr id="tr-{{ $course->slug }}">
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>
+                                            <a href="{{ route('admin.course.show', $course->slug) }}"><strong>{{ $course->title }}</strong></a>
+                                        </td>
+                                        <td>{{ number_format($course->price) }} <span>&#8363;</span></td>
+                                        <td>{{ $course->category->title }}</td>
+                                        <td>
+                                            <a href="{{ route('admin.instructor.show', $course->author->user->slug) }}">{{ $course->author->user->name }}</a>
+                                        </td>
+                                        <td>{{ $course->students->count() }}</td>
+                                        <td>
+                                            <span style="text-transform: capitalize"
+                                                  class="badge-rounded {{ $course->getBadgeColor() }}">{{ $course->getStatusName() }}</span>
+                                        </td>
+                                        <td>{{ date_format($course->created_at, 'd/M/Y') }}</td>
+                                        <td>
+                                            @if($course->status === 'pending')
+                                                <button data-status="approved" class="btn btn-success">Xác thực</button>
+                                                <button data-status="rejected" class="btn btn-danger" data-url=""
+                                                   data-id="{{ $course->id }}">Từ chối</button>
+                                            @elseif($course->status === 'approved')
+                                                <button class="btn btn-info" data-status="suspended"
+                                                   data-id="{{ $course->id }}">Khóa</button>
+                                                <butotn class="btn btn-danger" data-url="delete"
+                                                   data-id="{{ $course->id }}">Xóa</butotn>
+                                            @elseif($course->status === 'suspended')
+                                                <button class="btn btn-success" data-status="approved"
+                                                   data-id="{{ $course->id }}">Mở khóa</button>
+                                                <button class="btn btn-danger" data-url="delete"
+                                                   data-id="{{ $course->id }}">Xóa</button>
+                                            @endif
+                                        </td>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($courses->sortByDesc('created_at') as $course)
-                                        <tr id="tr-{{ $course->id }}" class="text-center">
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>
-                                                <a href="{{ route('admin.course.show', ['course' => $course]) }}"><strong>{{ $course->title }}</strong></a>
-                                            </td>
-                                            <td>₫ {{ number_format($course->price, 0) }}</td>
-                                            <td>{{ count($course->students) }}</td>
-                                            <td>
-                                                <a href="{{ route('admin.instructor.show', ['instructor' => $course->author]) }}"><strong>{{ $course->author->name }}</strong></a>
-                                            </td>
-                                            <td>
-                                                <form>
-                                                    <select data-url="{{route('admin.update-course-status', [$course->id])}}" class="form-select p-0 statusSelect" aria-label="Status select">
-                                                        <option
-                                                            {{ $course->status === 'pending' ? 'selected' : '' }} value="pending">Chờ phê duyệt
-                                                        </option>
-                                                        <option
-                                                            {{ $course->status === 'rejected' ? 'selected' : '' }} value="rejected">
-                                                            Từ chối
-                                                        </option>
-                                                        <option
-                                                            {{ $course->status === 'approved' ? 'selected' : '' }} value="approved">
-                                                            Xác thực
-                                                        </option>
-                                                    </select>
-                                                </form>
-                                            </td>
-                                            <td>{{ $course->category->title }}</td>
-                                            <td>{{ date_format(date_create($course->created_at), 'd/m/Y') }}</td>
-                                            <td>
-                                                <button data-id="{{ $course->id }}" data-url="{{ route('admin.course.destroy', [$course->id]) }}" class="del-button btn btn-sm btn-danger"><i class="la la-trash-o"></i></button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                @endforeach
+                            @endif
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 @endsection
 @section('scripts')
     <script>
-        $('.statusSelect').change(function() {
+        $('#dataTable').DataTable({
+            language: {
+                searchPanes: {
+                    showMessage: '',
+                    collapseMessage: '',
+                    clearMessage: '',
+                    title: 'Lọc theo status',
+                    collapse: {0: 'Lọc theo status',}
+                }
+            },
+            responsive: false,
+            layout: {
+                topStart: {
+                    buttons: ['pageLength', {
+                        extend: 'spacer',
+                        style: 'bar',
+                        text: 'Xuất file:'
+                    }, 'excel', 'pdf', 'print', 'searchPanes'],
+                }
+            },
+            columnDefs: [
+                {
+                    searchPanes: {
+                        show: false
+                    },
+                    targets: [0, 1, 2, 3, 4, 5, 7, 8]
+                }, {
+                    searchPanes: {
+                        show: true,
+                        collapse: false,
+                        controls: false
+                    },
+                    targets: [6]
+                }
+            ]
+        });
+
+        $('.statusSelect').change(function () {
             let url = $(this).data('url');
             let status = $(this).val();
             $.ajax({
@@ -94,7 +119,7 @@
                     _token: '{{ csrf_token() }}',
                     status: status
                 },
-                success: function(response) {
+                success: function (response) {
                     if (response.status === 'success') {
                         Swal.fire({
                             position: "center",
@@ -114,9 +139,6 @@
                     }
                 }
             });
-        });
-        let table = new DataTable('#dataTable', {
-            responsive: true
         });
         $('.del-button').on('click', function (e) {
             e.preventDefault();
@@ -138,7 +160,7 @@
                         data: {
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function(response) {
+                        success: function (response) {
                             if (response.status === 'success') {
                                 Swal.fire({
                                     position: "center",

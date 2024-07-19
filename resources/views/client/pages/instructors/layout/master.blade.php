@@ -23,3 +23,17 @@
         </div>
     </div>
 @endsection
+@section('cus_js')
+    <script>
+        let message = "{{ session('message') }}";
+        let icon = "{{ session('icon') }}";
+        if (message !== "") {
+            Swal.fire({
+                position: "center",
+                icon: icon,
+                title: message,
+                timer: 1500
+            });
+        }
+    </script>
+@endsection
